@@ -6,10 +6,7 @@ import Home from "./pages/Home";
 import AllTrips from "./pages/AllTrips";
 
 function App() {
-    function getHtml(){
-        let html = fetch("http://localhost:8080/home/");
-        console.log(html);
-    }
+
   return (
     <div className="App" id="root">
         <Router>
