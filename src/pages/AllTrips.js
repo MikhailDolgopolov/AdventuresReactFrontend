@@ -3,10 +3,7 @@ import React, {useEffect,useState} from 'react';
 
 export default function AllTrips() {
     //document.title = "Все путешествия";
-    let [data, setTrips]=useState([
-        {year:2023, yearList:[{title:'Test'}]},
-        {year:2022, yearList:[{title:'Test2'}]},
-    ])
+    let [data, setTrips]=useState([])
     async function getTrips(){
         let url = "http://localhost:8080/trips/json/";
         let response = await fetch(url);
