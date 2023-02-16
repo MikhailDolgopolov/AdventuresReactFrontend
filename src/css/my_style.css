@@ -11,6 +11,14 @@ body {
 p{
   margin: 0.2rem;
 }
+.placeholder{
+  font-family: system-ui;
+  color: darkgrey;
+}
+a {
+  color: black;
+  text-decoration: none; /* no underline */
+}
 select{
   padding: 5px;
 }

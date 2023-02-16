@@ -1,9 +1,11 @@
 import React from 'react';
+import {useNavigate} from 'react-router-dom';
+
 
 function TripBlock({trip}) {
-    console.log(trip)
+    const navigate = useNavigate();
     return (
-        <div className="grid-block">
+        <div className="grid-block" onClick={()=>navigate('../trip/'+trip.trip_id)}>
             <button className="grid-button">
                 <h3>{trip.title}</h3>
                 <p>{trip.start_date} - {trip.end_date}</p>
