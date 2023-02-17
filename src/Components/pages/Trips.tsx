@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import TripPage, {Trip} from "../Data/TripPage";
+import TripPage, {Trip} from "./TripPage";
 import {Route, Routes} from "react-router-dom";
-import EmptyRoute from "../EmptyRoute";
-import {getRequest} from "../App";
+import EmptyRoute from "./EmptyRoute";
+import {getRequest} from "../../App";
 
 function Trips() {
     let [data, setTrips]=useState<Trip[]>([])

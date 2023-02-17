@@ -1,16 +1,16 @@
 import React from 'react';
 import TripBlock from "./TripBlock";
-import {Trip} from "./TripPage"
+import {Trip} from "../pages/TripPage"
 
 export type Entry = {
     year : number
     yearList : Array<Trip>
 }
 
-function YearEntry(data: Entry) {
+function YearEntry({props}:{props:Trip[]}) {
 
-    let trips=data.yearList.map(trip=>
-        <TripBlock key={trip.trip_id} {...trip}/>
+    let trips=props.map(trip=>
+        <TripBlock key={trip.trip_id} trip={trip}/>
     )
     return (
         <div className="grid">

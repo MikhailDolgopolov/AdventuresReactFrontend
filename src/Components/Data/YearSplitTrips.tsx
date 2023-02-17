@@ -7,7 +7,7 @@ function YearSplitTrips({props}:{props:Entry[]}) {
             <div>
                 <p>{row.year} год</p>
             </div>
-            <YearEntry {...row} key={row.year}/>
+            <YearEntry props={row.yearList} key={row.year}/>
         </div>
     );
     return <div className="side_margins" >

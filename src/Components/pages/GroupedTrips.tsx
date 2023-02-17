@@ -1,6 +1,6 @@
 import YearSplitTrips from "../Data/YearSplitTrips";
 import React, {useEffect,useState} from 'react';
-import {getRequest} from "../App";
+import {getRequest} from "../../App";
 import {Entry} from "../Data/YearEntry";
 import Loading from "../Fragments/Loading";
 
