@@ -1,5 +1,5 @@
-import './css/my_style.css'
-import React from "react";
+import * as React from 'react';;
+
 import { BrowserRouter as Router, Routes, Route}
     from 'react-router-dom';
 import Home from "./pages/Home";
@@ -7,6 +7,7 @@ import GroupedTrips from "./pages/GroupedTrips";
 import Trips from "./pages/Trips";
 import EmptyRoute from "./EmptyRoute";
 import {serverProperties} from "./Server/ServerProperties";
+import './css/my_style.css'
 
 function App() {
 
@@ -28,8 +29,8 @@ function App() {
 
 export default App;
 
-export const getRequest = async (uri) => {
+export const getRequest = async (uri:string) => {
     let url = serverProperties.domain+uri;
     const response = await fetch(url);
-    return response.json();
+    return await response.json();
 }

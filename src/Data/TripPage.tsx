@@ -1,8 +1,15 @@
-import React from 'react';
+import React from "react";
 import BackToTrips from "../Fragments/BackToTrips";
 import Loading from "../Fragments/Loading";
-
-function Trip({trip}) {
+export type Trip ={
+    trip_id : number
+    title : string
+    start_date : string
+    end_date : string
+    description : string
+    photo_link : string
+}
+function TripPage(trip:Trip) {
     if(!trip) return <Loading object='trips'/>
     return (
         <div>
@@ -16,4 +23,4 @@ function Trip({trip}) {
     );
 }
 
-export default Trip;
+export default TripPage;

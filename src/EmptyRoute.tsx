@@ -1,6 +1,6 @@
 import React from 'react';
 
-function EmptyRoute(props) {
+function EmptyRoute() {
     return (
         <div>
             <h2>Page not found</h2>

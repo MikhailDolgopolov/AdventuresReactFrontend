@@ -1,7 +1,7 @@
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
 
-function BackToTrips(props) {
+function BackToTrips() {
     let navigate=useNavigate();
     return (
         <div>

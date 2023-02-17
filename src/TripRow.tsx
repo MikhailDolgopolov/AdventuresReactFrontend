@@ -1,6 +1,6 @@
-import React from 'react';
 
-function TripRow(props) {
+
+function TripRow() {
     return (
         <div></div>
     );

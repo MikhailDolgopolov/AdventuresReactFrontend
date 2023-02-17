@@ -1,8 +1,9 @@
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
+import {Trip} from "./TripPage";
 
 
-function TripBlock({trip}) {
+function TripBlock(trip:Trip) {
     const navigate = useNavigate();
     return (
         <div className="grid-block" onClick={()=>navigate('../trip/'+trip.trip_id)}>
