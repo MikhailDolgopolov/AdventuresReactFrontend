@@ -1,6 +1,6 @@
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
-import {Trip} from "../pages/TripPage";
+import {Trip} from "../../../Types";
 
 
 function TripBlock({trip}:{trip:Trip}) {

@@ -1,5 +1,6 @@
 import React from 'react';
-import YearEntry, {Entry} from "./YearEntry";
+import YearEntry from "./YearEntry";
+import {Entry} from "../../../Types";
 
 function YearSplitTrips({props}:{props:Entry[]}) {
     let rows= props.map(row =>

@@ -1,9 +1,9 @@
-import * as React from 'react';;
+import * as React from 'react';
 
-import { BrowserRouter as Router, Routes, Route}
+import {BrowserRouter as Router, Routes, Route, json}
     from 'react-router-dom';
 import Home from "./Components/pages/Home";
-import GroupedTrips from "./Components/pages/GroupedTrips";
+import GroupedTrips from "./Components/pages/GroupedTrips/GroupedTrips";
 import Trips from "./Components/pages/Trips";
 import EmptyRoute from "./Components/pages/EmptyRoute";
 import {serverProperties} from "./Server/ServerProperties";
@@ -13,22 +13,23 @@ import {useEffect, useState} from "react";
 import ConnectionProblems from "./Components/pages/ConnectionProblems";
 
 export type Connection = {
-    connection: boolean
+    connected: boolean
     message: string
 }
 
 function App() {
-    const [state, setState] = useState<Connection>({connection: false, message: "Not connected"});
+    const [state, setState] = useState<Connection>({connected: false, message: "Not connected"});
     useEffect(() => {
-        let timeout=30;
-        if(state.connection)  timeout=60;
+        pingServer(setState);
+        let timeout=20;
+        if(state.connected)  timeout=60;
         const interval = setInterval(() => {
             pingServer(setState);
         }, timeout*1000);
         return () => clearInterval(interval);
 
-    })
-    if(!state.connection) return <ConnectionProblems props={state}/>
+    }, [])
+    if(!state.connected) return <ConnectionProblems props={state}/>
     return (
         <div className="App" id="root">
             <Router>
@@ -48,17 +49,25 @@ function App() {
 export default App;
 
 export const getRequest = async (uri: string) => {
-    let url = serverProperties.domain + uri;
+    let url = serverProperties.root + uri;
     const response = await fetch(url);
     return await response.json();
 }
+export const postRequest = (uri:string, json:string)=>{
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: json
+    };
+    return fetch(serverProperties.root+uri, requestOptions)
+        .then(response => response.json())
+}
 
 export function pingServer(call: { (value: React.SetStateAction<Connection>): void}){
-    http.get(serverProperties.domain, (res)=>{
-        call({connection: true, message: "connected"})
+    http.get(serverProperties.root, (res)=>{
+        call({connected: true, message: "connected"})
     }).on('error', function (e) {
-        let err = {connection: false, message:e.message};
+        let err:Connection = {connected: false, message:e.message};
         call(err)
-        console.log(err)
     })
 }

@@ -1,11 +1,6 @@
 import React from 'react';
 import TripBlock from "./TripBlock";
-import {Trip} from "../pages/TripPage"
-
-export type Entry = {
-    year : number
-    yearList : Array<Trip>
-}
+import {Trip} from "../../../Types"
 
 function YearEntry({props}:{props:Trip[]}) {
 

@@ -1,24 +1,35 @@
 import React from "react";
 import BackToTrips from "../Fragments/BackToTrips";
 import Loading from "../Fragments/Loading";
-export type Trip ={
-    trip_id : number
-    title : string
-    start_date : string
-    end_date : string
-    description : string
-    photo_link : string
-}
-function TripPage(trip:Trip) {
+import {postRequest} from "../../App";
+import {useNavigate} from "react-router-dom";
+import {Trip} from "../../Types";
+
+function TripPage({trip}:{trip:Trip}) {
     if(!trip) return <Loading object='trips'/>
+    const navigate = useNavigate();
+    function confirmDeletion(){
+        if(confirm("Вы собираетесь удалить все данные, связанные с "+trip.title+". Продолжить?")){
+            postRequest("trips/delete/", trip.trip_id.toString())
+                .then(()=>navigate("/trips/"));
+
+        }
+    }
     return (
         <div>
             <h1>{trip.title}</h1>
-            <p>{trip.start_date} - {trip.end_date}</p>
-            {trip.description !== null &&
-                <p>{trip.description}</p>}
+            <div className="spread-row up reverse">
+                <div>
 
-            <BackToTrips/>
+                    <p>{trip.start_date} - {trip.end_date}</p>
+                    {trip.description !== null && <p>{trip.description}</p>}
+
+                    <BackToTrips/>
+                </div>
+                <div className="right-flex">
+                    <button onClick={()=>{confirmDeletion()}}>Delete</button>
+                </div>
+            </div>
         </div>
     );
 }
