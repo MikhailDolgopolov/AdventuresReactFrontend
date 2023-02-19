@@ -1,3 +1,14 @@
+export type Connection = {
+    connected: boolean
+    message: string
+}
+export type SharedData={
+    allPeople:Array<Person>
+}
+export type MultiselectOption={
+    name: string
+    id:number
+}
 export type Trip ={
     trip_id : number
     title : string
@@ -16,4 +27,8 @@ export type Person={
     last_name: string
     patronym: string
     alias: string
+}
+export function getName(person:Person):string{
+    if(person.alias) return person.alias;
+    return person.first_name+" "+person.last_name;
 }

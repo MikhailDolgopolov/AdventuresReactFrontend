@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import TripPage from "./TripPage";
+import TripPage from "./TripPage/TripPage";
 import {Route, Routes} from "react-router-dom";
 import EmptyRoute from "./EmptyRoute";
 import {getRequest} from "../../App";
@@ -10,16 +10,15 @@ function Trips() {
     useEffect(()=>{
         getRequest('trips/list/').then(data=>setTrips(data));
     },[])
-    let routes=()=>{
-        return data.map(trip=>
+    let routes=
+        data.map(trip=>
             <Route path={trip.trip_id.toString()} key={trip.trip_id}
                    element={<TripPage trip={trip}/>}>
             </Route>
         )
-    }
     return (
         <Routes>
-            {routes()}
+            {routes}
             <Route path="trips/*" element={<EmptyRoute/>}/>
         </Routes>
     );

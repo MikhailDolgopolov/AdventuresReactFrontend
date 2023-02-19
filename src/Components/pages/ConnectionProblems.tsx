@@ -1,5 +1,5 @@
 import React from 'react';
-import {Connection} from "../../App";
+import {Connection} from "../../Types";
 
 function ConnectionProblems({props}:{props:Connection}) {
     return (
