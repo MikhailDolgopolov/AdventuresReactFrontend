@@ -35,7 +35,9 @@ function TripPage({trip, people}:{trip:Trip, people:Person[]}) {
     const selectTag=<div>
         <span onClick={()=>{setAdd(!addingPeople)}}>Добавить   </span>
         <select id="person_select" onChange={(event)=>{
-            let person = parseInt(event.target.value);
+            let id = parseInt(event.target.value);
+            let seek = participants.find(person=>(person.person_id==id))
+            if(seek) return;
             postRequest('trip/'+trip.trip_id.toString()+'/participants/add/',
                 '['+event.target.value+']').then(result=>setParts(result));
             setAdd(!addingPeople)
@@ -47,20 +49,20 @@ function TripPage({trip, people}:{trip:Trip, people:Person[]}) {
     return (
         <div>
             <TitleSubtitle title={trip.title} subtitle={trip.start_date+' - '+trip.end_date}/>
-            <div className="side-margins spread-column">
+            <section className="side-margins spread-column">
                 <div className="spread-row">
                     <BackToTrips/>
                     <button onClick={()=>{confirmDeletion()}}>Delete</button>
                 </div>
-                <div className="small-window">
+                <section className="small-window">
                     <h2>Участники</h2>
                     {allParticipants}
                     {(addingPeople)?selectTag:<button onClick={()=>{setAdd(!addingPeople)}}>Add</button>}
 
-                </div>
+                </section>
                 {trip.description !== null && <p>{trip.description}</p>}
 
-            </div>
+            </section>
         </div>
     );
 }
