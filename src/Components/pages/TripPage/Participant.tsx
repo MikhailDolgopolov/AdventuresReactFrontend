@@ -5,11 +5,11 @@ import { FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import { faBookmark, faEdit, faCircleXmark } from '@fortawesome/free-regular-svg-icons'
 import {faXmark} from "@fortawesome/free-solid-svg-icons";
 
-function Participant({person, trip, func}:{person:Person, trip:Trip, func:Function}) {
+function Participant({person, trip}:{person:Person, trip:Trip}) {
     function confirmPersonRemoval(person:number){
         if(confirm("Вы собираетесь удалить человека из списка. Продолжить?")){
             postRequest('trip/'+trip.trip_id.toString()+'/participants/delete/', person.toString()).
-            then(result=>func(result));
+            then(result=>{});
         }
     }
     return (

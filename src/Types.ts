@@ -1,6 +1,7 @@
-export type Connection = {
-    connected: boolean
-    message: string
+export interface IApiError {
+    message: string;
+    description: string;
+    statusCode: string | number;
 }
 export type SharedData={
     allPeople:Array<Person>

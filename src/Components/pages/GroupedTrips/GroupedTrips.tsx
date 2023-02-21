@@ -1,6 +1,6 @@
 import YearSplitTrips from "../GroupedTrips/YearSplitTrips";
 import React, {useEffect,useState, useContext} from 'react';
-import {getRequest, postRequest, MyContext} from "../../../App";
+import {get, post} from "../../../App";
 import {Entry, Person, getName, SharedData} from "../../../Types";
 import Loading from "../../Fragments/Loading";
 import TitleSubtitle from "../../Fragments/TitleSubtitle";
@@ -8,21 +8,19 @@ import AddTrip from "./AddTrip";
 
 
 
-export default function GroupedTrips() {
-    let [trips, setTrips]=useState<Entry[]>([])
-    let [people, setPeople]=useState<Person[]>([]);
-    const context = useContext<SharedData>(MyContext)
+export default function GroupedTrips({people}:{people:Person[]}) {
+    let [trips, setTrips]=useState<Entry[]>([]);
     let [filter, setFilter]=useState<number>(0)
     let options: JSX.Element[];
     useEffect(()=>{
-        postRequest('trips/filter/', filter.toString()).then(result=>
-            setTrips(result)
+        post('trips/filter/', filter.toString()).then(result=>
+            setTrips(result.json())
         );
     }, [filter]);
 
     if(!trips || !people) return <Loading object={"trips"}/>
 
-    options=context.allPeople.map(person=>
+    options=people.map(person=>
         <option key={person.person_id} value={person.person_id}>
             {getName(person)}</option> )
 
@@ -37,11 +35,11 @@ export default function GroupedTrips() {
     </div>
     return (
         <>
-            <TitleSubtitle title={'Путешествия'} subtitle={''}/>
+            <TitleSubtitle title={'Путешествия'}/>
             <div className="side-margins">
                 <div className="spread-row down">
                     {selectTag}
-                    <AddTrip/>
+                    {(filter==0)&&<AddTrip/>}
                 </div>
                 <YearSplitTrips props={trips}/>
             </div>

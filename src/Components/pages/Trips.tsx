@@ -2,13 +2,13 @@ import React, {useEffect, useState} from 'react';
 import TripPage from "./TripPage/TripPage";
 import {Route, Routes} from "react-router-dom";
 import EmptyRoute from "./EmptyRoute";
-import {getRequest} from "../../App";
+import {get} from "../../App";
 import {Trip} from "../../Types";
 
 function Trips() {
     let [data, setTrips]=useState<Trip[]>([])
     useEffect(()=>{
-        getRequest('trips/list/').then(data=>setTrips(data));
+        get('trips/list/').then(data=>setTrips(data));
     },[])
     let routes=
         data.map(trip=>
