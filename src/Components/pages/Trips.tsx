@@ -3,9 +3,9 @@ import TripPage from "./TripPage/TripPage";
 import {Route, Routes} from "react-router-dom";
 import EmptyRoute from "./EmptyRoute";
 import {getRequest} from "../../App";
-import {Trip} from "../../Types";
+import {Person, Trip} from "../../Types";
 
-function Trips() {
+function Trips({people}:{people:Person[]}) {
     let [data, setTrips]=useState<Trip[]>([])
     useEffect(()=>{
         getRequest('trips/list/').then(data=>setTrips(data));
@@ -13,7 +13,7 @@ function Trips() {
     let routes=
         data.map(trip=>
             <Route path={trip.trip_id.toString()} key={trip.trip_id}
-                   element={<TripPage trip={trip}/>}>
+                   element={<TripPage trip={trip} people={people}/>}>
             </Route>
         )
     return (

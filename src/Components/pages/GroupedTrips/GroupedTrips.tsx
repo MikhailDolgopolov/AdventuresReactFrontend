@@ -8,10 +8,9 @@ import AddTrip from "./AddTrip";
 
 
 
-export default function GroupedTrips() {
+export default function GroupedTrips({people}:{people:Person[]}) {
     let [trips, setTrips]=useState<Entry[]>([])
-    let [people, setPeople]=useState<Person[]>([]);
-    const context = useContext<SharedData>(MyContext)
+
     let [filter, setFilter]=useState<number>(0)
     let options: JSX.Element[];
     useEffect(()=>{
@@ -22,7 +21,7 @@ export default function GroupedTrips() {
 
     if(!trips || !people) return <Loading object={"trips"}/>
 
-    options=context.allPeople.map(person=>
+    options=people.map(person=>
         <option key={person.person_id} value={person.person_id}>
             {getName(person)}</option> )
 
@@ -41,7 +40,7 @@ export default function GroupedTrips() {
             <div className="side-margins">
                 <div className="spread-row down">
                     {selectTag}
-                    <AddTrip/>
+                    {(filter==0)&&<AddTrip/>}
                 </div>
                 <YearSplitTrips props={trips}/>
             </div>

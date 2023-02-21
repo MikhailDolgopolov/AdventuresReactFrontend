@@ -8,10 +8,9 @@ import {Person, Trip, getName, SharedData, MultiselectOption} from "../../../Typ
 import Participant from "./Participant";
 import TitleSubtitle from "../../Fragments/TitleSubtitle";
 
-function TripPage({trip}:{trip:Trip}) {
+function TripPage({trip, people}:{trip:Trip, people:Person[]}) {
     if(!trip) return <Loading object='trips'/>
     const navigate = useNavigate();
-    const context = useContext<SharedData>(MyContext)
     const [participants, setParts] = useState<Person[]>([])
     const [addingPeople, setAdd] = useState<boolean>(false);
     function confirmDeletion(){
@@ -21,12 +20,6 @@ function TripPage({trip}:{trip:Trip}) {
 
         }
     }
-    function confirmPersonRemoval(person:number){
-        if(confirm("Вы собираетесь удалить человека из списка. Продолжить?")){
-            postRequest('trip/'+trip.trip_id.toString()+'/participants/delete/', person.toString()).
-                then(result=>setParts(result));
-        }
-    }
     useEffect(()=>{
         getRequest('trip/'+trip.trip_id+'/participants/').then(
             result=>setParts(result))
@@ -34,7 +27,7 @@ function TripPage({trip}:{trip:Trip}) {
     if(!participants) return <Loading object="participants"/>
     const allParticipants = participants.map(person=>
         <Participant key={person.person_id} person={person} trip={trip} func={setParts}/>);
-    let options=context.allPeople.map(person=>
+    let options=people.map(person=>
         <option key={person.person_id} value={person.person_id}>
             {getName(person)}</option> )
 

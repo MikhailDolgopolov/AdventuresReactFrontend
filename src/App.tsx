@@ -21,8 +21,6 @@ import {Connection, Person, SharedData} from "./Types";
 
 export const MyContext = createContext<SharedData>({allPeople:[]});
 function App() {
-    library.add(far, faCheckSquare, faCoffee)
-    const context = useContext(MyContext);
     const [state, setState] = useState<Connection>({connected: false, message: "Not connected"});
     let [people, setPeople]=useState<Person[]>([]);
     useEffect(() => {
@@ -31,7 +29,6 @@ function App() {
         if(state.connected)  timeout=60;
         getRequest("people/").then(result=>{
             setPeople(result)
-            context.allPeople=result;
         });
         const interval = setInterval(() => {
             pingServer(setState);
@@ -46,8 +43,8 @@ function App() {
                 <Routes>
                         <Route index element={<Home/>}/>
                         <Route path='/' element={<Home/>}/>
-                        <Route path='trips' element={<GroupedTrips/>}/>
-                        <Route path='trip/*' element={<Trips/>}/>
+                        <Route path='trips' element={<GroupedTrips people={people}/>}/>
+                        <Route path='trip/*' element={<Trips people={people}/>} />
                         <Route path="*" element={<EmptyRoute/>}/>
                 </Routes>
             </Router>
