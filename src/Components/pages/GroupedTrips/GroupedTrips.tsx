@@ -26,11 +26,11 @@ export default function GroupedTrips({people}:{people:Person[]}) {
             {getName(person)}</option> )
 
     const selectTag=<div>
-        Показать путешествия для<span>   </span>
+        Показать путешествия для<span>       </span>
         <select onChange={(event)=>
             setFilter(parseInt(event.target.value))
         }>
-            <option value={0} onClick={()=>setFilter(0)}>--Все--</option>
+            <option value={0} onClick={()=>setFilter(0)}>всех</option>
             {options}
         </select>
     </div>

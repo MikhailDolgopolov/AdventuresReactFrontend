@@ -1,4 +1,6 @@
 import React, {useState} from 'react';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faXmark} from "@fortawesome/free-solid-svg-icons";
 
 function AddTrip() {
     const [addingTrip, setBool] = useState<boolean>(false);
@@ -7,7 +9,9 @@ function AddTrip() {
             {(addingTrip)?
                 <form className="window">
                     <div className="window-header">
-                        <button onClick={()=>setBool(!addingTrip)}>O</button>
+                        <button onClick={()=>setBool(!addingTrip)}>
+                            <FontAwesomeIcon icon={faXmark}/>
+                        </button>
                         <h2>Новое путешествие</h2>
                     </div>
                     <div className="spread-row">

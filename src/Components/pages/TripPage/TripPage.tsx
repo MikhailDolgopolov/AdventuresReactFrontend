@@ -36,11 +36,11 @@ function TripPage({trip, people}:{trip:Trip, people:Person[]}) {
         <span onClick={()=>{setAdd(!addingPeople)}}>Добавить   </span>
         <select id="person_select" onChange={(event)=>{
             let id = parseInt(event.target.value);
+            setAdd(false);
             let seek = participants.find(person=>(person.person_id==id))
             if(seek) return;
             postRequest('trip/'+trip.trip_id.toString()+'/participants/add/',
                 '['+event.target.value+']').then(result=>setParts(result));
-            setAdd(!addingPeople)
         }}>
             <option>---</option>
             {options}

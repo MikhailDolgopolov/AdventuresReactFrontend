@@ -11,7 +11,7 @@ function YearSplitTrips({props}:{props:Entry[]}) {
             <YearEntry props={row.yearList} key={row.year}/>
         </div>
     );
-    return <div className="side_margins" >
+    return <div className="side_margins vert-margins" >
         {rows}
     </div>
 }

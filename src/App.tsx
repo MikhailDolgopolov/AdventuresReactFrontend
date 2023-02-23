@@ -21,6 +21,14 @@ import {Connection, Person, SharedData} from "./Types";
 
 export const MyContext = createContext<SharedData>({allPeople:[]});
 function App() {
+    const [theme, setTheme] = useState('light');
+    const toggleTheme = () => {
+        if (theme === 'light') {
+            setTheme('dark');
+        } else {
+            setTheme('light');
+        }
+    };
     const [state, setState] = useState<Connection>({connected: false, message: "Not connected"});
     let [people, setPeople]=useState<Person[]>([]);
     useEffect(() => {
@@ -36,9 +44,9 @@ function App() {
         return () => clearInterval(interval);
 
     }, [])
-    if(!state.connected) return <ConnectionProblems props={state}/>
+    //if(!state.connected) return <ConnectionProblems props={state}/>
     return (
-        <div className="App" id="root">
+        <div className={`App ${theme}`} id="root">
             <Router>
                 <Routes>
                         <Route index element={<Home/>}/>

@@ -2,7 +2,6 @@ import React from 'react';
 import {postRequest} from "../../../App";
 import {getName, Person, Trip} from "../../../Types";
 import { FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import { faBookmark, faEdit, faCircleXmark } from '@fortawesome/free-regular-svg-icons'
 import {faXmark} from "@fortawesome/free-solid-svg-icons";
 
 function Participant({person, trip, func}:{person:Person, trip:Trip, func:Function}) {
@@ -17,7 +16,7 @@ function Participant({person, trip, func}:{person:Person, trip:Trip, func:Functi
             <p>{getName(person)}</p>
             <div>
                 <button className="showable" onClick={()=>confirmPersonRemoval(person.person_id)}>
-                    <FontAwesomeIcon icon={faXmark}/>
+                    <FontAwesomeIcon className="showable" icon={faXmark}/>
                 </button>
             </div>
         </div>

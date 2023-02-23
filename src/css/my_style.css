@@ -2,16 +2,40 @@ body {
   font-family: sans-serif;
   box-sizing: border-box;
   margin: 0;
+
   --button-hover-margin: 3px;
   --outer-margin: 1rem;
+
+  --text-color: black;
   --title-color:#87cefa;
-  --light-gray:#d3d3d3;
+  --background-color: white;
+  --button-color: lightgray;
+  --ui-hover-color: gray;
+  --special-accent-color: lightblue;
+
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+#root{
+  min-height: 100vh;
+}
+#root.dark{
+  --background-color:#101721;
+  --button-color: #4f4f4f;
+  --ui-hover-color: #303030;
+  --text-color: white;
+  --title-color: #1b455e;
+  --special-accent-color: var(--title-color);
+  background-color: var(--background-color);
+  color: var(--text-color);
+
 }
 p{
   margin: 0.2rem;
 }
 select{
-  padding-inline: 5px;
+  color: var(--text-color);
+  background-color: var(--button-color);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -20,12 +44,45 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
 
+button{
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: var(--button-color);
+  color: var(--text-color);
+}
+
+button:hover{
+  background-color: var(--ui-hover-color);
+}
+.hoverable:hover{
+  background-color: var(--button-color);
+}
+button.inline{
+  height: calc(var(--b-height) + calc(var(--b-pad) * 2));
+  width: calc(var(--b-height) + calc(var(--b-pad) * 3));
+  display: grid;
+  justify-content: center;
+  align-content: center;
+}
 .full-title{
   display: grid;
-  margin-bottom: 1rem;
+  grid-template-columns:100px 1fr 100px;
+  justify-items: center;
+  align-items: center;
   background-color: var(--title-color);
+  margin-bottom: var(--outer-margin);
+
+  --b-height: 20px;
+  --b-pad: 3px;
 }
-.full-title:first-child{
+.title{
+  width: 100%;
+  position: relative;
+  display: grid;
+  align-items: center;
+}
+.title:first-child{
   padding-top: 0.5rem;
 }
 
@@ -35,38 +92,55 @@ h1, h2, h3, h4, h5, h6 {
 .vert-margins {
   margin: var(--outer-margin) 0;
 }
-.shadow_under{
-  box-shadow: gray 0 0 1px 1px;
+.outline{
+  outline: var(--ui-hover-color) solid 1px;
+}
+.switch{
+  position: relative;
+  display: inline-block;
+  width: calc(calc(var(--b-height) + var(--b-pad)) * 2);
+  height: calc(var(--b-height) + calc(var(--b-pad) * 2));
+  border-radius: calc(var(--b-height) * 0.5);
+}
+.switch input{
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
-button {
-  width: fit-content;
-  background-color: lightgray;
-  padding: 0.2rem 0.5rem;
-  border: none;
-}
-.hoverable,
-button{
-  border-radius: 3px;
-  transition: background-color 0.5s;
+.slider{
+  position: absolute;
+  cursor: pointer;
+
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background-color: var(--button-color);
+  border-radius: calc(var(--b-height) * 0.5);
 }
 
-button:hover{
-  background-color: silver;
+.slider:before{
+  content: "";
+  position: absolute;
+  height: var(--b-height);
+  width: var(--b-height);
+  left:var(--b-pad);
+  bottom:var(--b-pad);
+  border-radius: calc(var(--b-height) * 0.5);
+  background-color: var(--background-color);
+  transition: 0.2s;
 }
-.hoverable:hover{
-  background-color: lightgray;
+input:checked+.slider:before{
+  transform: translateX(var(--b-height));
 }
+
 .showable{
-  background-color: calc(var(--light-gray) * rgba(255,255,255,0));
-  transition: background-color 0.5s;
+  display: none;
+
 }
 .hoverable:hover .showable{
-  background-color: var(--light-gray);
-  transition: background-color 0.5s;
-}
-.outline{
-  border: lightgrey 1px;
+  display: block;
 }
 .spread-row {
   /*border: green solid 1px;*/
@@ -123,6 +197,7 @@ button:hover{
 
 .trip-row {
   padding: 1rem;
+  outline: var(--ui-hover-color) solid 1px;
 }
 
 .grid-block {
@@ -142,20 +217,9 @@ button:hover{
 
 .grid-button:hover,
 .grid-button:focus {
-  background-color: lightblue;
+  background-color: var(--special-accent-color);
 }
 
-.add-button {
-  position: relative;
-  height: auto;
-  border: black solid 5px;
-  transition: background-color 0.5s;
-}
-
-.add-button:hover {
-  border: black solid 5px;
-  background-color: white;
-}
 
 
 
