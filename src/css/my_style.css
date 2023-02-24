@@ -68,7 +68,7 @@ button:hover{
   background-color: var(--ui-dark);
 }
 .hoverable:hover{
-  background-color: var(--ui-light);
+  background-color: var(--ui-low-contrast);
 }
 button.inline{
   width: calc(calc(var(--b-height) + var(--b-pad)) * 2);
@@ -258,12 +258,13 @@ input:checked+.slider:before{
 }
 .line{
   height: 0;
-  border: var(--ui-low-contrast) solid 1px;
+  border-bottom: var(--ui-low-contrast) dashed 1px;
 }
 .two-columns{
   display: grid;
   grid-template-columns: 2fr 3fr;
   gap: 1rem;
+  isolation: isolate;
 }
 .flow-down{
   flex-grow: 1;
@@ -280,11 +281,14 @@ input:checked+.slider:before{
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 0.4em;
 }
 .two-columns section>h2:after{
   content: "";
+  margin-top: -0.2em;
+  z-index: -2;
   width: 50%;
-  height: .2rem;
+  height: .15rem;
   background-color: var(--ui-low-contrast);
 }
 .two-columns section>h2:before{

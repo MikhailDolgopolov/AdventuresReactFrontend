@@ -1,10 +1,9 @@
 import YearSplitTrips from "../GroupedTrips/YearSplitTrips";
-import React, {useEffect,useState, useContext} from 'react';
-import {get, post} from "../../../App";
-import {Entry, Person, getName, SharedData, Trip} from "../../../Types";
+import React, {useEffect,useState} from 'react';
+import {post} from "../../../App";
+import {Entry, Person, getName, Trip} from "../../../Types";
 import Loading from "../../Fragments/Loading";
 import TitleSubtitle from "../../Fragments/TitleSubtitle";
-import AddTrip from "./AddTrip";
 import {useForm} from "react-hook-form";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faXmark} from "@fortawesome/free-solid-svg-icons";
@@ -21,22 +20,16 @@ export default function GroupedTrips({people, allTrips}:{people:Person[], allTri
     const onSubmit = handleSubmit((data)=>{
         let seek = allTrips.find(trip=>(data.title==trip.title));
         if(seek){
-            if(confirm("Taкое путешествие уже добавлено. Хотите изменить?")){
-                post('trips/update/', JSON.stringify(data)).then(result=>{
-                    console.log(result);
-                    setBool(false);
-                });
-            }
+            alert("Taкое путешествие уже добавлено.");
+            setBool(true)
         }else{
-            post('trips/create/', JSON.stringify(data)).then(result=>{
-                console.log(result);
+            post('trips/create/', JSON.stringify(data)).then(()=>{
+                setBool(false);
             });
         }
-        setBool(false);
     })
     useEffect(()=>{
         post('trips/filter/', filter.toString()).then(result=> {
-                console.log(result);
                 setTrips(result)
             }
         );
