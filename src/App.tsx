@@ -2,10 +2,7 @@ import * as React from 'react';
 
 import {BrowserRouter as Router, Routes, Route, json}
     from 'react-router-dom';
-import {createContext, useContext} from 'react';
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { far} from '@fortawesome/free-regular-svg-icons'
-import { faCheckSquare, faCoffee } from '@fortawesome/free-solid-svg-icons'
+import {createContext} from 'react';
 
 import Home from "./Components/pages/Home";
 import GroupedTrips from "./Components/pages/GroupedTrips/GroupedTrips";
@@ -16,28 +13,25 @@ import './css/my_style.css'
 import * as http from "http";
 import {useEffect, useState} from "react";
 import ConnectionProblems from "./Components/pages/ConnectionProblems";
-import {Connection, Person, SharedData} from "./Types";
+import {Connection, Person, SharedData, Trip} from "./Types";
 
 
-export const MyContext = createContext<SharedData>({allPeople:[]});
+
 function App() {
-    const [theme, setTheme] = useState('light');
-    const toggleTheme = () => {
-        if (theme === 'light') {
-            setTheme('dark');
-        } else {
-            setTheme('light');
-        }
-    };
+
     const [state, setState] = useState<Connection>({connected: false, message: "Not connected"});
     let [people, setPeople]=useState<Person[]>([]);
+    let [trips, setTrips] = useState<Trip[]>([]);
+    const [theme, setTheme] = useState('light');
     useEffect(() => {
         pingServer(setState);
         let timeout=20;
         if(state.connected)  timeout=60;
-        getRequest("people/").then(result=>{
+        get("people/").then(result=>{
             setPeople(result)
         });
+        get('trips/list/').then(t=>
+        setTrips(t))
         const interval = setInterval(() => {
             pingServer(setState);
         }, timeout*1000);
@@ -51,7 +45,7 @@ function App() {
                 <Routes>
                         <Route index element={<Home/>}/>
                         <Route path='/' element={<Home/>}/>
-                        <Route path='trips' element={<GroupedTrips people={people}/>}/>
+                        <Route path='trips/*' element={<GroupedTrips people={people} allTrips={trips}/>}/>
                         <Route path='trip/*' element={<Trips people={people}/>} />
                         <Route path="*" element={<EmptyRoute/>}/>
                 </Routes>
@@ -64,14 +58,17 @@ function App() {
 export default App;
 
 export const getRequest = async (uri: string) => {
-    let url = serverProperties.root + uri;
-    const response = await fetch(url);
-    try{
-        return await response.json();
-    }catch (e){
-        return await new Response(undefined).json();
-    }
+    const requestOptions = {
+        method: 'GET',
+    };
+    return fetch(serverProperties.root+uri, requestOptions);
 
+}
+export async function get(uri:string, noResponse?:boolean){
+    if(noResponse){
+        return getRequest(uri).then(result=>{});
+    }
+    return getRequest(uri).then(result=>result.json());
 }
 export const postRequest = async (uri:string, json:string)=>{
     const requestOptions = {
@@ -79,13 +76,13 @@ export const postRequest = async (uri:string, json:string)=>{
         headers: { 'Content-Type': 'application/json' },
         body: json
     };
-    try{
-        return fetch(serverProperties.root+uri, requestOptions)
-            .then(response => response.json())
-    }catch (e){
-        return await new Response(undefined).json();
+    return fetch(serverProperties.root+uri, requestOptions);
+}
+export async function post(uri:string, json:string, noResponse?:boolean){
+    if(noResponse){
+        return postRequest(uri, json).then(result=>{});
     }
-
+    return postRequest(uri, json).then(result=>result.json());
 }
 
 export function pingServer(call: { (value: React.SetStateAction<Connection>): void}){

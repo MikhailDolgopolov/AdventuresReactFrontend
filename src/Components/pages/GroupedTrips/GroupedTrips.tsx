@@ -1,23 +1,46 @@
 import YearSplitTrips from "../GroupedTrips/YearSplitTrips";
 import React, {useEffect,useState, useContext} from 'react';
-import {getRequest, postRequest, MyContext} from "../../../App";
-import {Entry, Person, getName, SharedData} from "../../../Types";
+import {get, post} from "../../../App";
+import {Entry, Person, getName, SharedData, Trip} from "../../../Types";
 import Loading from "../../Fragments/Loading";
 import TitleSubtitle from "../../Fragments/TitleSubtitle";
 import AddTrip from "./AddTrip";
+import {useForm} from "react-hook-form";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faXmark} from "@fortawesome/free-solid-svg-icons";
 
 
 
-export default function GroupedTrips({people}:{people:Person[]}) {
+export default function GroupedTrips({people, allTrips}:{people:Person[], allTrips:Trip[]}) {
     let [trips, setTrips]=useState<Entry[]>([])
 
     let [filter, setFilter]=useState<number>(0)
     let options: JSX.Element[];
+    const [addingTrip, setBool] = useState<boolean>(false);
+    const {register, handleSubmit} = useForm<Trip>();
+    const onSubmit = handleSubmit((data)=>{
+        let seek = allTrips.find(trip=>(data.title==trip.title));
+        if(seek){
+            if(confirm("Taкое путешествие уже добавлено. Хотите изменить?")){
+                post('trips/update/', JSON.stringify(data)).then(result=>{
+                    console.log(result);
+                    setBool(false);
+                });
+            }
+        }else{
+            post('trips/create/', JSON.stringify(data)).then(result=>{
+                console.log(result);
+            });
+        }
+        setBool(false);
+    })
     useEffect(()=>{
-        postRequest('trips/filter/', filter.toString()).then(result=>
-            setTrips(result)
+        post('trips/filter/', filter.toString()).then(result=> {
+                console.log(result);
+                setTrips(result)
+            }
         );
-    }, [filter]);
+    }, [filter, addingTrip]);
 
     if(!trips || !people) return <Loading object={"trips"}/>
 
@@ -34,13 +57,49 @@ export default function GroupedTrips({people}:{people:Person[]}) {
             {options}
         </select>
     </div>
+    const AddTrip=
+    (addingTrip)?
+        <form className="vert-window" onSubmit={onSubmit}>
+            <div className="window-header">
+                <button onClick={()=>setBool(!addingTrip)}>
+                    <FontAwesomeIcon icon={faXmark}/>
+                </button>
+                <h3>Новое путешествие</h3>
+            </div>
+            <div className="form-row">
+                <label >Название: </label>
+                <input  required={true} {...register("title")}/>
+            </div>
+            <div className="form-row">
+                <label >Начало: </label>
+                <input required={true} {...register("start_date")}/>
+            </div>
+            <div className="form-row">
+                <label >Окончание: </label>
+                <input {...register("end_date")}/>
+            </div>
+            <div className="form-row">
+                <label >Описание: </label>
+                <input {...register("description")}/>
+            </div>
+            <input {...register("trip_id")} value={0} hidden={true}/>
+            <input {...register("photo_link")} value={""} hidden={true}/>
+            <button type="submit">Добавить</button>
+        </form>
+        :
+        <button onClick={()=>setBool(!addingTrip)}>Добавить</button>
+
     return (
         <>
             <TitleSubtitle title={'Путешествия'} subtitle={''}/>
             <div className="side-margins">
-                <div className="spread-row down">
-                    {selectTag}
-                    {(filter==0)&&<AddTrip/>}
+                <div className="top-row">
+                    <div className="empty right">
+                        {(filter == 0) && AddTrip}
+                    </div>
+                    <div className="empty left down">
+                        {selectTag}
+                    </div>
                 </div>
                 <YearSplitTrips props={trips}/>
             </div>

@@ -2,13 +2,13 @@ import React, {useEffect, useState} from 'react';
 import TripPage from "./TripPage/TripPage";
 import {Route, Routes} from "react-router-dom";
 import EmptyRoute from "./EmptyRoute";
-import {getRequest} from "../../App";
+import {get} from "../../App";
 import {Person, Trip} from "../../Types";
 
 function Trips({people}:{people:Person[]}) {
     let [data, setTrips]=useState<Trip[]>([])
     useEffect(()=>{
-        getRequest('trips/list/').then(data=>setTrips(data));
+        get('trips/list/').then(data=>setTrips(data));
     },[])
     let routes=
         data.map(trip=>
@@ -19,7 +19,7 @@ function Trips({people}:{people:Person[]}) {
     return (
         <Routes>
             {routes}
-            <Route path="trips/*" element={<EmptyRoute/>}/>
+            <Route path="*" element={<EmptyRoute/>}/>
         </Routes>
     );
 }

@@ -1,10 +1,9 @@
-import React, {ChangeEvent, useContext, useEffect, useState} from "react";
-import {Multiselect} from "multiselect-react-dropdown";
-import BackToTrips from "../../Fragments/BackToTrips";
+import React, {useEffect, useState} from "react";
+
 import Loading from "../../Fragments/Loading";
-import {getRequest, MyContext, postRequest} from "../../../App";
+import {get, post} from "../../../App";
 import {useNavigate} from "react-router-dom";
-import {Person, Trip, getName, SharedData, MultiselectOption} from "../../../Types";
+import {Person, Trip, getName, SharedData, MultiselectOption, getTripDate} from "../../../Types";
 import Participant from "./Participant";
 import TitleSubtitle from "../../Fragments/TitleSubtitle";
 
@@ -15,13 +14,13 @@ function TripPage({trip, people}:{trip:Trip, people:Person[]}) {
     const [addingPeople, setAdd] = useState<boolean>(false);
     function confirmDeletion(){
         if(confirm("Вы собираетесь удалить все данные, связанные с "+trip.title+". Продолжить?")){
-            postRequest("trips/delete/", trip.trip_id.toString())
-                .then(()=>navigate("/trips/"));
+            post("trips/delete/", trip.trip_id.toString(), true)
+                .then(response=>navigate("/trips/"));
 
         }
     }
     useEffect(()=>{
-        getRequest('trip/'+trip.trip_id+'/participants/').then(
+        get('trip/'+trip.trip_id+'/participants/').then(
             result=>setParts(result))
     }, [])
     if(!participants) return <Loading object="participants"/>
@@ -36,33 +35,76 @@ function TripPage({trip, people}:{trip:Trip, people:Person[]}) {
         <span onClick={()=>{setAdd(!addingPeople)}}>Добавить   </span>
         <select id="person_select" onChange={(event)=>{
             let id = parseInt(event.target.value);
-            setAdd(false);
+            
             let seek = participants.find(person=>(person.person_id==id))
             if(seek) return;
-            postRequest('trip/'+trip.trip_id.toString()+'/participants/add/',
+            post('trip/'+trip.trip_id.toString()+'/participants/add/',
                 '['+event.target.value+']').then(result=>setParts(result));
-        }}>
-            <option>---</option>
+        }} onSubmit={(ev)=>{
+            setAdd(false);
+        }
+        } onClick={(e)=>{
+            if (e.button==-1) setAdd(false);
+        }
+        } >  <option >---</option>
             {options}
         </select>
     </div>
     return (
         <div>
-            <TitleSubtitle title={trip.title} subtitle={trip.start_date+' - '+trip.end_date}/>
-            <section className="side-margins spread-column">
-                <div className="spread-row">
-                    <BackToTrips/>
+            <TitleSubtitle title={trip.title} subtitle={getTripDate(trip)}/>
+            <div className="side-margins">
+                <div className="row right">
+                    <button>Edit</button>
                     <button onClick={()=>{confirmDeletion()}}>Delete</button>
                 </div>
-                <section className="small-window">
-                    <h2>Участники</h2>
-                    {allParticipants}
-                    {(addingPeople)?selectTag:<button onClick={()=>{setAdd(!addingPeople)}}>Add</button>}
+                <div className="two-columns">
+                    <div className="flow-down">
+                        <section>
+                            <h2>Участники</h2>
+                            {allParticipants}
+                            <div className="row right">{(addingPeople) ?
+                                selectTag : <button className="add" onClick={() => {
+                                    setAdd(!addingPeople)
+                                }}>Add</button>
+                            }</div>
+                        </section>
+                        <section>
+                            <h2>Сувениры</h2>
+                            <div>
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur dignissimos
+                                dolorem
+                                explicabo mollitia perspiciatis rem veniam vitae? Asperiores aspernatur deserunt
+                                doloremque
+                                molestias nostrum, optio provident quae quisquam, quo veritatis voluptates.
+                            </div>
+                        </section>
+                    </div>
+                    <div className="flow-down">
+                        <section>
+                            <h2>Остановки</h2>
+                            <div>
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur dignissimos
+                                dolorem
+                                explicabo mollitia perspiciatis rem veniam vitae? Asperiores aspernatur deserunt
+                                doloremque
+                                molestias nostrum, optio provident quae quisquam, quo veritatis voluptates.
+                            </div>
+                        </section>
+                        <section>
+                            <h2>Достопримечательности</h2>
+                            <div>
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur dignissimos
+                                dolorem
+                                explicabo mollitia perspiciatis rem veniam vitae? Asperiores aspernatur deserunt
+                                doloremque
+                                molestias nostrum, optio provident quae quisquam, quo veritatis voluptates.
+                            </div>
+                        </section>
+                    </div>
+                </div>
 
-                </section>
-                {trip.description !== null && <p>{trip.description}</p>}
-
-            </section>
+            </div>
         </div>
     );
 }

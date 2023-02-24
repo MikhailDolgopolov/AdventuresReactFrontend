@@ -13,9 +13,12 @@ export type Trip ={
     trip_id : number
     title : string
     start_date : string
-    end_date : string
+    end_date? : string
     description? : string
     photo_link? : string
+}
+export function getTripDate(trip:Trip){
+    return trip.start_date + ((trip.end_date==undefined || trip.end_date!.length<1)?"":" - "+trip.end_date);
 }
 export type Entry = {
     year : number
