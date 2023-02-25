@@ -35,3 +35,24 @@ export function getName(person:Person):string{
     if(person.alias) return person.alias;
     return person.first_name+" "+person.last_name;
 }
+export type TripPoint = {
+    trip_point_id : number
+    title: string
+    trip_id: number
+    trip_order:number
+    hotel_id?: number
+    city : string
+}
+
+export type City = {
+    city : string
+    country : string
+    population : number
+    founded_year : number
+}
+export type Country = {
+    country : string
+    capital_city? : string
+    population : number
+    area : number
+}

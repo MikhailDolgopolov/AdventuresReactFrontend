@@ -77,9 +77,9 @@ button.inline{
   justify-content: center;
   align-content: center;
 }
-/*button.add{*/
-/*  margin-block: 0.5rem;*/
-/*}*/
+button.add{
+  margin-right: 0.5rem;
+}
 .top-row{
   display: flex;
   flex-wrap: wrap;
@@ -170,7 +170,7 @@ button.inline{
   left:var(--b-pad);
   bottom:var(--b-pad);
   border-radius: calc(var(--b-height) * 0.5);
-  background-color: var(--background-color);
+  background-color: white;
   transition: 0.2s;
 }
 input:checked+.slider:before{
@@ -187,27 +187,32 @@ input:checked+.slider:before{
 .vert-window{
   display: grid;
   grid-template-columns: 1fr;
+  justify-content: stretch;
   margin-bottom: 0.5rem;
   gap:0.3rem;
 }
 .window-header {
   display: grid;
   height: min-content;
-  grid-template-columns: min(2em, 100%) 6fr min(2em, 100%);
+  grid-template-columns: auto auto auto;
   align-items: center;
-  justify-content:space-between;
-  justify-items: stretch;
+  justify-content: space-between;
   direction: rtl;
 }
 .window-header h2{
   margin: 0;
 }
-
+button.grid-block{
+  padding: 1rem;
+  width: min-content;
+}
 .form-row{
   display: grid;
   grid-template-columns: auto auto;
-  gap: 2rem;
   justify-content: space-between;
+}
+.form-row label{
+  margin-right: 1rem;
 }
 .form-row input:is(:focus, :focus-visible){
   outline: var(--ui-high-contrast) solid 1px;
@@ -219,6 +224,15 @@ input:checked+.slider:before{
   grid-template-columns: repeat(auto-fill, minmax(max(30%, 30ch), 1fr));
   gap: 1rem;
 }
+.grid.in-section{
+  grid-template-columns: repeat(auto-fit, minmax(max(20%, 30ch), 30%));
+}
+/*.grid.in-section>*{*/
+/*  height: 100px;*/
+/*}*/
+/*.grid>*{*/
+/*  border: red solid 1px;*/
+/*}*/
 
 .trip-row {
   padding: 1rem;
@@ -263,7 +277,7 @@ input:checked+.slider:before{
 .two-columns{
   display: grid;
   grid-template-columns: 2fr 3fr;
-  gap: 1rem;
+  column-gap: 2rem;
   isolation: isolate;
 }
 .flow-down{
@@ -296,6 +310,21 @@ input:checked+.slider:before{
   width: 80%;
   height: .2rem;
   background-color: var(--special-accent-color);
+}
+
+.form-row:has(.search){
+  position: relative;
+}
+.search{
+  isolation: isolate;
+}
+
+.search+.results{
+  position: absolute;
+  background-color: var(--background-color);
+  border: var(--ui-low-contrast) solid 1px;
+  right: 0;
+  top:1rem;
 }
 
 @media (orientation: portrait){

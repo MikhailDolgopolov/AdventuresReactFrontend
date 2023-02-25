@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import {BrowserRouter as Router, Routes, Route, json}
     from 'react-router-dom';
-import {createContext} from 'react';
 
 import Home from "./Components/pages/Home";
 import GroupedTrips from "./Components/pages/GroupedTrips/GroupedTrips";
@@ -12,8 +11,7 @@ import {serverProperties} from "./Server/ServerProperties";
 import './css/my_style.css'
 import * as http from "http";
 import {useEffect, useState} from "react";
-import ConnectionProblems from "./Components/pages/ConnectionProblems";
-import {Connection, Person, SharedData, Trip} from "./Types";
+import {City, Connection, Person, Country, Trip} from "./Types";
 
 
 
@@ -22,6 +20,8 @@ function App() {
     const [state, setState] = useState<Connection>({connected: false, message: "Not connected"});
     let [people, setPeople]=useState<Person[]>([]);
     let [trips, setTrips] = useState<Trip[]>([]);
+    let [cities, setCities] = useState<City[]>([]);
+    let [countries, setCountries] = useState<Country[]>([])
     const [theme, setTheme] = useState('light');
     useEffect(() => {
         pingServer(setState);
@@ -31,7 +31,12 @@ function App() {
             setPeople(result)
         });
         get('trips/list/').then(t=>
-        setTrips(t))
+            setTrips(t));
+        get('cities/').then(result=>{
+            setCities(result)
+        })
+        get('countries/').then(result=>
+            setCountries(result))
         const interval = setInterval(() => {
             pingServer(setState);
         }, timeout*1000);
@@ -46,7 +51,7 @@ function App() {
                         <Route index element={<Home/>}/>
                         <Route path='/' element={<Home/>}/>
                         <Route path='trips/*' element={<GroupedTrips people={people} allTrips={trips}/>}/>
-                        <Route path='trip/*' element={<Trips people={people}/>} />
+                        <Route path='trip/*' element={<Trips people={people} cities={cities} countries={countries}/>} />
                         <Route path="*" element={<EmptyRoute/>}/>
                 </Routes>
             </Router>
@@ -66,7 +71,7 @@ export const getRequest = async (uri: string) => {
 }
 export async function get(uri:string, noResponse?:boolean){
     if(noResponse){
-        return getRequest(uri).then(result=>{});
+        return getRequest(uri).then(()=>{});
     }
     return getRequest(uri).then(result=>result.json());
 }
@@ -80,13 +85,13 @@ export const postRequest = async (uri:string, json:string)=>{
 }
 export async function post(uri:string, json:string, noResponse?:boolean){
     if(noResponse){
-        return postRequest(uri, json).then(result=>{});
+        return postRequest(uri, json).then(()=>{});
     }
     return postRequest(uri, json).then(result=>result.json());
 }
 
 export function pingServer(call: { (value: React.SetStateAction<Connection>): void}){
-    http.get(serverProperties.root, (res)=>{
+    http.get(serverProperties.root, ()=>{
         call({connected: true, message: "connected"})
     }).on('error', function (e) {
         let err:Connection = {connected: false, message:e.message};
