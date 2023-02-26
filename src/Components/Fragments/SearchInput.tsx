@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 
-function SearchInput<Type>({id, array,stringify, register, onSetValue}:
-                    {id:string, array:Type[], stringify:{(arg0: Type):string},
-                        register?:any, onSetValue:{(arg0:Type):void}}) {
+function FormSearchInput<Type>({id, array,stringify, onSetValue}:
+                                                              {id:string, array:Type[], stringify:{(arg0: Type):string},
+                                                                  onSetValue:{(arg0:string):void}}) {
     const [query, setQuery] = useState<string>("");
     const [isFocus, setIsFocus] = useState<boolean>(false);
     const [timer, setTimer] = useState<NodeJS.Timeout | undefined>();
@@ -17,16 +17,18 @@ function SearchInput<Type>({id, array,stringify, register, onSetValue}:
         }
     }).map(item=>
         <div key={stringify(item).toLowerCase()} className="hoverable" onClick={()=>{
-            setQuery(stringify(item))
-            setIsFocus(false)
-        }}  >
-            <p>{stringify(item)}</p>
-        </div> )
+        setQuery(stringify(item))
+        setIsFocus(false)
+        onSetValue(stringify(item))
+    }}  >
+    <p>{stringify(item)}</p>
+    </div> )
 
 
     function Timeout(t:number){
         if(timer) {clearTimeout(timer); setTimer(undefined)}
         setIsFocus(true)
+        onSetValue(query)
         setTimer(setTimeout(()=>{
             setIsFocus(false)
             clearTimeout(timer)
@@ -35,21 +37,23 @@ function SearchInput<Type>({id, array,stringify, register, onSetValue}:
     }
 
     return <>
-        <input type="text" autoComplete="off" className="search" id={id} {...register} value={query} required={true}
-               onFocus={()=>{
-                   setIsFocus(true)
-                   Timeout(7)}}
-               onBlur={()=>Timeout(7)}
-               onClick={()=>{
-                    setIsFocus(!isFocus)}}
-               onChange={(e)=>{
-                   Timeout(16)
-                   setQuery(e.target.value)
-               }}/>
-        {(isFocus && list.length>0)?
-            <div className="outline results">{list}</div>
-            :<></>}
-    </>
-}
+            <input type="text" autoComplete="off" className="search" id={id} value={query} required={true}
+                   onFocus={() => {
+                       setIsFocus(true)
+                       Timeout(7)
+                   }}
+                   onBlur={() => Timeout(7)}
+                   onClick={() => {
+                       setIsFocus(!isFocus)
+                   }}
+                   onChange={(e) => {
+                       Timeout(16)
+                       setQuery(e.target.value)
+                   }}/>
+            {(isFocus && list.length > 0) ?
+                <div className="outline results">{list}</div>
+                : <></>}
+        </>
+    }
 
-export default SearchInput;
+    export default FormSearchInput;
