@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import TripPage from "./TripPage/TripPage";
 import {Route, Routes} from "react-router-dom";
 import EmptyRoute from "./EmptyRoute";
-import {get} from "../../App";
+import {get} from "../../Server/Requests";
 import {City, Country, Person, Trip} from "../../Types";
 
 function Trips({people, cities, countries}:{people:Person[], cities:City[], countries : Country[]}) {

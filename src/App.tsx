@@ -1,15 +1,15 @@
 import * as React from 'react';
 
-import {BrowserRouter as Router, Routes, Route, json}
+import {BrowserRouter as Router, Routes, Route}
     from 'react-router-dom';
 
 import Home from "./Components/pages/Home";
 import GroupedTrips from "./Components/pages/GroupedTrips/GroupedTrips";
 import Trips from "./Components/pages/Trips";
 import EmptyRoute from "./Components/pages/EmptyRoute";
-import {serverProperties} from "./Server/ServerProperties";
+import {get, post, getRequest, postRequest, pingServer} from "./Server/Requests";
 import './css/my_style.css'
-import * as http from "http";
+import JSONify from "./JSON";
 import {useEffect, useState} from "react";
 import {City, Connection, Person, Country, Trip} from "./Types";
 
@@ -24,7 +24,7 @@ function App() {
     let [countries, setCountries] = useState<Country[]>([])
     const [theme, setTheme] = useState('light');
     useEffect(() => {
-        pingServer(setState);
+        //pingServer(setState);
         let timeout=20;
         if(state.connected)  timeout=60;
         get("people/").then(result=>{
@@ -62,39 +62,4 @@ function App() {
 
 export default App;
 
-export const getRequest = async (uri: string) => {
-    const requestOptions = {
-        method: 'GET',
-    };
-    return fetch(serverProperties.root+uri, requestOptions);
 
-}
-export async function get(uri:string, noResponse?:boolean){
-    if(noResponse){
-        return getRequest(uri).then(()=>{});
-    }
-    return getRequest(uri).then(result=>result.json());
-}
-export const postRequest = async (uri:string, json:string)=>{
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: json
-    };
-    return fetch(serverProperties.root+uri, requestOptions);
-}
-export async function post(uri:string, json:string, noResponse?:boolean){
-    if(noResponse){
-        return postRequest(uri, json).then(()=>{});
-    }
-    return postRequest(uri, json).then(result=>result.json());
-}
-
-export function pingServer(call: { (value: React.SetStateAction<Connection>): void}){
-    http.get(serverProperties.root, ()=>{
-        call({connected: true, message: "connected"})
-    }).on('error', function (e) {
-        let err:Connection = {connected: false, message:e.message};
-        call(err)
-    })
-}

@@ -315,16 +315,13 @@ button.grid-block{
 .form-row:has(.search){
   position: relative;
 }
-.search{
-  isolation: isolate;
-}
-
-.search+.results{
+.results{
   position: absolute;
-  background-color: var(--background-color);
-  border: var(--ui-low-contrast) solid 1px;
   right: 0;
-  top:1rem;
+  top: 1.2rem;
+  min-width: 60%;
+  background-color: var(--background-color);
+  z-index: 1;
 }
 
 @media (orientation: portrait){

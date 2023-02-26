@@ -1,15 +1,17 @@
 import React, {useEffect, useState} from "react";
 
 import Loading from "../../Fragments/Loading";
-import {get, post} from "../../../App";
+import {get, post} from "../../../Server/Requests";
 import {useNavigate} from "react-router-dom";
 import {Person, Trip, getName, City, getTripDate, TripPoint, Country} from "../../../Types";
 import Participant from "./Participant";
 import TitleSubtitle from "../../Fragments/TitleSubtitle";
-import SearchInput from "./../../SearchInput"
+import SearchInput from "../../Fragments/SearchInput"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faXmark, faPlus} from "@fortawesome/free-solid-svg-icons";
 import {useForm} from "react-hook-form";
+
+import JSONify from "../../../JSON";
 
 
 
@@ -32,8 +34,9 @@ function TripPage({trip, people, cities, countries}:
                 settingCityField(true);
                 return;
             }
-            post("cities/create/", "{city: " + data.city + ", country: " + selectedCountry + "}", true).then(() => {
-                post('trip/' + trip.trip_id + "/trip-points/create/", JSON.stringify(data), true).then(() => {
+            console.log(JSONify({city:data.city, country:selectedCountry}))
+            post("cities/create/", JSONify({city:data.city, country:selectedCountry}), true).then(() => {
+                post('trip/' + trip.trip_id + "/trip-points/create/", JSONify(data), true).then(() => {
                     settingPoints(false);
                 });
             })
@@ -159,22 +162,25 @@ function TripPage({trip, people, cities, countries}:
                                                 <label>Город: </label>
                                                 <SearchInput<City> id="city" array={cities}
                                                                    stringify={(item) => item.city}
-                                                                   onChange={() => {
-                                                                   }} register={register("city")}/>
+                                                                   onSetValue={() => {}}
+                                                                   register={register("city")}/>
+                                            </div>
+                                            <div className="form-row">
+                                                <input {...register("trip_id")} value={trip.trip_id} hidden={true}/>
+                                                <input {...register("trip_point_id")} value={0} hidden={true}/>
+                                                <input {...register("trip_order")} value={tripPoints.length + 1}
+                                                       hidden={true}/>
                                             </div>
                                             {addingCity &&
-                                                <div className="form-row" id="country-form">
+                                                <div className="form-row">
                                                     <label>Страна: </label>
                                                     <SearchInput<Country> id={"country"} array={countries}
                                                                           stringify={(country) => country.country}
-                                                                          onChange={(value) => setCountry(value)}/>
+                                                                          onSetValue={(value) => setCountry(value.country)}/>
                                                 </div>
                                             }
-                                            <input {...register("trip_id")} value={trip.trip_id} hidden={true}/>
-                                            <input {...register("trip_point_id")} value={0} hidden={true}/>
-                                            <input {...register("trip_order")} value={tripPoints.length + 1}
-                                                   hidden={true}/>
-                                            <button type="submit">Добавить</button>
+
+                                            <button onClick={()=>console.log("add")}>Добавить</button>
                                         </form> :
                                         <button className="grid-block center-child"
                                                 onClick={() => settingPoints(!addingPoints)}>

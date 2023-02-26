@@ -1,6 +1,6 @@
 import YearSplitTrips from "../GroupedTrips/YearSplitTrips";
 import React, {useEffect,useState} from 'react';
-import {post} from "../../../App";
+import {post} from "../../../Server/Requests";
 import {Entry, Person, getName, Trip} from "../../../Types";
 import Loading from "../../Fragments/Loading";
 import TitleSubtitle from "../../Fragments/TitleSubtitle";
