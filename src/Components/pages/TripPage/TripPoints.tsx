@@ -3,31 +3,33 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, faXmark} from "@fortawesome/free-solid-svg-icons";
 import {City, Country, Trip, TripPoint} from "../../../Types";
 import SearchInput from "../../Fragments/SearchInput";
-import JSONify from "../../../JSON";
 import {get} from "../../../Server/Requests";
+import useLogger from "../../../useLogger";
 
 function TripPoints({trip, cities, countries}:{trip:Trip, cities:City[], countries:Country[]}) {
+    const [tripPoints, setPoints] = useState<TripPoint[]>([])
     const [addingCity, settingCityField] = useState<boolean>(false);
     const [addingPoints, settingPoints] = useState<boolean>(false);
-    const [selectedCountry, setCountry]=useState<string>();
-    const [tripPoints, setPoints] = useState<TripPoint[]>([])
+    const TitleField = useRef<HTMLInputElement>(null);
+    const [selectedCountry, setCountry]=useState<string>("");
+    const [selectedCity, setSelectedCity] = useState<string>("");
+
 
     useEffect(() => {
         get('trip/' + trip.trip_id + '/trip-points/').then(
             result => setPoints(result))
     }, [addingPoints]);
 
-    function handleSubmit(data : TripPoint) {
-        let seek = tripPoints.find(point => (data.title == point.title));
-        let citySeek = cities.find(city => (city.city == data.city));
+    function handleSubmit() {
+        if(!TitleField.current) return;
+        let seek = tripPoints.find(point => (TitleField.current!.value == point.title));
+        let citySeek = cities.find(city => (city.city == selectedCity));
         console.log("submit")
         if (!citySeek) {
             if (!selectedCountry) {
                 settingCityField(true);
                 return;
             }
-            console.log(JSONify({city:data.city, country :selectedCountry}))
-            console.log(JSONify(data))
             // post("cities/create/", JSONify({city:data.city, country:selectedCountry}), true).then(() => {
             //     post('trip/' + trip.trip_id + "/trip-points/create/", JSONify(data), true).then(() => {
             //         settingPoints(false);
@@ -55,7 +57,7 @@ function TripPoints({trip, cities, countries}:{trip:Trip, cities:City[], countri
             <div className="grid in-section">
                 {allPoints}
                 {(addingPoints)
-                    ? <form className="vert-window">
+                    ? <div className="vert-window">
                         <div className="window-header">
                             <button onClick={() => settingPoints(!addingPoints)}>
                                 <FontAwesomeIcon icon={faXmark}/>
@@ -64,32 +66,32 @@ function TripPoints({trip, cities, countries}:{trip:Trip, cities:City[], countri
                         </div>
                         <div className="form-row">
                             <label>Название: </label>
-                            <input required={true}/>
+                            <input ref={TitleField} required={true}/>
                         </div>
                         <div className="form-row">
                             <label>Город: </label>
                             <SearchInput<City> id="city" array={cities}
                                                               stringify={(item) => item.city}
-                                                              onSetValue={() => {}}
+                                                              onSetValue={(city) => {setSelectedCity(city)}}
                                                               />
                         </div>
                         <div className="form-row">
-                            <input value={trip.trip_id} hidden={true}/>
-                            <input name="trip_point_id" value={0} hidden={true}/>
-                            <input name="trip_order" value={tripPoints.length + 1}
+                            <input value={trip.trip_id} hidden={true} readOnly={true}/>
+                            <input name="trip_point_id" value={0} hidden={true} readOnly={true}/>
+                            <input name="trip_order" value={tripPoints.length + 1} readOnly={true}
                                    hidden={true}/>
                         </div>
                         {addingCity &&
                             <div className="form-row">
                                 <label>Страна: </label>
-                                <SearchInput<Country> id={"country"} array={countries}
+                                <SearchInput<Country> id={"country"} array={countries} onlySelect={true}
                                                                  stringify={(country) => country.country}
                                                                  onSetValue={(value) => setCountry(value)}/>
                             </div>
                         }
 
-                        <button type="submit">Добавить</button>
-                    </form> :
+                        <button onClick={handleSubmit}>Добавить</button>
+                    </div> :
                     <button className="grid-block center-child"
                             onClick={() => settingPoints(!addingPoints)}>
                         <FontAwesomeIcon icon={faPlus}/>
