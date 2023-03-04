@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import TripPage from "./TripPage/TripPage";
+import TripPage from "./TripPage";
 import {Route, Routes} from "react-router-dom";
-import EmptyRoute from "./EmptyRoute";
-import {get} from "../../Server/Requests";
-import {City, Country, Person, Trip} from "../../Types";
+import EmptyRoute from "../EmptyRoute";
+import {get} from "../../../Server/Requests";
+import {City, Country, Person, Trip} from "../../../Types";
 
 function Trips({people, cities, countries}:{people:Person[], cities:City[], countries : Country[]}) {
     let [data, setTrips]=useState<Trip[]>([])
