@@ -2,17 +2,8 @@ export type Connection = {
     connected: boolean
     message: string
 }
-export type SharedData={
-    allPeople:Array<Person>
-}
-export type MultiselectOption={
-    name: string
-    id:number
-}
-export interface MyData {
-    [x:string]:string|number
-}
-export interface Trip extends MyData{
+
+export type Trip={
     trip_id : number
     title : string
     start_date : string
@@ -23,11 +14,11 @@ export interface Trip extends MyData{
 export function getTripDate(trip:Trip){
     return trip.start_date + ((trip.end_date==undefined || trip.end_date!.length<1)?"":" - "+trip.end_date);
 }
-export interface Entry {
+export type Entry ={
     year : number
     yearList : Array<Trip>
 }
-export interface Person extends MyData{
+export type Person={
     person_id: number
     first_name: string
     last_name: string
@@ -38,7 +29,7 @@ export function getName(person:Person):string{
     if(person.alias) return person.alias;
     return person.first_name+" "+person.last_name;
 }
-export interface TripPoint  extends MyData {
+export type TripPoint={
     trip_point_id : number
     title: string
     trip_id: number
@@ -47,15 +38,19 @@ export interface TripPoint  extends MyData {
     city : string
 }
 
-export interface City extends MyData {
+export type City={
     city : string
     country : string
     population : number
     founded_year : number
 }
-export interface Country extends MyData {
+export type Country={
     country : string
     capital_city : string
     population : number
     area : number
+}
+export type AdventuresStatistics={
+    trips:number
+    visitedCountries:number
 }
