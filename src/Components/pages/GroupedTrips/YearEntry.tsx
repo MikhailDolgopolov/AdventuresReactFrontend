@@ -1,6 +1,6 @@
 import React from 'react';
 import TripBlock from "./TripBlock";
-import {Trip} from "../../../Types"
+import {Trip} from "../../../Helpers/Types"
 
 function YearEntry({props}:{props:Trip[]}) {
 
