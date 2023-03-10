@@ -1,10 +1,12 @@
 import React from "react";
+import TitleSubtitle from "./TitleSubtitle";
 
 function Loading({object}:{object:string}) {
     return (
-        <div className='placeholder'>
-            <p>Waiting for {(object)?object:"content"}</p>
-        </div>
+        <>
+            <TitleSubtitle title={"Loading "+object}/>
+            <div className="side-margins vert-margins"><p>Waiting for {(object) ? object : "content"}</p></div>
+        </>
     );
 }
 

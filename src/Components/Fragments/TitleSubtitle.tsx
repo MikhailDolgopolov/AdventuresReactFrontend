@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import ThemeButton from "./ThemeButton";
 import NavigateHome from "./NavigateHome"
 
-function TitleSubtitle({title, subtitle}:{title:string, subtitle?:string}) {
+function TitleSubtitle({title, subtitle, home}:{title:string, subtitle?:string, home?:boolean}) {
     const [theme, setTheme] = useState<String>('light');
     const toggleTheme = () => {
         if (theme === 'light') {
@@ -21,7 +21,7 @@ function TitleSubtitle({title, subtitle}:{title:string, subtitle?:string}) {
     }, [])
     return (
         <div className="full-title">
-            <NavigateHome/>
+            {home?<div></div>:<NavigateHome/>}
             <div className="title">
                 <h1>{title}</h1>
                 {(subtitle) && <h4>{subtitle}</h4>}

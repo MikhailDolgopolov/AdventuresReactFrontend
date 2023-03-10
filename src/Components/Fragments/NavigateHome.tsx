@@ -6,8 +6,8 @@ import {faHome} from "@fortawesome/free-solid-svg-icons";
 function NavigateHome() {
     let navigate=useNavigate();
     return (
-        <button className="inline" onClick={()=>navigate("/")}>
-            <FontAwesomeIcon icon={faHome}/>
+        <button className="inline center-child" onClick={()=>navigate("/")}>
+            <FontAwesomeIcon icon={faHome} size="lg"/>
         </button>
     );
 }

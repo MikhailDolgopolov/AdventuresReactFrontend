@@ -1,18 +1,27 @@
 import React from 'react';
 import YearEntry from "./YearEntry";
-import {Entry} from "../../../Helpers/Types";
+import {Entry, getTripDate} from "../../../Helpers/Types";
+import TripBlock from "./TripBlock";
+import {useNavigate} from "react-router-dom";
 
-function YearSplitTrips({props}:{props:Entry[]}) {
-    let rows= props.map(row =>
-        <div key={row.year} className="shadow_under trip-row">
-            <div className="row left">
-                <h3>{row.year} год</h3>
-            </div>
-            <YearEntry props={row.yearList} key={row.year}/>
-        </div>
-    );
+function YearSplitTrips({entries}:{entries:Entry[]}) {
+    const navigate = useNavigate();
     return <div className="side_margins vert-margins" >
-        {rows}
+        {entries.map(row =>
+            <div key={row.year} className="outline trip-row">
+                <div className="row">
+                    <h3>{row.year} год</h3>
+                </div>
+                <div className="grid">
+                    {row.yearList.map(trip=>
+                        <button key={trip.trip_id} className="grid-block" onClick={()=>navigate('../trip/'+trip.trip_id)}>
+                            <h3>{trip.title}</h3>
+                            <p>{getTripDate(trip)}</p>
+                        </button>)
+                    }
+                </div>
+            </div>
+        )}
     </div>
 }
 

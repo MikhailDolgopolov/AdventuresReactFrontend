@@ -2,57 +2,83 @@ import * as React from 'react';
 
 import {BrowserRouter as Router, Routes, Route}
     from 'react-router-dom';
-
 import Home from "./Components/pages/Home";
 import GroupedTrips from "./Components/pages/GroupedTrips/GroupedTrips";
-import Trips from "./Components/pages/Trips";
+import Trips from "./Components/pages/TripPage/Trips";
 import EmptyRoute from "./Components/pages/EmptyRoute";
-import {get, post, getRequest, postRequest, pingServer} from "./Server/Requests";
+import {get, pingServer} from "./Server/Requests";
 import './css/my_style.css'
-import JSONify from "./JSON";
-import {useEffect, useState} from "react";
-import {City, Connection, Person, Country, Trip} from "./Types";
+import {useEffect, useRef, useState} from "react";
+import {City, Connection, Person, Country, Trip, TripPoint} from "./Helpers/Types";
+import ConnectionProblems from "./Components/pages/ConnectionProblems";
+import StaticData from "./Components/pages/Data/StaticData";
+import People from "./Components/pages/People/People";
+import Countries from "./Components/pages/Countries/Countries";
+import Modal from "./Components/Modal";
+import * as path from "path";
+import Points from "./Components/pages/TripPoint/Points";
 
 
 
 function App() {
-
-    const [state, setState] = useState<Connection>({connected: false, message: "Not connected"});
+    const [state, setState] = useState<Connection>({connected: false, message: "Starting up"});
     let [people, setPeople]=useState<Person[]>([]);
     let [trips, setTrips] = useState<Trip[]>([]);
     let [cities, setCities] = useState<City[]>([]);
     let [countries, setCountries] = useState<Country[]>([])
-    const [theme, setTheme] = useState('light');
+    let [tripPoints, setTripPoints] = useState<TripPoint[]>([])
+    const [theme, setTheme] = useState('dark');
     useEffect(() => {
-        //pingServer(setState);
-        let timeout=20;
-        if(state.connected)  timeout=60;
+        pingServer(setState).then(()=>{
+            setState({connected:true, message:"success"})}
+        ).catch(e=>
+            setState({connected:false, message:e.toString()}));
+
+
+        let timeout=30;
+
+        const interval = setInterval(() => {
+            pingServer(setState).then(()=>setState({connected:true, message:"success"})
+            ).catch(e=>
+                setState({connected:false, message:e.toString()}));
+        }, timeout*1000);
+        return () => clearInterval(interval);
+
+    }, [])
+
+    useEffect(()=>{
         get("people/").then(result=>{
             setPeople(result)
+        }).catch(error=>{
+            console.log(error)
         });
-        get('trips/list/').then(t=>
-            setTrips(t));
+        get('trips/list/').then(t=>{
+            setTrips(t);
+        })
+
         get('cities/').then(result=>{
             setCities(result)
         })
         get('countries/').then(result=>
             setCountries(result))
-        const interval = setInterval(() => {
-            pingServer(setState);
-        }, timeout*1000);
-        return () => clearInterval(interval);
+        get('trippoints/list/').then(result=>
+        setTripPoints(result))
+    }, [state])
 
-    }, [])
-    //if(!state.connected) return <ConnectionProblems props={state}/>
+    if(!state.connected) return <ConnectionProblems connection={state} home={true}/>
     return (
-        <div className={`App ${theme}`} id="root">
+        <div>
             <Router>
                 <Routes>
-                        <Route index element={<Home/>}/>
-                        <Route path='/' element={<Home/>}/>
-                        <Route path='trips/*' element={<GroupedTrips people={people} allTrips={trips}/>}/>
-                        <Route path='trip/*' element={<Trips people={people} cities={cities} countries={countries}/>} />
-                        <Route path="*" element={<EmptyRoute/>}/>
+                    <Route path='error/' element={<ConnectionProblems connection={state} home={false}/>}/>
+                    <Route path='/' element={<Home/>}/>
+                    <Route path='trips/*' element={<GroupedTrips people={people} allTrips={trips}/>}/>
+                    <Route path='trip/*' element={<Trips people={people} cities={cities} countries={countries}/>}/>
+                    <Route path='people/*' element={<People array={people}/>}/>
+                    <Route path='countries/*' element={<Countries array={countries}/>}/>
+                    <Route path='trippoints/*' element={<Points array={tripPoints}/>}/>
+                    <Route path='data/*' element={<StaticData people={people} cities={cities} countries={countries}/>}/>
+                    <Route path="*" element={<EmptyRoute/>}/>
                 </Routes>
             </Router>
 
