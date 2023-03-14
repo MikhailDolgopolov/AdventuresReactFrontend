@@ -1,13 +1,15 @@
-import React, {useRef, useState} from 'react';
+import React, {useState} from 'react';
 import {useForm} from "react-hook-form";
 import {Trip} from "../../../Helpers/Types";
 import {post} from "../../../Server/Requests";
 import Modal from "../../Modal";
+import LoadingError from "../LoadingError";
 
-function AddTripModal({allTrips, addTripButton, onAdd}:{allTrips:Trip[], onAdd:{():void}
+function AddTripModal({allTrips, addTripButton, onAdd}:{allTrips?:Trip[], onAdd:{():void}
     addTripButton:React.MutableRefObject<HTMLElement|null>}) {
     const [toggleModal, setToggle] = useState<boolean>(true);
     const {register, handleSubmit} = useForm<Trip>();
+    if(!allTrips) return <LoadingError loadingObject={"trips"}/>
     const onSubmit = handleSubmit((data)=>{
         let seek = allTrips.find(trip=>(data.title==trip.title));
         if(seek){

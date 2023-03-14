@@ -1,16 +1,20 @@
 import React from 'react';
-import {Connection} from "../../Helpers/Types";
+import {serverProperties} from "../../Server/ServerProperties";
 import TitleSubtitle from "../Fragments/TitleSubtitle";
 
-function ConnectionProblems({connection, home}:{connection:Connection, home?:boolean}) {
-    if(connection.message=="Starting up") return <TitleSubtitle title={"Подождите..."} home={true}/>
+function ConnectionProblems({loading, error, showHomeButton}:{loading:boolean,error:Error|null, showHomeButton?:boolean}) {
+    if(loading) return <TitleSubtitle title={"Подождите..."} showHomeButton={showHomeButton}/>
     return (
         <div>
-            <TitleSubtitle title={"Server problems"} home={home}/>
+            <TitleSubtitle title={"Server problems"} showHomeButton={showHomeButton}/>
             <section className="side-margins vert-margins">
                 <b>Something went wrong on the server side</b>
-                <p>Wait for the server to work again. For now any responses return  <span>   </span>
-                    <i>{connection.message}</i></p>
+                {(error)?
+                    <p>Wait for the server to work again. For now any responses to <a>{serverProperties.root}</a> return  <span>   </span>
+                        <i>{error.message}</i></p>:
+                    <p>No information</p>
+                }
+
             </section>
         </div>
     );

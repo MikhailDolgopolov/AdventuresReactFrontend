@@ -6,9 +6,8 @@ const Home=()=> {
     let navigate=useNavigate();
     return (
         <>
-            <TitleSubtitle title={"Главная страница"} home={true}/>
+            <TitleSubtitle title={"Главная страница"} showHomeButton={false}/>
             <div className="vert-margins side-margins">
-
                 <button className="big side-margins" onClick={() => navigate('/trips/')}>
                     Все путешествия
                 </button>

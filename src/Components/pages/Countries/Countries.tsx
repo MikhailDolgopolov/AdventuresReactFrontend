@@ -1,11 +1,12 @@
 import React from 'react';
 import {Country} from "../../../Helpers/Types";
-import countryPage from "./CountryPage";
 import {Route, Routes} from "react-router-dom";
 import CountryPage from "./CountryPage";
 import EmptyRoute from "../EmptyRoute";
+import LoadingError from "../LoadingError";
 
-function Countries({array}:{array:Country[]}) {
+function Countries({array}:{array?:Country[]}) {
+    if(!array) return <LoadingError loadingObject ="countries"/>
     const pages = array.map(country=>
     <Route key = {country.country} path={country.country} element={<CountryPage country={country}/>}/>)
     return (

@@ -1,36 +1,32 @@
 import YearSplitTrips from "../GroupedTrips/YearSplitTrips";
 import React, {useEffect, useRef, useState} from 'react';
 import {post} from "../../../Server/Requests";
-import {Entry, Person, getName, Trip} from "../../../Helpers/Types";
-import Loading from "../../Fragments/Loading";
+import {Entry, getName, MyData} from "../../../Helpers/Types";
+import Loading from "../Loading";
 import TitleSubtitle from "../../Fragments/TitleSubtitle";
-import {useForm} from "react-hook-form";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPlus, faXmark} from "@fortawesome/free-solid-svg-icons";
-import Modal from "../../Modal";
+import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import AddTripModal from "./AddTripModal";
 
 
 
-export default function GroupedTrips({people, allTrips}:{people:Person[], allTrips:Trip[]}) {
-    let [trips, setTrips]=useState<Entry[]>([])
-
-    let [filter, setFilter]=useState<number>(0)
+export default function GroupedTrips({data}:{data:MyData}) {
+    const [filter, setFilter] = useState<number>(0)
     let options: JSX.Element[];
-    const [boolSwitch, rerender] = useState<boolean>(false);
+    let [trips, setTrips]=useState<Entry[]>([])
 
     useEffect(()=>{
         post('trips/filter/', filter.toString()).then(result=> {
                 setTrips(result)
             }
         );
-    }, [filter, boolSwitch]);
+    }, [filter]);
 
-    if(!trips || !people) return <Loading object={"trip"}/>
+    if(data.loading) return <Loading object={"trip"}/>
 
-    options=people.map(person=>
+    options=data.people?data.people.map(person=>
         <option key={person.person_id} value={person.person_id}>
-            {getName(person)}</option> )
+            {getName(person)}</option> ):[]
 
     const selectTag=<div>
         Показать путешествия для<span>       </span>
@@ -46,7 +42,7 @@ export default function GroupedTrips({people, allTrips}:{people:Person[], allTri
     return (
         <>
             <TitleSubtitle title={'Путешествия'} subtitle={''}/>
-            <AddTripModal allTrips={allTrips} addTripButton={addTripButton} onAdd={()=>rerender(!boolSwitch)}/>
+            <AddTripModal allTrips={data.trips} addTripButton={addTripButton} onAdd={()=>data.refetchFunctions.trips()}/>
             <div className="side-margins">
                 <div className="top-row">
                     <div className="empty right">

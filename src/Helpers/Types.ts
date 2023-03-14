@@ -54,3 +54,9 @@ export type AdventuresStatistics={
     trips:number
     visitedCountries:number
 }
+export type MyData={
+    people?:Person[], cities?:City[], countries?:Country[], trips?:Trip[], trippoints?:TripPoint[],
+    loading:boolean,
+    error:Error|null,
+    refetchFunctions: { all:()=>void, people:Function, cities:Function, countries:Function, trips:Function, trippoints:Function }
+}

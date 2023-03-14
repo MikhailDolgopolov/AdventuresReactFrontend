@@ -1,28 +1,23 @@
 import React, {useEffect, useRef, useState} from "react";
 
-import Loading from "../../Fragments/Loading";
+import Loading from "../Loading";
 import {get, post} from "../../../Server/Requests";
-import {redirect, useNavigate} from "react-router-dom";
-import {Person, Trip, getName, City, getTripDate, Country} from "../../../Helpers/Types";
+import {useNavigate} from "react-router-dom";
+import {Person, Trip, getName, getTripDate, MyData} from "../../../Helpers/Types";
 import Participant from "./Participant";
 import TitleSubtitle from "../../Fragments/TitleSubtitle";
 import EditEntry from "../../Fragments/EditEntry"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPlus, faXmark,} from "@fortawesome/free-solid-svg-icons";
-import {useForm} from "react-hook-form";
+import {faPlus, } from "@fortawesome/free-solid-svg-icons";
 
 import TripPoints from "./TripPoints";
-import Modal from "../../Modal";
-import editEntry from "../../Fragments/EditEntry";
 import EditTripModal from "./EditTripModal";
 
 
 
 
-function TripPage({trip_id, people, cities, countries}:
-                      {trip_id:number, people:Person[], cities: City[], countries : Country[]}) {
+function TripPage({data, trip}:{data:MyData, trip:Trip}) {
     const navigate = useNavigate();
-    const [trip, setTrip] = useState<Trip>({trip_id:0, title:"", start_date:"", end_date:"", description:"", photo_link:""});
     const [participants, setParts] = useState<Person[]>([])
     const [addingPeople, settingPeople] = useState<boolean>(false);
 
@@ -31,20 +26,20 @@ function TripPage({trip_id, people, cities, countries}:
         if (confirm("Вы собираетесь удалить все данные, связанные с " + trip.title + ". Продолжить?")) {
             post("trips/delete/", trip.trip_id.toString(), true)
                 .then(() => navigate("/trips/"));
+            data.refetchFunctions.trips()
 
         }
     }
     useEffect(() => {
-        get('trips/'+trip_id+"/").then(result=>setTrip(result))
-        get('trips/' + trip_id + '/participants/').then(
+        get('trips/' + trip.trip_id + '/participants/').then(
             result => setParts(result))
     }, [])
     if (!participants) return <Loading object="participants"/>
     const allParticipants = participants.map(person =>
         <Participant key={person.person_id} person={person} trip={trip} func={setParts}/>);
-    let options = people.map(person =>
+    let options = data.people?data.people.map(person =>
         <option key={person.person_id} value={person.person_id}>
-            {getName(person)}</option>)
+            {getName(person)}</option>):[]
 
 
     const selectTag = <div>
@@ -75,7 +70,7 @@ function TripPage({trip_id, people, cities, countries}:
         <>
             <TitleSubtitle title={trip.title} subtitle={getTripDate(trip)}/>
             <EditTripModal trip={trip} setTrip={res=>{
-                setTrip(res)
+                trip=res; data.refetchFunctions.trips();
             }} editRef={editRef}/>
             <div className="side-margins">
                 <EditEntry onDelete={() => confirmDeletion()} onEdit={()=>{}} editRef={editRef}/>
@@ -83,16 +78,17 @@ function TripPage({trip_id, people, cities, countries}:
                     <div className="flow-down">
                         <section>
                             <h2>Участники</h2>
-                            {allParticipants}
-                            {(addingPeople) ?
-                                selectTag : <button className="center-child big" onClick={() => {
+                            <div>{allParticipants}</div>
+                            <div className="row">
+                                <button className="center-child big" onClick={() => {
                                     settingPeople(!addingPeople)
                                 }}>
                                     <FontAwesomeIcon icon={faPlus} size="2x"/>
                                 </button>
-                            }
+                                {(addingPeople)&& selectTag
+                            }</div>
                         </section>
-                        <TripPoints trip={trip} cities={cities} countries={countries}/>
+                        <TripPoints trip={trip} data={data}/>
                     </div>
                     <div className="flow-down">
                         <section>

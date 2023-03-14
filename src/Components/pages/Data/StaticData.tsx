@@ -1,17 +1,20 @@
 import React from 'react';
-import {City, Country, Person} from "../../../Helpers/Types";
+import {MyData} from "../../../Helpers/Types";
 import TitleSubtitle from "../../Fragments/TitleSubtitle";
 import CityRow from "./Rows/CityRow";
 import CountryRow from "./Rows/CountryRow";
 import PersonRow from "./Rows/PersonRow";
 import Statistics from "./Statistics";
+import LoadingError from "../LoadingError";
 
-function StaticData({people, cities, countries}:{people:Person[], cities:City[], countries : Country[]}) {
-    const countryTable = countries.map(
+function StaticData({data}:{data:MyData}) {
+    if(data.loading || data.error) return <LoadingError loadingObject={"stats"}/>
+
+    const countryTable = data.countries!.map(
         country=><CountryRow key={country.country} prop={country}/>)
-    const cityTable=cities.map(city=>
+    const cityTable=data.cities!.map(city=>
         <CityRow key={city.city} prop={city}/>)
-    const personTable=people.map(
+    const personTable=data.people!.map(
         person=><PersonRow key={person.person_id} prop={person}/>
     )
     return (<>

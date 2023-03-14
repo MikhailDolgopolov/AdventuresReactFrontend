@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useState} from 'react';
 import Modal from "../../Modal";
 import {useForm} from "react-hook-form";
 import {Trip} from "../../../Helpers/Types";
@@ -10,7 +10,6 @@ function EditTripModal({trip, editRef, setTrip}:{trip:Trip, setTrip:{(arg0:Trip)
     const {register, handleSubmit} = useForm<Trip>();
     const [toggle, setToggle] = useState<boolean>(true)
     const onSubmit = handleSubmit((data)=>{
-        console.log("valid")
         post("trips/update/", JSON.stringify(data)).then((res)=>{
             setToggle(!toggle)
             setTrip(res)})

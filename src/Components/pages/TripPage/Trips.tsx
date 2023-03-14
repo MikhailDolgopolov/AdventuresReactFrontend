@@ -1,19 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import TripPage from "./TripPage";
 import {Route, Routes} from "react-router-dom";
 import EmptyRoute from "../EmptyRoute";
-import {get} from "../../../Server/Requests";
-import {City, Country, Person, Trip} from "../../../Helpers/Types";
+import {MyData} from "../../../Helpers/Types";
+import LoadingError from "../LoadingError";
 
-function Trips({people, cities, countries}:{people:Person[], cities:City[], countries : Country[]}) {
-    let [data, setTrips]=useState<Trip[]>([])
-    useEffect(()=>{
-        get('trips/list/').then(data=>setTrips(data));
-    },[])
+function Trips({data}:{data:MyData}) {
+    if(!data.trips) return <LoadingError loadingObject={"trips"}/>
     let routes=
-        data.map(trip=>
+        data.trips.map(trip=>
             <Route path={trip.trip_id.toString()} key={trip.trip_id}
-                   element={<TripPage trip_id={trip.trip_id} people={people} cities={cities} countries={countries}/>}>
+                   element={<TripPage trip={trip} data={data}/>}>
             </Route>
         )
     return (

@@ -1,20 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import TitleSubtitle from "../Fragments/TitleSubtitle";
-import Loading from "../Fragments/Loading";
+import Loading from "./Loading";
+import Waiter from "../../Helpers/Waiter";
 
 function EmptyRoute({waiting}:{waiting?:string}) {
-    const [wait, setWaiting] = useState<boolean>(true)
-    useEffect(() => {
-        setTimeout(() => setWaiting(false), 2500)
-    }, [])
-
-    return <>
-        {(waiting && wait)?<Loading object={waiting}/>:
-            <TitleSubtitle title={"Page not found"} subtitle={"Sorry, such page does not seem to exist..."}/>}
-    </>
-
+    return <Waiter delay={2.5}>
+        <Loading object={waiting}/>
+        <TitleSubtitle title={"Page not found"} subtitle={"Sorry, such page does not seem to exist..."}/>
+    </Waiter>
 }
-
-
 
 export default EmptyRoute;

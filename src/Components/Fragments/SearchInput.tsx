@@ -1,15 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import useLogger from "../../Hooks/useLogger";
 
-function FormSearchInput<Type>({id, array,stringify, onSetValue, onlySelect}:
+function FormSearchInput<Type>({id, array,stringify, onSetValue, onlySelect, defaultValue}:
                                                               {id:string, array:Type[], stringify:{(arg0: Type):string},
-                                                                  onSetValue:{(arg0:string):void}, onlySelect?:boolean}) {
+                                                                  onSetValue:{(arg0:string):void}, onlySelect?:boolean, defaultValue?:string}) {
     const [query, setQuery] = useState<string>("");
     const [isFocus, setIsFocus] = useState<boolean>(false);
     const [timer, setTimer] = useState<NodeJS.Timeout | undefined>();
+    if(!defaultValue) defaultValue="";
 
-    // useEffect(()=>onSetValue(""), [])
+    useEffect(()=>setQuery(defaultValue!), [])
     //useLogger(query)
+
     const list=array.filter(item => {
         let itemString = stringify(item).toLowerCase();
         if (itemString==query || query=="") {
@@ -30,8 +31,7 @@ function FormSearchInput<Type>({id, array,stringify, onSetValue, onlySelect}:
     function Timeout(t:number){
         if(timer) {clearTimeout(timer); setTimer(undefined)}
         setIsFocus(true)
-        if(!onlySelect)
-            onSetValue(query)
+        onSetValue(onlySelect?"":query);
         setTimer(setTimeout(()=>{
             setIsFocus(false)
             clearTimeout(timer)
@@ -50,8 +50,8 @@ function FormSearchInput<Type>({id, array,stringify, onSetValue, onlySelect}:
                        setIsFocus(!isFocus)
                    }}
                    onChange={(e) => {
-                       Timeout(16)
                        setQuery(e.target.value)
+                       Timeout(16)
                    }}/>
             {(isFocus && list.length > 0) ?
                 <div className="outline results">{list}</div>

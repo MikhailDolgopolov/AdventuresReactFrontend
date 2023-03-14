@@ -1,6 +1,5 @@
 import React from 'react';
-import YearEntry from "./YearEntry";
-import {Entry, getTripDate} from "../../../Helpers/Types";
+import {Entry} from "../../../Helpers/Types";
 import TripBlock from "./TripBlock";
 import {useNavigate} from "react-router-dom";
 
@@ -14,10 +13,7 @@ function YearSplitTrips({entries}:{entries:Entry[]}) {
                 </div>
                 <div className="grid">
                     {row.yearList.map(trip=>
-                        <button key={trip.trip_id} className="grid-block" onClick={()=>navigate('../trip/'+trip.trip_id)}>
-                            <h3>{trip.title}</h3>
-                            <p>{getTripDate(trip)}</p>
-                        </button>)
+                        <TripBlock key = {trip.trip_id} trip={trip}/>)
                     }
                 </div>
             </div>

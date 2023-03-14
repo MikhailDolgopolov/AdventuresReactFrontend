@@ -1,13 +1,16 @@
 import React from 'react';
-import {TripPoint} from "../../../Helpers/Types";
+import {MyData} from "../../../Helpers/Types";
 import {Route, Routes} from "react-router-dom";
-import CountryPage from "../Countries/CountryPage";
 import EmptyRoute from "../EmptyRoute";
 import TripPointPage from "./TripPointPage";
+import LoadingError from "../LoadingError";
 
-function Points({array}:{array:TripPoint[]}) {
-    const pages = array.map(point=>
-        <Route key = {point.trip_point_id} path={point.trip_point_id.toString()} element={<TripPointPage point={point}/>}/>)
+function Points({data}:{data:MyData}) {
+    if(!data.trippoints) return <LoadingError loadingObject={"trip points"}/>
+    if(!data.cities) return <LoadingError loadingObject={"cities"}/>
+    const pages = data.trippoints.map(point=>
+        <Route key = {point.trip_point_id} path={point.trip_point_id.toString()}
+               element={<TripPointPage point={point} cities={data.cities!}/>}/>)
     return (
         <Routes>
             {pages}
