@@ -8,7 +8,7 @@ import Statistics from "./Statistics";
 import LoadingError from "../LoadingError";
 
 function StaticData({data}:{data:MyData}) {
-    if(data.loading || data.error) return <LoadingError loadingObject={"stats"}/>
+    if(!data) return <LoadingError loadingObject={"stats"}/>
 
     const countryTable = data.countries!.map(
         country=><CountryRow key={country.country} prop={country}/>)

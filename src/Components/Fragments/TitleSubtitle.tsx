@@ -3,11 +3,11 @@ import React, {useEffect, useState} from 'react';
 import ThemeButton from "./ThemeButton";
 import NavigateHome from "./NavigateHome"
 
-function TitleSubtitle({title, subtitle, showHomeButton}:{title:string, subtitle?:string, showHomeButton?:boolean}) {
+function TitleSubtitle({title, subtitle, hideHomeButton}:{title:string, subtitle?:string, hideHomeButton?:boolean}) {
     const [theme, setTheme] = useState<String>('light');
     return (
         <div className="full-title">
-            {showHomeButton?<NavigateHome/>:<div></div>}
+            {hideHomeButton?<div></div>:<NavigateHome/>}
             <div className="title">
                 <h1>{title}</h1>
                 {(subtitle) && <h4>{subtitle}</h4>}

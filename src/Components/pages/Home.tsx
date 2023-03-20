@@ -6,7 +6,7 @@ const Home=()=> {
     let navigate=useNavigate();
     return (
         <>
-            <TitleSubtitle title={"Главная страница"} showHomeButton={false}/>
+            <TitleSubtitle title={"Главная страница"} hideHomeButton={true}/>
             <div className="vert-margins side-margins">
                 <button className="big side-margins" onClick={() => navigate('/trips/')}>
                     Все путешествия

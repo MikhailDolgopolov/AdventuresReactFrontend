@@ -20,8 +20,7 @@ function App() {
     const myData=useMyData()
 
     if(myData.loading || myData.error)
-        return <ConnectionProblems loading={myData.loading} error={myData.error} showHomeButton={false}/>
-    console.log(myData)
+        return <ConnectionProblems loading={myData.loading} error={myData.error} hideHomeButton={true}/>
     return (
         <div>
             <Router>

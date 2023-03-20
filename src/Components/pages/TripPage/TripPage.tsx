@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 
 import Loading from "../Loading";
-import {get, post} from "../../../Server/Requests";
+import {post} from "../../../Server/Requests";
 import {useNavigate} from "react-router-dom";
 import {Person, Trip, getName, getTripDate, MyData} from "../../../Helpers/Types";
 import Participant from "./Participant";
@@ -12,14 +12,17 @@ import {faPlus, } from "@fortawesome/free-solid-svg-icons";
 
 import TripPoints from "./TripPoints";
 import EditTripModal from "./EditTripModal";
+import useFetch from "../../../Hooks/useFetch";
 
 
 
 
 function TripPage({data, trip}:{data:MyData, trip:Trip}) {
     const navigate = useNavigate();
-    const [participants, setParts] = useState<Person[]>([])
+    const [participants, loadParts, errorParts, refetchParts] = useFetch<Person[]>('trips/' + trip.trip_id + '/participants/')
     const [addingPeople, settingPeople] = useState<boolean>(false);
+
+    let editRef = useRef<HTMLButtonElement>(null)
 
 
     function confirmDeletion() {
@@ -30,13 +33,9 @@ function TripPage({data, trip}:{data:MyData, trip:Trip}) {
 
         }
     }
-    useEffect(() => {
-        get('trips/' + trip.trip_id + '/participants/').then(
-            result => setParts(result))
-    }, [])
     if (!participants) return <Loading object="participants"/>
-    const allParticipants = participants.map(person =>
-        <Participant key={person.person_id} person={person} trip={trip} func={setParts}/>);
+    const allParticipants = participants!.map(person =>
+        <Participant key={person.person_id} person={person} trip={trip} func={refetchParts}/>);
     let options = data.people?data.people.map(person =>
         <option key={person.person_id} value={person.person_id}>
             {getName(person)}</option>):[]
@@ -49,10 +48,10 @@ function TripPage({data, trip}:{data:MyData, trip:Trip}) {
         <select id="person_select" onChange={(event) => {
             let id = parseInt(event.target.value);
 
-            let seek = participants.find(person => (person.person_id == id))
+            let seek = participants!.find(person => (person.person_id == id))
             if (seek) return;
             post('trips/' + trip.trip_id.toString() + '/participants/add/',
-                '[' + event.target.value + ']').then(result => setParts(result));
+                '[' + event.target.value + ']').then(()=>refetchParts());
         }} onSubmit={() => {
             settingPeople(false);
         }
@@ -63,14 +62,14 @@ function TripPage({data, trip}:{data:MyData, trip:Trip}) {
             {options}
         </select>
     </div>
-    let editRef = useRef<HTMLButtonElement>(null)
 
 
     return (
         <>
             <TitleSubtitle title={trip.title} subtitle={getTripDate(trip)}/>
             <EditTripModal trip={trip} setTrip={res=>{
-                trip=res; data.refetchFunctions.trips();
+                trip=res;
+                // data.refetchFunctions.trips();
             }} editRef={editRef}/>
             <div className="side-margins">
                 <EditEntry onDelete={() => confirmDeletion()} onEdit={()=>{}} editRef={editRef}/>

@@ -2,11 +2,11 @@ import React from 'react';
 import {serverProperties} from "../../Server/ServerProperties";
 import TitleSubtitle from "../Fragments/TitleSubtitle";
 
-function ConnectionProblems({loading, error, showHomeButton}:{loading:boolean,error:Error|null, showHomeButton?:boolean}) {
-    if(loading) return <TitleSubtitle title={"Подождите..."} showHomeButton={showHomeButton}/>
+function ConnectionProblems({loading, error, hideHomeButton}:{loading:boolean,error:Error|null, hideHomeButton?:boolean}) {
+    if(loading) return <TitleSubtitle title={"Подождите..."} hideHomeButton={hideHomeButton}/>
     return (
         <div>
-            <TitleSubtitle title={"Server problems"} showHomeButton={showHomeButton}/>
+            <TitleSubtitle title={"Server problems"} hideHomeButton={hideHomeButton}/>
             <section className="side-margins vert-margins">
                 <b>Something went wrong on the server side</b>
                 {(error)?

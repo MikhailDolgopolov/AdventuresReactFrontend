@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {AdventuresStatistics} from "../../../Helpers/Types";
-import {get} from "../../../Server/Requests";
+import useFetch from "../../../Hooks/useFetch";
+import LoadingError from "../LoadingError";
 
 function Statistics() {
-    const [stats, setStats] = useState<AdventuresStatistics>({trips:0, visitedCountries:0})
-    useEffect(()=>{
-        get("statistics/").then(result=>setStats(result))
-    },[])
+    const [stats, loadingStats, errorStats] = useFetch<AdventuresStatistics>("statistics")
+    if(!stats) return <LoadingError loadingObject="статистику"/>
     return (
         <>
             <h2>Статистика</h2>

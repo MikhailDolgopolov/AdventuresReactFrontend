@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import {serverProperties} from "../Server/ServerProperties";
 
 function useFetch<Type>(url:string):[Type|undefined, boolean, Error|null, Function] {
     const [data, setData] = useState<Type>();
@@ -9,7 +10,7 @@ function useFetch<Type>(url:string):[Type|undefined, boolean, Error|null, Functi
     useEffect(() => {
         setLoading(true);
         axios
-            .get(url)
+            .get(serverProperties.root+url)
             .then((response) => {
                 setData(response.data);
             })

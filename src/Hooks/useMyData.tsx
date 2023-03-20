@@ -5,13 +5,13 @@ import {City, Country, MyData, Person, Trip, TripPoint} from "../Helpers/Types";
 
 function useMyData():MyData {
 
-    const [result,load, error, refetch]=useFetch(serverProperties.root)
-    const [people,loadPeople, errorPeople, refetchPeople]=useFetch<Person[]>(serverProperties.root+"people/")
+    const [result,load, error, refetch]=useFetch("")
+    const [people,loadPeople, errorPeople, refetchPeople]=useFetch<Person[]>("people/")
 
-    const [cities,loadCities, errorCities, refetchCities]=useFetch<City[]>(serverProperties.root+"cities/")
-    const [countries,loadCountries, errorCountries, refetchCountries]=useFetch<Country[]>(serverProperties.root+"countries/")
-    const [trips,loadTrips, errorTrips, refetchTrips]=useFetch<Trip[]>(serverProperties.root+"trips/")
-    const [points,loadPoints, errorPoints, refetchPoints]=useFetch<TripPoint[]>(serverProperties.root+"trippoints/")
+    const [cities,loadCities, errorCities, refetchCities]=useFetch<City[]>("cities/")
+    const [countries,loadCountries, errorCountries, refetchCountries]=useFetch<Country[]>("countries/")
+    const [trips,loadTrips, errorTrips, refetchTrips]=useFetch<Trip[]>("trips/")
+    const [points,loadPoints, errorPoints, refetchPoints]=useFetch<TripPoint[]>("trippoints/")
 
     function refetchAll() {
         refetch()

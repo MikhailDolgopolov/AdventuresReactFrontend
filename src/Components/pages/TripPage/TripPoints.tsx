@@ -1,16 +1,18 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, faXmark, faAngleLeft, faAngleRight} from "@fortawesome/free-solid-svg-icons";
-import {City, Country, MyData, Trip} from "../../../Helpers/Types";
+import {City, Country, MyData, Trip, TripPoint} from "../../../Helpers/Types";
 import SearchInput from "../../Fragments/SearchInput";
-import {get, post} from "../../../Server/Requests";
+import {post} from "../../../Server/Requests";
 import useLogger from "../../../Hooks/useLogger";
 import {useNavigate} from "react-router-dom";
 import LoadingError from "../LoadingError";
 import Loading from "../Loading";
 import Modal from "../../Modal";
+import useFetch from "../../../Hooks/useFetch";
 
 function TripPoints({trip, data}:{trip:Trip, data:MyData}) {
+    const [trippoints, loadingTrippoints, errorLoadingTrippoints, refetchPoints] = useFetch<TripPoint[]>('trips/' + trip.trip_id + '/trippoints/')
     const [addingCity, settingCityField] = useState<boolean>(false);
     const [addingPoints, settingPoints] = useState<boolean>(false);
     const [editingOrder, setEditOrder] = useState<boolean>(false);
@@ -21,19 +23,8 @@ function TripPoints({trip, data}:{trip:Trip, data:MyData}) {
     const addPointRef = useRef(null)
     let navigate = useNavigate()
     useLogger(selectedCountry)
-    if(data.loading) return <Loading object={"trip points"}/>
-    if(!data.trippoints) return <LoadingError loadingObject={"trip points"}/>
-    function fetchPoints() {
-
-        get('trips/' + trip.trip_id + '/trippoints/').then(
-            result => {
-                setWait(false)
-            })
-    }
-    useEffect(()=>fetchPoints(),[])
-    useEffect(() => {
-       fetchPoints()
-    }, [trip,editingOrder, addingPoints]);
+    if(!trippoints || !data.trippoints) return <LoadingError loadingObject={"trip points"}/>
+    console.log(trip)
 
     function handleSubmit() {
         if(!titleField.current) return;
@@ -74,8 +65,8 @@ function TripPoints({trip, data}:{trip:Trip, data:MyData}) {
         }
 
     }
-    let singlePoint=data.trippoints.length<=1;
-    const allPoints = data.trippoints.map(point =>
+    let singlePoint=trippoints&&trippoints.length<=1;
+    const allPoints = trippoints!.map(point =>
         <div className="flex-block full" key={point.trip_point_id}>
             <button className="highlight" onClick={()=>{
                 if(!editingOrder)
@@ -92,7 +83,7 @@ function TripPoints({trip, data}:{trip:Trip, data:MyData}) {
                         if(!waitToOrder) {
                             setWait(true)
                             post("trippoints/reorder/" + point.trip_point_id.toString(), "-1", true)
-                                .then(fetchPoints)
+                                .then(()=>refetchPoints())
                         }
                     }
                     }><FontAwesomeIcon icon={faAngleLeft} size="2xl"/></button>:
@@ -102,7 +93,7 @@ function TripPoints({trip, data}:{trip:Trip, data:MyData}) {
                         if(!waitToOrder){
                             setWait(true)
                             post("trippoints/reorder/"+point.trip_point_id.toString(), "1", true)
-                                .then(fetchPoints)
+                                .then(()=>refetchPoints())
                         }
                     }
                     }><FontAwesomeIcon icon={faAngleRight} size='2xl'/></button>:
