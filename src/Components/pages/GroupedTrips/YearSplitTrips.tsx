@@ -1,23 +1,19 @@
 import React from 'react';
-import {Entry} from "../../../Helpers/Types";
-import TripBlock from "./TripBlock";
-import {useNavigate} from "react-router-dom";
 
-function YearSplitTrips({entries}:{entries:Entry[]}) {
-    const navigate = useNavigate();
+import useFetch from "../../../Hooks/useFetch";
+import YearEntry from "./YearEntry";
+import LoadingError from "../LoadingError";
+import useLogger from "../../../Hooks/useLogger";
+
+function YearSplitTrips({tripsChanged}:{tripsChanged:boolean}) {
+    const [years, loadYears, errorYears]=useFetch<number[]>("trips/years/", tripsChanged)
+
+    if(!years) return <LoadingError loadingObject={"года"} loading={years == undefined}/>
     return <div className="side_margins vert-margins" >
-        {entries.map(row =>
-            <div key={row.year} className="outline trip-row">
-                <div className="row">
-                    <h3>{row.year} год</h3>
-                </div>
-                <div className="grid">
-                    {row.yearList.map(trip=>
-                        <TripBlock key = {trip.trip_id} trip={trip}/>)
-                    }
-                </div>
-            </div>
+        {years.map(row =>
+            <YearEntry key={row} year={row} refetch={tripsChanged}/>
         )}
+
     </div>
 }
 

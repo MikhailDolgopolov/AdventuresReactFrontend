@@ -1,0 +1,25 @@
+table{
+    width: 100%;
+    border-spacing: 0;
+    border: var(--ui-high-contrast) solid 1px;
+}
+td, th{
+    border: var(--ui-low-contrast) solid 1px;
+    padding: 5px 5px 0 5px;
+}
+th{
+    background-color: var(--ui-low-contrast);
+}
+tr.button{
+    text-align: center;
+}
+.hoverable.table:hover{
+    outline: var(--ui-high-contrast) solid 1px;
+}
+
+@media (orientation: portrait) {
+
+    table {
+        font-size: 0.75rem;
+    }
+}

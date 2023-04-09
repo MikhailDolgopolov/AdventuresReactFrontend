@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {serverProperties} from "../Server/ServerProperties";
+import {serverProperties} from "../././Server/ServerProperties";
 
-function useFetch<Type>(url:string):[Type|undefined, boolean, Error|null, Function] {
+function useFetch<Type>(url:string, refetchSwitch?:any):[Type|undefined, boolean, Error|null, Function] {
     const [data, setData] = useState<Type>();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -20,14 +20,15 @@ function useFetch<Type>(url:string):[Type|undefined, boolean, Error|null, Functi
             .finally(() => {
                 setLoading(false);
             });
-    }, [url]);
+    }, [url, refetchSwitch]);
 
     function refetch () {
         setLoading(true);
         axios
-            .get(url)
+            .get(serverProperties.root+url)
             .then((response) => {
                 setData(response.data);
+                console.log("refetched "+url)
             })
             .catch((err) => {
                 setError(err);

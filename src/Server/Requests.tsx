@@ -1,7 +1,5 @@
 import {serverProperties}  from "./ServerProperties";
 import * as React from "react";
-import {Connection} from "../Helpers/Types";
-import http from "http";
 
 export async function getRequest(uri: string):Promise<Response> {
     const requestOptions = {

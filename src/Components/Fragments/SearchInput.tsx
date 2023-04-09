@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 
-function FormSearchInput<Type>({id, array,stringify, onSetValue, onlySelect, defaultValue}:
+function SearchInput<Type>({id, array,stringify, onSetValue, onlySelect, defaultValue}:
                                                               {id:string, array:Type[], stringify:{(arg0: Type):string},
                                                                   onSetValue:{(arg0:string):void}, onlySelect?:boolean, defaultValue?:string}) {
     const [query, setQuery] = useState<string>("");
@@ -10,6 +10,7 @@ function FormSearchInput<Type>({id, array,stringify, onSetValue, onlySelect, def
 
     useEffect(()=>setQuery(defaultValue!), [])
     //useLogger(query)
+    console.log("searching")
 
     const list=array.filter(item => {
         let itemString = stringify(item).toLowerCase();
@@ -59,4 +60,4 @@ function FormSearchInput<Type>({id, array,stringify, onSetValue, onlySelect, def
         </>
     }
 
-    export default FormSearchInput;
+    export default SearchInput;
