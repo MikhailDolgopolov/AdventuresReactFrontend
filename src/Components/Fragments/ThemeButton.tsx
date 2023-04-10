@@ -21,7 +21,7 @@ function ThemeButton() {
     }, [theme]);
     return (
         <label className="switch">
-            <input onChange={()=>toggleTheme()} type="checkbox"/>
+            <input onChange={()=>toggleTheme()} type="checkbox" checked={(theme=="light")}/>
             <span className="slider"/>
         </label>
     );
