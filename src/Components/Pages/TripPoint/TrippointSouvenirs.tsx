@@ -59,7 +59,7 @@ function TrippointSouvenirs({trip, point}:{trip:Trip, point:TripPoint}) {
 
             <section>
                 <h2>Сувениры</h2>
-                <SouvenirList souvenirs={souvenirs}/>
+                <SouvenirList souvenirs={souvenirs} onChange={setRefetch}/>
                 <button className="big" ref={addSouvenirRef}>
                     <FontAwesomeIcon icon={faPlus} size="2x"/>
                 </button>

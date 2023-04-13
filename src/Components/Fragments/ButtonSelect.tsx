@@ -1,8 +1,8 @@
 import React, {useEffect} from 'react';
 import Loading from "../Pages/Loading";
 
-function ButtonSelect<Type>({array, id, stringify, onSelect, children, clearSwitch, reset}:
-                                {array:Type[]|undefined, id:string, stringify:{(arg0:Type):string}, clearSwitch?:any,reset?:boolean
+function ButtonSelect<Type>({array, id, stringify, onSelect, children, clearSwitch, resetSwitch}:
+                                {array:Type[]|undefined, id:string, stringify:{(arg0:Type):string}, clearSwitch?:any,resetSwitch?:boolean
     onSelect:{(arg0:Type):void}, children?:JSX.Element[]|JSX.Element}) {
     if(!array) return <Loading object={"данные"}/>
     function deselectAll(){
@@ -18,12 +18,12 @@ function ButtonSelect<Type>({array, id, stringify, onSelect, children, clearSwit
         document.getElementById(l_id)!.setAttribute("selected", "1")
     }
     useEffect(()=>{
-        if(!reset != clearSwitch)
-            deselectAll()
-        if(!reset && !clearSwitch)
-            styleSelection(stringify(array[0]))
-
-    },[reset, clearSwitch])
+        deselectAll()
+    },[clearSwitch])
+    useEffect(()=>{
+        console.log("changed reset to "+resetSwitch)
+        styleSelection(stringify(array[0]))
+    },[resetSwitch])
     return (
         <div className="flex-grid wide">
             {array.map(item=>

@@ -61,6 +61,7 @@ function TripPointsSection({trip, data,trippoints, setRefetch, refetchTrippoints
                 JSON.stringify({title:titleField.current!.value, city:selectedCity, trip_order:data.trippoints!.length}))
                 .then(result=>{
                     data.functions.points()
+                    setRefetch()
                     settingPoints(false)
                 })
         }

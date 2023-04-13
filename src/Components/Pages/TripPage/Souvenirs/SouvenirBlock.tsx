@@ -4,13 +4,13 @@ import Modal from "../../../Fragments/Modal";
 import {post} from "../../../../Server/Requests";
 import useSwitch from "../../../../Hooks/useSwitch";
 
-function SouvenirBlock({s}:{s:Souvenir}) {
+function SouvenirBlock({s, onChange}:{s:Souvenir, onChange:()=>void}) {
     const editSouvenirRef = useRef(null)
     const [closeModal, flip] = useSwitch()
     function deleteSouvenir() {
         if(confirm("Вы собираетесь удалить "+s.name+". Продолжить?"))
 
-            post("souvenirs/delete/", JSON.stringify(s)).then(()=>flip())
+            post("souvenirs/delete/", JSON.stringify(s)).then(()=>{flip();onChange()})
     }
     return (
         <>

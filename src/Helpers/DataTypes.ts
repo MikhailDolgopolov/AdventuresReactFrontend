@@ -47,7 +47,7 @@ export type Souvenir={
     souvenir_id : number
     name: string
     trippoint_id: number
-    city: string
+    city?: string
     type: string
     material: string
     description: string
