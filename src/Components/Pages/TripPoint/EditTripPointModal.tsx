@@ -10,8 +10,14 @@ function EditTripPointModal({point, editRef, setPoint, cities}:
                             cities:City[]}) {
     const {register, handleSubmit} = useForm<TripPoint>();
     const [toggle, setToggle] = useState<boolean>(true)
-    const [selectedCity, setCity] = useState<string>("")
+    const [selectedCity, setCity] = useState<string>(point.city)
     const onSubmit = handleSubmit((data)=>{
+        data.city=selectedCity
+        if(selectedCity==data.city && point.title==data.title) {
+            alert("Значения либо не были изменены, либо были изменены на некорректные. Данные не будут изменены.")
+            return
+        }
+
         post("trippoints/update/", JSON.stringify(data)).then((res)=> {
             setToggle(!toggle)
             setPoint(res)
@@ -34,7 +40,7 @@ function EditTripPointModal({point, editRef, setPoint, cities}:
                 </div>
 
                 <input {...register("trip_id")} value={point.trip_id} hidden={true}/>
-                <input {...register("trip_point_id")} value={point.trip_point_id} hidden={true}/>
+                <input {...register("trippoint_id")} value={point.trippoint_id} hidden={true}/>
                 <button type="submit">Сохранить</button>
             </form>
         </Modal>

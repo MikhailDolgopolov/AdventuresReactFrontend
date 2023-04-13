@@ -6,18 +6,17 @@ import {useForm} from "react-hook-form";
 import {Souvenir, Trip, TripPoint} from "../../../Helpers/DataTypes";
 import LoadingError from "../LoadingError";
 import useFetch from "../../../Hooks/useFetch";
-import MyInput from "../../../Helpers/MyInput";
-import FormSearchInput from "../../Fragments/FormSearchInput";
-import useLogger from "../../../Hooks/useLogger";
+
 import SearchInput from "../../Fragments/SearchInput";
 import {post} from "../../../Server/Requests";
 import useSwitch from "../../../Hooks/useSwitch";
-import SouvenirList from "./SouvenirList";
+import SouvenirList from "../TripPage/Souvenirs/SouvenirList";
+import ButtonSelect from "../../Fragments/ButtonSelect";
 
 function TrippointSouvenirs({trip, point}:{trip:Trip, point:TripPoint}) {
 
     const [refetch, setRefetch] = useSwitch()
-    const [souvenirs, loadingSouvenirs, errorSouvenirs] = useFetch<Souvenir[]>("souvenirs/for_trippoint/"+point.trip_point_id, refetch)
+    const [souvenirs, loadingSouvenirs, errorSouvenirs] = useFetch<Souvenir[]>("souvenirs/for_trippoint/"+point.trippoint_id, refetch)
     const addSouvenirRef = useRef(null)
     const {register, handleSubmit} = useForm<Souvenir>()
     let souvenirType:string;
@@ -34,6 +33,7 @@ function TrippointSouvenirs({trip, point}:{trip:Trip, point:TripPoint}) {
         <div>
             <Modal header={"Новый сувенир"} openRef={addSouvenirRef}>
                 <form className="vert-window" onSubmit={handleSubmit(onFormSubmit)}>
+
                     <div className="form-row">
                         <label>Название: </label>
                         <input {...register("name")} required={true}/>
@@ -51,7 +51,7 @@ function TrippointSouvenirs({trip, point}:{trip:Trip, point:TripPoint}) {
                         <label>Описание: </label>
                         <input {...register("description")}/>
                     </div>
-                    <input hidden={true} defaultValue={point.trip_point_id} {...register("trip_point_id")}/>
+                    <input hidden={true} defaultValue={point.trippoint_id} {...register("trippoint_id")}/>
                     <input hidden={true} defaultValue={point.city} {...register("city")}/>
                     <button type={"submit"}>Click</button>
                 </form>

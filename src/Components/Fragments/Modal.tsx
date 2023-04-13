@@ -9,7 +9,6 @@ function Modal({children, header, openRef, offToggle, freeClose}:{children: JSX.
     const [open, setOpen] = useState<boolean>();
     const [timer] = useState<NodeJS.Timeout | undefined>();
     const [wait, setWait] = useState<boolean>(true);
-    const [lockScroll, unlockScroll] = useScrollLock();
     useEffect(()=>{
         const openListener = (event: any)=>{
             if(openRef.current && openRef.current.contains(event.target)) {
@@ -35,10 +34,6 @@ function Modal({children, header, openRef, offToggle, freeClose}:{children: JSX.
     useEffect(()=>{
         setOpen(false)
     },[offToggle])
-    useEffect(()=>{
-        if (open) lockScroll();
-        else unlockScroll();
-        },[open])
     if(!open) return null;
     return ReactDom.createPortal(<>
         <div className="modal-overlay cover" onClick={()=>{

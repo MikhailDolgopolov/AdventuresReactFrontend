@@ -49,7 +49,9 @@ body {
   right: 0;
   background-color: rgba(0,0,0,0.5);
 }
-
+.portal-div{
+  position: relative;
+}
 .modal-overlay{
   position: fixed;
   z-index: 5;
@@ -84,7 +86,14 @@ select.no-border{
 select.hoverable *{
   background-color: var(--background-color);
 }
+button[selected]{
+  padding-block: 0.35rem;
+  border-radius: 3px;
+}
+button[selected="1"]{
 
+  outline: var(--special-accent-color) solid 4px;
+}
 h1, h2, h3, h4, h5, h6 {
   text-align: center;
   padding-block: 0.5rem;
@@ -340,7 +349,10 @@ button.order{
   gap:0.5rem;
   padding: 0.5rem;
 }
-
+.flex-grid.wide{
+  min-width:min(max(60ch, 300px),90vw);
+  max-width:  min(90vw,550px);
+}
 
 .flex-block{
   position: relative;
