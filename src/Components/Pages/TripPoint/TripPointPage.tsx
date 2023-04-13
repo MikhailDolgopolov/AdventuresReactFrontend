@@ -9,17 +9,18 @@ import TrippointSouvenirs from "./TrippointSouvenirs";
 import useFetch from "../../../Hooks/useFetch";
 import LoadingError from "../LoadingError";
 import useLogger from "../../../Hooks/useLogger";
+import useSwitch from "../../../Hooks/useSwitch";
+import {MyData} from "../../../Helpers/HelperTypes";
 
-function TripPointPage({point, cities}:{point:TripPoint, cities:City[]}) {
+function TripPointPage({point, data}:{point:TripPoint, data:MyData}) {
     const [trip, loadingTrip] = useFetch<Trip>("trips/get/"+point.trip_id)
     const editRef = useRef<HTMLButtonElement>(null);
     let navigate=useNavigate()
-    if(!trip) return <LoadingError loadingObject={point.title} loading={loadingTrip} wholePage={true}/>
+    if(!trip || !data.cities) return <LoadingError loadingObject={point.title} loading={loadingTrip} wholePage={true}/>
     function confirmDeletion() {
         if (confirm("Вы собираетесь удалить все данные, связанные с " + point.title + ". Продолжить?")) {
-            post("trippoints/delete/", point.trip_point_id.toString(),true)
+            post("trippoints/delete/", point.trippoint_id.toString(),true)
                 .then(() => navigate("/trip/"+point.trip_id));
-
         }
     }
     return (
@@ -27,7 +28,10 @@ function TripPointPage({point, cities}:{point:TripPoint, cities:City[]}) {
             <TitleSubtitle title={point.title} subtitle={point.city}/>
             <div className="side-margins">
                 <EditEntry onEdit={() => {}} onDelete={confirmDeletion} editRef={editRef}/>
-                <EditTripPointModal point={point} setPoint={res=>point=res} editRef={editRef} cities={cities}/>
+                <EditTripPointModal point={point} setPoint={res=>{
+                    point=res
+                    data.functions.points();
+                }} editRef={editRef} cities={data.cities}/>
 
                 <div className="two-columns">
                     <TrippointSouvenirs trip={trip} point={point}/>

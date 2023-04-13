@@ -22,7 +22,7 @@ export function getName(person:Person):string{
     return person.first_name+" "+person.last_name;
 }
 export type TripPoint={
-    trip_point_id : number
+    trippoint_id : number
     title: string
     trip_id: number
     trip_order:number
@@ -46,8 +46,8 @@ export type Country={
 export type Souvenir={
     souvenir_id : number
     name: string
-    trip_point_id: number
-    city: string
+    trippoint_id: number
+    city?: string
     type: string
     material: string
     description: string
@@ -63,5 +63,5 @@ export type Sight={
 export type SightVisit={
     sight_id:number
     trippoint_id:number
-    date: string
+    date?: string
 }

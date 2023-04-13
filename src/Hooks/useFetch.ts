@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import {serverProperties} from "../././Server/ServerProperties";
+import {FetchResult} from "../Helpers/HelperTypes";
 
-function useFetch<Type>(url:string, refetchSwitch?:any):[Type|undefined, boolean, Error|null, Function] {
+function useFetch<Type>(url:string, refetchSwitch?:boolean):FetchResult<Type> {
     const [data, setData] = useState<Type>();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -22,23 +23,8 @@ function useFetch<Type>(url:string, refetchSwitch?:any):[Type|undefined, boolean
             });
     }, [url, refetchSwitch]);
 
-    function refetch () {
-        setLoading(true);
-        axios
-            .get(serverProperties.root+url)
-            .then((response) => {
-                setData(response.data);
-                console.log("refetched "+url)
-            })
-            .catch((err) => {
-                setError(err);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    }
 
-    return [ data, loading, error, refetch ];
+    return [ data, loading, error];
 }
 
 export default useFetch;

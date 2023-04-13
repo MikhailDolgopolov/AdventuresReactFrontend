@@ -3,13 +3,15 @@ import ReactDom from "react-dom";
 import {faXmark} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useScrollLock} from "../../Hooks/useScrollLock";
+import useFetch from "../../Hooks/useFetch";
+import {City} from "../../Helpers/DataTypes";
 
 function Modal({children, header, openRef, offToggle, freeClose}:{children: JSX.Element[]|JSX.Element, header:string,
     openRef:React.MutableRefObject<HTMLElement|null>, offToggle?:boolean, freeClose?:boolean}) {
+
     const [open, setOpen] = useState<boolean>();
     const [timer] = useState<NodeJS.Timeout | undefined>();
     const [wait, setWait] = useState<boolean>(true);
-    const [lockScroll, unlockScroll] = useScrollLock();
     useEffect(()=>{
         const openListener = (event: any)=>{
             if(openRef.current && openRef.current.contains(event.target)) {
@@ -35,10 +37,6 @@ function Modal({children, header, openRef, offToggle, freeClose}:{children: JSX.
     useEffect(()=>{
         setOpen(false)
     },[offToggle])
-    useEffect(()=>{
-        if (open) lockScroll();
-        else unlockScroll();
-        },[open])
     if(!open) return null;
     return ReactDom.createPortal(<>
         <div className="modal-overlay cover" onClick={()=>{

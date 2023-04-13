@@ -11,9 +11,10 @@ import Loading from "../Loading";
 import Modal from "../../Fragments/Modal";
 import useFetch from "../../../Hooks/useFetch";
 import {MyData} from "../../../Helpers/HelperTypes";
+import useSwitch from "../../../Hooks/useSwitch";
 
-function TripPoints({trip, data}:{trip:Trip, data:MyData}) {
-    const [trippoints, loadingTrippoints, errorLoadingTrippoints, refetchPoints] = useFetch<TripPoint[]>('trips/' + trip.trip_id + '/trippoints/')
+function TripPointsSection({trip, data,trippoints, setRefetch, refetchTrippoints}:{trip:Trip, data:MyData, trippoints:TripPoint[], setRefetch:Function, refetchTrippoints:boolean}) {
+
     const [addingCity, settingCityField] = useState<boolean>(false);
     const [addingPoints, settingPoints] = useState<boolean>(false);
     const [editingOrder, setEditOrder] = useState<boolean>(false);
@@ -24,13 +25,12 @@ function TripPoints({trip, data}:{trip:Trip, data:MyData}) {
     const addPointRef = useRef(null)
     let navigate = useNavigate()
 
-    if(!trippoints || !data.trippoints) return <LoadingError loadingObject={"trip points"} loading={loadingTrippoints || data.loading}/>
 
 
     function handleSubmit() {
         if(!titleField.current) return;
 
-        let seekDupNames = data.trippoints!.find(point => (titleField.current!.value == point.title));
+        let seekDupNames = trippoints!.find(point => (titleField.current!.value == point.title));
         if (seekDupNames) {
             alert("Taкая остановка уже добавлена.");
             settingPoints(true)
@@ -46,11 +46,11 @@ function TripPoints({trip, data}:{trip:Trip, data:MyData}) {
                 alert("Страна не введена")
                 return;
             }
-            console.log(JSON.stringify({city:selectedCity, country:selectedCountry}))
             post("cities/create/", JSON.stringify({city:selectedCity, country:selectedCountry}), true).then(() => {
                 post('trips/'+trip.trip_id+"/trippoints/create/",
                     JSON.stringify({title:titleField.current!.value, city:selectedCity, trip_order:data.trippoints!.length}))
                     .then(result=>{
+                        setRefetch()
                         data.functions.points()
                         settingPoints(false)
                     })
@@ -61,17 +61,17 @@ function TripPoints({trip, data}:{trip:Trip, data:MyData}) {
                 JSON.stringify({title:titleField.current!.value, city:selectedCity, trip_order:data.trippoints!.length}))
                 .then(result=>{
                     data.functions.points()
+                    setRefetch()
                     settingPoints(false)
                 })
         }
-
     }
     let singlePoint=trippoints&&trippoints.length<=1;
     const allPoints = trippoints!.map(point =>
-        <div className="flex-block full" key={point.trip_point_id}>
+        <div className="flex-block full" key={point.trippoint_id}>
             <button className="highlight" onClick={()=>{
                 if(!editingOrder)
-                    navigate('/trippoints/'+point.trip_point_id)
+                    navigate('/trippoints/'+point.trippoint_id)
             }}>
                 <h3>{point.title}</h3>
                 {(!singlePoint) && <h5>{point.city}</h5>}
@@ -83,18 +83,25 @@ function TripPoints({trip, data}:{trip:Trip, data:MyData}) {
                     <button className="order big center-child in-list" onClick={()=>{
                         if(!waitToOrder) {
                             setWait(true)
-                            post("trippoints/reorder/" + point.trip_point_id.toString(), "-1", true)
-                                .then(()=>refetchPoints())
+                            post("trippoints/reorder/" + point.trippoint_id.toString(), "-1", true)
+                                .then(()=>{
+                                    setRefetch()
+                                    setWait(false)
+                                })
                         }
                     }
                     }><FontAwesomeIcon icon={faAngleLeft} size="2xl"/></button>:
                     <div></div>}
-                {(point.trip_order+1<data.trippoints!.length)?
+                {(point.trip_order+1!=trippoints!.length)?
+
                     <button className="order big center-child" onClick={()=>{
                         if(!waitToOrder){
                             setWait(true)
-                            post("trippoints/reorder/"+point.trip_point_id.toString(), "1", true)
-                                .then(()=>refetchPoints())
+                            post("trippoints/reorder/"+point.trippoint_id.toString(), "1", true)
+                                .then(()=>{
+                                    setRefetch()
+                                    setWait(false)
+                                })
                         }
                     }
                     }><FontAwesomeIcon icon={faAngleRight} size='2xl'/></button>:
@@ -102,6 +109,7 @@ function TripPoints({trip, data}:{trip:Trip, data:MyData}) {
             </div>}
         </div>
     )
+
     return (
         <section>
             <h2>Остановки</h2>
@@ -109,7 +117,7 @@ function TripPoints({trip, data}:{trip:Trip, data:MyData}) {
                 {allPoints}
             </div>}
             <div className="row edges">
-                <Modal header={"Новая остановка"} openRef={addPointRef}>
+                <Modal header={"Новая остановка"} openRef={addPointRef} offToggle={refetchTrippoints}>
                         <div className="vert-window">
                             <div className="form-row">
                                 <label>Название: </label>
@@ -126,8 +134,8 @@ function TripPoints({trip, data}:{trip:Trip, data:MyData}) {
                             </div>
                             <div className="form-row">
                                 <input value={trip.trip_id} hidden={true} readOnly={true}/>
-                                <input name="trip_point_id" value={0} hidden={true} readOnly={true}/>
-                                <input name="trip_order" value={data.trippoints.length + 1} readOnly={true}
+                                <input name="trippoint_id" value={0} hidden={true} readOnly={true}/>
+                                <input name="trip_order" value={trippoints.length + 1} readOnly={true}
                                        hidden={true}/>
                             </div>
                             {addingCity &&
@@ -162,4 +170,4 @@ function TripPoints({trip, data}:{trip:Trip, data:MyData}) {
     );
 }
 
-export default TripPoints;
+export default TripPointsSection;

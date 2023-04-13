@@ -8,7 +8,7 @@ import Trips from "./Components/./Pages/TripPage/Trips";
 import EmptyRoute from "./Components/./Pages/EmptyRoute";
 import '././Styles/my_style.css'
 
-import StaticData from "./Components/./Pages/Data/StaticData";
+import StaticData from "./Components/./Pages/./Database/StaticData";
 import People from "./Components/./Pages/People/People";
 import Countries from "./Components/./Pages/Countries/Countries";
 import Points from "./Components/./Pages/TripPoint/Points";

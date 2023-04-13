@@ -1,16 +1,16 @@
-import {Sight, Souvenir} from "../../../Helpers/DataTypes";
+import {Sight, Souvenir} from "../../../../Helpers/DataTypes";
 import React from "react";
+import SightBlock from "./SightBlock";
 
 function SightList({sights}:{sights:Sight[]}) {
     const allSights = sights.map(s=>
-        <div className="flex-block full highlight" key={s.sight_id}>
-        <p>{s.name}</p>
-        </div>
+        <SightBlock s={s} key={s.sight_id}/>
 )
     return (
         <>{(allSights.length>0)&&<div className="flex-grid outline">
             {allSights}
-            </div>}</>
+        </div>}
+        </>
     );
 }
 export default SightList;

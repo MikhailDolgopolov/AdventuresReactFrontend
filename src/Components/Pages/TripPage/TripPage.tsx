@@ -3,7 +3,7 @@ import React, {useEffect, useRef, useState} from "react";
 import Loading from "../Loading";
 import {post} from "../../../Server/Requests";
 import {useNavigate} from "react-router-dom";
-import {Person, Trip, getName, getTripDate} from "../../../Helpers/DataTypes";
+import {Person, Trip, getName, getTripDate, TripPoint} from "../../../Helpers/DataTypes";
 import {MyData} from "../../../Helpers/HelperTypes"
 import Participant from "./Participant";
 import TitleSubtitle from "../../Fragments/TitleSubtitle";
@@ -11,22 +11,26 @@ import EditEntry from "../../Fragments/EditEntry"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, } from "@fortawesome/free-solid-svg-icons";
 
-import TripPoints from "./TripPoints";
+import TripPointsSection from "./TripPointsSection";
 import EditTripModal from "./EditTripModal";
 import useFetch from "../../../Hooks/useFetch";
 import LoadingError from "../LoadingError";
-import SouvenirsSection from "./SouvenirsSection";
-import SightsSection from "./SightsSection";
+import SouvenirsSection from "./Souvenirs/SouvenirsSection";
+import SightsSection from "./Sights/SightsSection";
+import useSwitch from "../../../Hooks/useSwitch";
 
 
 
 
 function TripPage({data, trip}:{data:MyData, trip:Trip}) {
     const navigate = useNavigate();
-    const [participants, loadParts, errorParts, refetchParts] = useFetch<Person[]>('trips/' + trip.trip_id + '/participants/')
-
+    const [refetchParts, flipRefetchParts] = useSwitch();
+    const [participants, loadParts] = useFetch<Person[]>('trips/' + trip.trip_id + '/participants/', refetchParts)
+    const [refetchTrippoints, flipRefetchPoints] = useSwitch();
+    const [trippoints, loadingTrippoints] = useFetch<TripPoint[]>('trips/' + trip.trip_id + '/trippoints/', refetchTrippoints)
     const [addingPeople, settingPeople] = useState<boolean>(false);
 
+    
     let editRef = useRef<HTMLButtonElement>(null)
 
 
@@ -37,9 +41,10 @@ function TripPage({data, trip}:{data:MyData, trip:Trip}) {
 
         }
     }
-    if (!participants) return <LoadingError loadingObject="participants" loading={loadParts}/>
+    if (!participants) return <LoadingError loadingObject="путешествие" loading={loadParts} wholePage={true}/>
+    if(!trippoints || !data.trippoints) return <LoadingError loadingObject={"trip points"} loading={loadingTrippoints || data.loading}/>
     const allParticipants = participants!.map(person =>
-        <Participant key={person.person_id} person={person} trip={trip} func={refetchParts}/>);
+        <Participant key={person.person_id} person={person} trip={trip} func={flipRefetchParts}/>);
     let options = data.people?data.people.map(person =>
         <option key={person.person_id} value={person.person_id}>
             {getName(person)}</option>):[]
@@ -55,7 +60,7 @@ function TripPage({data, trip}:{data:MyData, trip:Trip}) {
             let seek = participants!.find(person => (person.person_id == id))
             if (seek) return;
             post('trips/' + trip.trip_id.toString() + '/participants/add/',
-                '[' + event.target.value + ']').then(()=>refetchParts());
+                '[' + event.target.value + ']').then(()=>flipRefetchParts());
         }} onSubmit={() => {
             settingPeople(false);
         }
@@ -91,11 +96,11 @@ function TripPage({data, trip}:{data:MyData, trip:Trip}) {
                                 {(addingPeople)&& selectTag
                             }</div>
                         </section>
-                        <TripPoints trip={trip} data={data}/>
+                        <TripPointsSection trip={trip} data={data} trippoints={trippoints} refetchTrippoints={refetchTrippoints} setRefetch={flipRefetchParts}/>
                     </div>
                     <div className="flow-down">
-                        <SightsSection trip={trip}/>
-                        <SouvenirsSection trip={trip}/>
+                        <SightsSection trip={trip} points={trippoints} data={data}/>
+                        <SouvenirsSection trip={trip} points={trippoints}/>
                     </div>
                 </div>
             </div>
