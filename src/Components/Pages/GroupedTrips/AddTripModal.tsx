@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
 import {useForm} from "react-hook-form";
 import {Trip} from "../../../Helpers/DataTypes";
-import {post} from "../../../././Server/Requests";
+import {post} from "../../../Server/Requests";
 import Modal from "../../Fragments/Modal";
+
 import LoadingError from "../LoadingError";
+
 
 function AddTripModal({allTrips, addTripButton, onAdd}:{allTrips?:Trip[], onAdd:{():void}
     addTripButton:React.MutableRefObject<HTMLElement|null>}) {
@@ -19,7 +21,6 @@ function AddTripModal({allTrips, addTripButton, onAdd}:{allTrips?:Trip[], onAdd:
             post('trips/create/', JSON.stringify(data)).then(()=>{
                 setToggle(!toggleModal)
                 onAdd()
-                console.log("added")
             });
         }
     })

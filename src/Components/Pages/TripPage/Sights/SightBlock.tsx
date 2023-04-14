@@ -9,7 +9,6 @@ function SightBlock({s}:{s:Sight}) {
     const [closeModal, flip] = useSwitch()
     function deleteSight() {
         if(confirm("Вы собираетесь удалить "+s.name+". Продолжить?"))
-            console.log("deleting")
             post("sights/delete/", JSON.stringify(s)).then(()=>flip())
     }
     return (

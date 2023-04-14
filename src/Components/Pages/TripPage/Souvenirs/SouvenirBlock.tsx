@@ -11,14 +11,15 @@ import SearchInput from "../../../Fragments/SearchInput";
 function SouvenirBlock({s, onChange}:{s:Souvenir, onChange:()=>void}) {
     const editSouvenirRef = useRef(null)
     const [closeModal, flip] = useSwitch()
-    const [materials, loadMaterials] = useFetch<string[]>("souvenirs/materials/")
-    const [types, loadTypes] = useFetch<string[]>("souvenirs/types/")
+    const [materials] = useFetch<string[]>("souvenirs/materials/")
+    const [types] = useFetch<string[]>("souvenirs/types/")
     const [cities] = useFetch<City[]>("cities/")
     const [newMaterial, setMaterial] = useState<string>(s.material)
     const [newType, setType] = useState<string>(s.type)
+    const [newCity, setCity] = useState<string>(s.city)
     const {register, handleSubmit} = useForm<Souvenir>()
-    const shortSummary = <h3>{s.type&&<span>{s.type}</span>}{s.material&&<span> {s.material}</span>}</h3>
-    const cityFieldRef=useRef<HTMLInputElement>(null)
+    //const shortSummary = <h3>{s.type&&<span>{s.type}</span>}{s.material&&<span> {s.material}</span>}</h3>
+
     function deleteSouvenir() {
         if(confirm("Вы собираетесь удалить "+s.name+". Продолжить?"))
             post("souvenirs/delete/", JSON.stringify(s)).then(()=>{flip();onChange()})
@@ -27,8 +28,10 @@ function SouvenirBlock({s, onChange}:{s:Souvenir, onChange:()=>void}) {
         e!.preventDefault()
         newS.material=newMaterial;
         newS.type=newType;
-        newS.city = cityFieldRef.current!.value
-        console.log(newS)
+        newS.city = newCity;
+
+        post("souvenirs/update/", JSON.stringify(newS)).then(()=>{
+            flip();onChange()})
     })
     return (
         <>
@@ -37,10 +40,10 @@ function SouvenirBlock({s, onChange}:{s:Souvenir, onChange:()=>void}) {
                 <p></p>
                 {s.name}
                 {s.city&&<h5>{s.city}</h5>}
-
             </button>
             <Modal header="Изменить данные" openRef={editSouvenirRef} offToggle={closeModal}>
                 <form className="vert-window" onSubmit={saveSouvenir}>
+                    <input hidden={true} defaultValue={s.souvenir_id} {...register("souvenir_id")}/>
                     <div className="form-row">
                         <label>Название: </label>
                         <input defaultValue={s.name} {...register("name")}/>
@@ -62,7 +65,7 @@ function SouvenirBlock({s, onChange}:{s:Souvenir, onChange:()=>void}) {
                     <div className="form-row">
                         <label>Город: </label>
                         <SearchInput id={"citiesForS"} array={cities} stringify={(c)=>c.city} not_required={true}
-                             myRef={cityFieldRef} onSetValue={(s)=>(s)} defaultValue={s.city} onlySelect={true}/>
+                             onSetValue={(s)=>setCity(s)} defaultValue={s.city} onlySelect={true}/>
                     </div>
                     <div className="form-row">
                         <label>Описание: </label>

@@ -5,8 +5,8 @@ import Waiter from "../../Helpers/Waiter";
 
 function EmptyRoute({waiting}:{waiting?:string}) {
     return <Waiter delay={2.5}>
-        <Loading object={waiting}/>
-        <TitleSubtitle title={"Page not found"} subtitle={"Sorry, such page does not seem to exist..."}/>
+        <Loading object={waiting} wholePage={true}/>
+        <TitleSubtitle title={"Страница не существует"} subtitle={"Похоже, такой страницы не существует..."}/>
     </Waiter>
 }
 
