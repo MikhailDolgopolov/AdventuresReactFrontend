@@ -16,7 +16,7 @@ function AddSouvenirModal({points, openRef, onCommit}:{points:TripPoint[], openR
     const {register, handleSubmit} = useForm<Souvenir>()
     const [selectedMaterial,setMat]=useState("");
     const [selectedType, setType]=useState("");
-    const [selectedCity, setCity]=useState<string>();
+    const [selectedCity, setCity]=useState<string>("");
     const [materials, loadMaterials] = useFetch<string[]>("souvenirs/materials/")
     const [types, loadTypes] = useFetch<string[]>("souvenirs/types/")
     const [cities, loadCities]=useFetch<City[]>("cities/")

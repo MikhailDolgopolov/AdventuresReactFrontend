@@ -320,11 +320,18 @@ button.order{
   aspect-ratio: 1;
 }
 .form-row{
-  display: grid;
-  grid-template-columns: auto auto;
+  display: flex;
+  flex-flow: row nowrap;
+  /*grid-template-columns: auto auto;*/
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+}
+.form-row *:nth-child(1){
+  flex-basis: 40%;
+}
+.form-row *:nth-child(2){
+  flex-basis: 60%;
 }
 
 .form-row input:is(:focus, :focus-visible){
