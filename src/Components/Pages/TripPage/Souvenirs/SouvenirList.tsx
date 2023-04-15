@@ -1,11 +1,11 @@
-import React, {useRef, useState} from 'react';
-import {Souvenir} from "../../../../Helpers/DataTypes";
+import React from 'react';
+import {Souvenir, TripPoint} from "../../../../Helpers/DataTypes";
 import SouvenirBlock from "./SouvenirBlock";
 
-function SouvenirList({souvenirs, onChange}:{souvenirs:Souvenir[], onChange:()=>void}) {
+function SouvenirList({souvenirs, trippoints, onChange}:{souvenirs:Souvenir[], trippoints:TripPoint[], onChange:()=>void}) {
 
     const allSouvenirs = souvenirs.map(s=>
-        <SouvenirBlock s={s} key={s.souvenir_id} onChange={onChange}/>
+        <SouvenirBlock s={s} key={s.souvenir_id} onChange={onChange} trippoints={trippoints}/>
     )
     return (
         <>

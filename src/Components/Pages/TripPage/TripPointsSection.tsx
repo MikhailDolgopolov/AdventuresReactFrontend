@@ -1,19 +1,18 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPlus, faXmark, faAngleLeft, faAngleRight} from "@fortawesome/free-solid-svg-icons";
+import {faPlus,faAngleLeft, faAngleRight} from "@fortawesome/free-solid-svg-icons";
 import {City, Country, Trip, TripPoint} from "../../../Helpers/DataTypes";
 import SearchInput from "../../Fragments/SearchInput";
-import {post} from "../../../././Server/Requests";
-import useLogger from "../../../Hooks/useLogger";
+import {post} from "../../../Server/Requests";
 import {useNavigate} from "react-router-dom";
-import LoadingError from "../LoadingError";
+
 import Loading from "../Loading";
 import Modal from "../../Fragments/Modal";
-import useFetch from "../../../Hooks/useFetch";
-import {MyData} from "../../../Helpers/HelperTypes";
-import useSwitch from "../../../Hooks/useSwitch";
 
-function TripPointsSection({trip, data,trippoints, setRefetch, refetchTrippoints}:{trip:Trip, data:MyData, trippoints:TripPoint[], setRefetch:Function, refetchTrippoints:boolean}) {
+import {MyData} from "../../../Helpers/HelperTypes";
+
+
+function TripPointsSection({trip, data,trippoints, setRefetch, refetchTrippoints}:{trip:Trip, data:MyData, trippoints?:TripPoint[], setRefetch:Function, refetchTrippoints:boolean}) {
 
     const [addingCity, settingCityField] = useState<boolean>(false);
     const [addingPoints, settingPoints] = useState<boolean>(false);
@@ -49,7 +48,7 @@ function TripPointsSection({trip, data,trippoints, setRefetch, refetchTrippoints
             post("cities/create/", JSON.stringify({city:selectedCity, country:selectedCountry}), true).then(() => {
                 post('trips/'+trip.trip_id+"/trippoints/create/",
                     JSON.stringify({title:titleField.current!.value, city:selectedCity, trip_order:data.trippoints!.length}))
-                    .then(result=>{
+                    .then(()=>{
                         setRefetch()
                         data.functions.points()
                         settingPoints(false)
@@ -59,7 +58,7 @@ function TripPointsSection({trip, data,trippoints, setRefetch, refetchTrippoints
         }else {
             post('trips/'+trip.trip_id+"/trippoints/create/",
                 JSON.stringify({title:titleField.current!.value, city:selectedCity, trip_order:data.trippoints!.length}))
-                .then(result=>{
+                .then(()=>{
                     data.functions.points()
                     setRefetch()
                     settingPoints(false)
@@ -67,7 +66,7 @@ function TripPointsSection({trip, data,trippoints, setRefetch, refetchTrippoints
         }
     }
     let singlePoint=trippoints&&trippoints.length<=1;
-    const allPoints = trippoints!.map(point =>
+    const allPoints = trippoints?trippoints.map(point =>
         <div className="flex-block full" key={point.trippoint_id}>
             <button className="highlight" onClick={()=>{
                 if(!editingOrder)
@@ -108,57 +107,59 @@ function TripPointsSection({trip, data,trippoints, setRefetch, refetchTrippoints
                     <div></div>}
             </div>}
         </div>
-    )
+    ):[]
 
     return (
         <section>
             <h2>Остановки</h2>
+            {(!trippoints)&&<Loading object={"остановки"}/>}
             {(allPoints.length>0)&&<div className="flex-grid outline">
                 {allPoints}
             </div>}
             <div className="row edges">
-                <Modal header={"Новая остановка"} openRef={addPointRef} offToggle={refetchTrippoints}>
-                        <div className="vert-window">
-                            <div className="form-row">
-                                <label>Название: </label>
-                                <input ref={titleField} required={true}/>
-                            </div>
-                            <div className="form-row">
-                                <label>Город: </label>
-                                <SearchInput<City> id="city" array={data.cities!}
-                                                   stringify={(item) => item.city}
-                                                   onSetValue={(city) => {
-                                                       setSelectedCity(city)
-                                                   }}
-                                />
-                            </div>
-                            <div className="form-row">
-                                <input value={trip.trip_id} hidden={true} readOnly={true}/>
-                                <input name="trippoint_id" value={0} hidden={true} readOnly={true}/>
-                                <input name="trip_order" value={trippoints.length + 1} readOnly={true}
-                                       hidden={true}/>
-                            </div>
-                            {addingCity &&
-                                <div className="form-row">
-                                    <label>Страна: </label>
-                                    <SearchInput<Country> id={"country"} array={data.countries!} onlySelect={true}
-                                                          stringify={(country) => country.country}
-                                                          onSetValue={(value) => {
-                                                              console.log("clicked " + value)
-                                                              setCountry(value)
-                                                          }}/>
-                                </div>
-                            }
-                            <button onClick={handleSubmit}>Добавить</button>
+                {trippoints&& <Modal header={"Новая остановка"} openRef={addPointRef} offToggle={refetchTrippoints}>
+                    <div className="vert-window">
+                        <div className="form-row">
+                            <label>Название: </label>
+                            <input ref={titleField} required={true}/>
                         </div>
-                    </Modal>
+                        <div className="form-row">
+                            <label>Город: </label>
+                            <SearchInput<City> id="city" array={data.cities!}
+                                               stringify={(item) => item.city}
+                                               onSetValue={(city) => {
+                                                   setSelectedCity(city)
+                                               }}
+                            />
+                        </div>
+                        <div className="form-row">
+                            <input value={trip.trip_id} hidden={true} readOnly={true}/>
+                            <input name="trippoint_id" value={0} hidden={true} readOnly={true}/>
+                            <input name="trip_order" value={trippoints.length + 1} readOnly={true}
+                                   hidden={true}/>
+                        </div>
+                        {addingCity &&
+                            <div className="form-row">
+                                <label>Страна: </label>
+                                <SearchInput<Country> id={"country"} array={data.countries!} onlySelect={true}
+                                                      stringify={(country) => country.country}
+                                                      onSetValue={(value) => {
+                                                          console.log("clicked " + value)
+                                                          setCountry(value)
+                                                      }}/>
+                            </div>
+                        }
+                        <button onClick={handleSubmit}>Добавить</button>
+                    </div>
+                </Modal>
+                }
 
-                    <button className="big" ref={addPointRef}
-                            onClick={() => settingPoints(!addingPoints)}>
-                        <FontAwesomeIcon icon={faPlus} size="2x"/>
-                    </button>
+                <button className="big" ref={addPointRef}
+                        onClick={() => settingPoints(!addingPoints)}>
+                    <FontAwesomeIcon icon={faPlus} size="2x"/>
+                </button>
                 {!singlePoint && <div className="ordering outline">
-                    <input id="s" hidden={true} type="checkbox" onChange={(val) => setEditOrder(!editingOrder)} defaultValue={"false"}/>
+                    <input id="s" hidden={true} type="checkbox" onChange={() => setEditOrder(!editingOrder)} defaultValue={"false"}/>
                     <label htmlFor={"s"} className="sort" >
                         Изменить порядок
                     </label>

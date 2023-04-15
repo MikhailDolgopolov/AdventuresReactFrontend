@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {City, Souvenir} from "../../../../Helpers/DataTypes";
+import {City, Souvenir, TripPoint} from "../../../../Helpers/DataTypes";
 import Modal from "../../../Fragments/Modal";
 import {post} from "../../../../Server/Requests";
 import useSwitch from "../../../../Hooks/useSwitch";
@@ -7,9 +7,11 @@ import ButtonSelectWithInput from "../../../Fragments/ButtonSelectWithInput";
 import useFetch from "../../../../Hooks/useFetch";
 import {useForm} from "react-hook-form";
 import SearchInput from "../../../Fragments/SearchInput";
+import ButtonSelect from "../../../Fragments/ButtonSelect";
 
-function SouvenirBlock({s, onChange}:{s:Souvenir, onChange:()=>void}) {
+function SouvenirBlock({s, onChange, trippoints}:{s:Souvenir, onChange:()=>void, trippoints:TripPoint[]}) {
     const editSouvenirRef = useRef(null)
+    const [currPoint] = useFetch<TripPoint>("trippoints/"+s.trippoint_id)
     const [closeModal, flip] = useSwitch()
     const [materials] = useFetch<string[]>("souvenirs/materials/")
     const [types] = useFetch<string[]>("souvenirs/types/")
@@ -17,6 +19,7 @@ function SouvenirBlock({s, onChange}:{s:Souvenir, onChange:()=>void}) {
     const [newMaterial, setMaterial] = useState<string>(s.material)
     const [newType, setType] = useState<string>(s.type)
     const [newCity, setCity] = useState<string>(s.city)
+    const [newPoint, setPoint] = useState<number>(s.trippoint_id)
     const {register, handleSubmit} = useForm<Souvenir>()
     //const shortSummary = <h3>{s.type&&<span>{s.type}</span>}{s.material&&<span> {s.material}</span>}</h3>
 
@@ -29,7 +32,7 @@ function SouvenirBlock({s, onChange}:{s:Souvenir, onChange:()=>void}) {
         newS.material=newMaterial;
         newS.type=newType;
         newS.city = newCity;
-
+        newS.trippoint_id=newPoint;
         post("souvenirs/update/", JSON.stringify(newS)).then(()=>{
             flip();onChange()})
     })
@@ -48,14 +51,14 @@ function SouvenirBlock({s, onChange}:{s:Souvenir, onChange:()=>void}) {
                         <label>Название: </label>
                         <input defaultValue={s.name} {...register("name")}/>
                     </div>
-
+                    Материал:
                     {materials&&
                         <ButtonSelectWithInput<string> array={materials} id={"editMaterials"} defaultValue={s.material}
                                                                stringify={(s)=>s} onSelect={(s)=>{
                                                                    console.log(s)
                                                                     setMaterial(s)
                         }}/>}
-
+                    Тип:
                     {types&&
                         <ButtonSelectWithInput<string> array={types} id={"editTypes"} defaultValue={s.type}
                                                                stringify={(s)=>s} onSelect={(s)=>{
@@ -71,7 +74,8 @@ function SouvenirBlock({s, onChange}:{s:Souvenir, onChange:()=>void}) {
                         <label>Описание: </label>
                         <textarea defaultValue={s.description} {...register("description")}/>
                     </div>
-                    <input defaultValue={s.trippoint_id} {...register("trippoint_id")} hidden={true}/>
+                    {currPoint&&<ButtonSelect array={trippoints} id={"tp"} stringify={(tp)=>tp.title}
+                                  onSelect={(tp)=>setPoint(tp.trippoint_id)} defaultValue={currPoint.title}/>}
                     <div className="form-row">
                         <button type="submit">Сохранить</button>
                         <button type="button" onClick={deleteSouvenir}>Удалить</button>

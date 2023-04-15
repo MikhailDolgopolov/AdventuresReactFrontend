@@ -1,5 +1,5 @@
-import React, {useRef, useState} from 'react';
-import {City, Sight, SightVisit, Trip, TripPoint} from "../../../../Helpers/DataTypes";
+import React, {useEffect, useRef, useState} from 'react';
+import {City, Sight, SightVisit, SightVisitCombined, Trip, TripPoint} from "../../../../Helpers/DataTypes";
 import useFetch from "../../../../Hooks/useFetch";
 import LoadingError from "../../LoadingError";
 import SightList from "./SightList";
@@ -12,62 +12,74 @@ import SearchInput from "../../../Fragments/SearchInput";
 import {MyData} from "../../../../Helpers/HelperTypes";
 import moment from 'moment'
 import {post} from "../../../../Server/Requests";
-//
-// let moment = require('moment');
+import useSwitch from "../../../../Hooks/useSwitch";
+
 
 function SightsSection({trip, data, points}:{trip:Trip, data:MyData, points:TripPoint[]}) {
 
-    const [selectedPoint, setPoint] = useState<TripPoint>(points[0])
-    const [selectedCity, setCity] = useState<string>(selectedPoint.city)
-    const [selectedSight, setSight] = useState<string>()
-    const [selectedDate, setDate] = useState<Date>(new Date(trip.start_date))
-    const {register, handleSubmit} = useForm<Sight>()
-    const [sights, loadingSights] = useFetch<Sight[]>("sights/for_trip/"+trip.trip_id, selectedSight==undefined)
+    const [selectedPoint, setPoint] = useState<TripPoint>()
+    const [selectedCity, setCity] = useState<string>()
+    const [selectedSight, setSight] = useState<Sight>()
+    const [sightName, setSightName] = useState<string>("")
+    const [selectedDate, setDate] = useState<string>(trip.start_date)
+    const {register, handleSubmit} = useForm<SightVisitCombined>()
+    const [closeAdder, close] = useSwitch()
+    const [sights, loadingSights] = useFetch<SightVisitCombined[]>("sights/for_trip/"+trip.trip_id, closeAdder)
+
     const addSightRef = useRef(null)
-    const submit = handleSubmit((newSight)=>{
+    useEffect(()=>{
+        if(points.length>0) {
+            setPoint(points[0])
+            setCity(points[0].city)
+        }
+    },[])
+    const submit = handleSubmit((newVisit)=>{
         if(!selectedPoint) return
-        newSight.name=selectedSight!;
-        newSight.city=selectedCity;
-        let visit:SightVisit =
-            {sight_id:-1, trippoint_id:selectedPoint.trippoint_id,
-            date: moment(selectedDate, 'DD-MM-yyyy', true).format("DD-MM-yyyy")}
-        post("sights/create/", JSON.stringify(newSight)).then((res:string)=> {
-                visit.sight_id=parseInt(res)
-                post("sights/visit/", JSON.stringify(visit));
-                setSight(undefined)
-            }
-        )
+        newVisit.name=sightName;
+
+        newVisit.trippoint_id=selectedPoint.trippoint_id;
+        if(selectedCity) newVisit.city=selectedCity;
+        if(selectedSight){
+            newVisit.sight_id=selectedSight.sight_id;
+            newVisit.type=selectedSight.type;
+            newVisit.created_year=selectedSight.created_year;
+            newVisit.city=selectedSight.city;
+        }
+        newVisit.visited_date=selectedDate
+        console.log(newVisit)
+        post("sights/visit/", JSON.stringify(newVisit)).then(()=> {close();data.refetchFunction();});
     } )
     if(!sights) return <LoadingError loadingObject={"достопримечательности"} loading={loadingSights}/>
     return (
         <section>
             <h2>Достопримечательности</h2>
-            <Modal header={"Посещённое место"} openRef={addSightRef} offToggle={selectedSight==undefined}>
+            <Modal header={"Посещённое место"} openRef={addSightRef} offToggle={closeAdder}>
                 <form className="vert-window" onSubmit={submit}>
                     <p>Относится к остановке:</p>
                     <ButtonSelect<TripPoint> array={points} id={"trippoints"} stringify=
                         {(p) => p.title} onSelect={(p) => setPoint(p)}/>
                     <div className="form-row">
                         <label>Название</label>
-                        <SearchInput<Sight> id={"sightName"} array={data.sights}
-                                            stringify={(s)=>s.name} onSetValue={(s)=>setSight(s)}/>
+                        <SearchInput<Sight> id={"sightName"} array={data.sights} onSetValue={(s)=>setSightName(s)}
+                                            stringify={(s)=>s.name} onSetItem={(s)=>{setSight(s);
+                                                if(s) setCity(s.city)}}/>
                     </div>
                     <div className="form-row">
                         <label>Дата: </label>
-                        <input type="date" onChange={(event)=>{
-                            setDate(new Date(event.target.value))
+                        <input type="date"  autoComplete="off" {...register("visited_date")} onChange={(event)=>{
+                            setDate(event.target.value)
                         }}
                                defaultValue={moment(trip.start_date).format("yyyy-MM-DD")}/>
                     </div>
-                    <div className="form-row">
+                    {!selectedSight&&<div className="form-row">
                         <label>Город</label>
                         <SearchInput id={"sightCity"} array={data.cities} stringify={(c)=>c.city}
-                                     onSetValue={(s)=>setCity(s)} onlySelect={true} defaultValue={points[0].city}/>
-                    </div>
+                                     onSetValue={(s)=>setCity(s)} onlySelect={true}/>
+                    </div>}
                     <button type="submit">Добавить</button>
                 </form>
             </Modal>
-            <SightList sights={sights}/>
+            <SightList sights={sights} onChange={close} trippoints={points}/>
             <div className="row edges">
                 <button className="big" ref={addSightRef}>
                     <FontAwesomeIcon icon={faPlus} size="2x"/>

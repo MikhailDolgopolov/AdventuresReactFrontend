@@ -63,5 +63,15 @@ export type Sight={
 export type SightVisit={
     sight_id:number
     trippoint_id:number
-    date?: string
+    date: string
+}
+export type SightVisitCombined={
+    trippoint_id:number
+    visited_date: string;
+    sight_id:number
+    name:string
+    city:string
+    type: string
+    created_year:number
+    description: string
 }

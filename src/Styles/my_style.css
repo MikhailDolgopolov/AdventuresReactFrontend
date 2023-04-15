@@ -327,10 +327,10 @@ button.order{
   align-items: center;
   gap: 1rem;
 }
-.form-row *:nth-child(1){
+.form-row:not(.even) *:nth-child(1){
   flex-basis: 40%;
 }
-.form-row *:nth-child(2){
+.form-row:not(.even) *:nth-child(2){
   flex-basis: 60%;
 }
 

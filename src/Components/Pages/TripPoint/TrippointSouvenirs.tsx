@@ -1,65 +1,36 @@
-import React, {useEffect, useRef} from 'react';
-import Modal from "../../Fragments/Modal";
+import React, {useRef} from 'react';
+
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
-import {useForm} from "react-hook-form";
 import {Souvenir, Trip, TripPoint} from "../../../Helpers/DataTypes";
 import LoadingError from "../LoadingError";
 import useFetch from "../../../Hooks/useFetch";
 
-import SearchInput from "../../Fragments/SearchInput";
+
 import {post} from "../../../Server/Requests";
 import useSwitch from "../../../Hooks/useSwitch";
 import SouvenirList from "../TripPage/Souvenirs/SouvenirList";
-import ButtonSelect from "../../Fragments/ButtonSelect";
+import AddSouvenirModal from "../TripPage/Souvenirs/AddSouvenirModal";
+import Loading from "../Loading";
 
 function TrippointSouvenirs({trip, point}:{trip:Trip, point:TripPoint}) {
 
     const [refetch, setRefetch] = useSwitch()
-    const [souvenirs, loadingSouvenirs, errorSouvenirs] = useFetch<Souvenir[]>("souvenirs/for_trippoint/"+point.trippoint_id, refetch)
+    const [souvenirs, loadingSouvenirs] = useFetch<Souvenir[]>("souvenirs/for_trippoint/"+point.trippoint_id, refetch)
+    const [points] = useFetch<TripPoint[]>("trippoints/for_trip/"+point.trip_id)
+
     const addSouvenirRef = useRef(null)
-    const {register, handleSubmit} = useForm<Souvenir>()
+
     let souvenirType:string;
     if(!souvenirs) return <LoadingError loadingObject={"сувениры"} loading={loadingSouvenirs}/>
-    const onFormSubmit = (newSouvenir:Souvenir, e?: React.BaseSyntheticEvent)=>{
-        e!.preventDefault()
-        newSouvenir.type = souvenirType
-        console.log(newSouvenir)
-        post("souvenirs/create/", JSON.stringify(newSouvenir), true).then(()=>setRefetch())
-    }
 
-    const types:string[] = ["колокольчик", "остальное"]
     return (
         <div>
-            <Modal header={"Новый сувенир"} openRef={addSouvenirRef}>
-                <form className="vert-window" onSubmit={handleSubmit(onFormSubmit)}>
-
-                    <div className="form-row">
-                        <label>Название: </label>
-                        <input {...register("name")} required={true}/>
-                    </div>
-                    <div className="form-row">
-                        <label>Тип </label>
-                        <SearchInput<string> array={types} id={"souvtype"}
-                            stringify={(x:string)=>x} onSetValue={(val)=>souvenirType=val}/>
-                    </div>
-                    <div className="form-row">
-                        <label>Материал: </label>
-                        <input {...register("material")}/>
-                    </div>
-                    <div className="form-row">
-                        <label>Описание: </label>
-                        <input {...register("description")}/>
-                    </div>
-                    <input hidden={true} defaultValue={point.trippoint_id} {...register("trippoint_id")}/>
-                    <input hidden={true} defaultValue={point.city} {...register("city")}/>
-                    <button type={"submit"}>Click</button>
-                </form>
-            </Modal>
+            {points&&<AddSouvenirModal points={points} openRef={addSouvenirRef} onCommit={setRefetch}/>}
 
             <section>
                 <h2>Сувениры</h2>
-                <SouvenirList souvenirs={souvenirs} onChange={setRefetch}/>
+                {points?<SouvenirList souvenirs={souvenirs} onChange={setRefetch} trippoints={points}/>:<Loading object={"сувениры"}/>}
                 <button className="big" ref={addSouvenirRef}>
                     <FontAwesomeIcon icon={faPlus} size="2x"/>
                 </button>

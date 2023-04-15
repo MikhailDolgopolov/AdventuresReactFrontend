@@ -1,4 +1,4 @@
-
+import React from "react";
 
 function Loading({object, wholePage}:{object?:string, wholePage?:boolean}) {
     if(!object) object="";

@@ -18,6 +18,7 @@ function AddTripModal({allTrips, addTripButton, onAdd}:{allTrips?:Trip[], onAdd:
         if(seek){
             alert("Taкое путешествие уже добавлено.");
         }else{
+            console.log(JSON.stringify(data))
             post('trips/create/', JSON.stringify(data)).then(()=>{
                 setToggle(!toggleModal)
                 onAdd()
@@ -35,11 +36,11 @@ function AddTripModal({allTrips, addTripButton, onAdd}:{allTrips?:Trip[], onAdd:
                 </div>
                 <div className="form-row">
                     <label >Начало: </label>
-                    <input type="date" required={true} {...register("start_date")}/>
+                    <input type="date" required={true} {...register("start_date")} autoComplete="off"/>
                 </div>
                 <div className="form-row">
                     <label >Окончание: </label>
-                    <input type="date" {...register("end_date")}/>
+                    <input type="date" {...register("end_date")} autoComplete="off"/>
                 </div>
                 <div className="form-row">
                     <label >Описание: </label>

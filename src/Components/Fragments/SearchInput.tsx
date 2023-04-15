@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 
-function SearchInput<Type>({id, array,stringify, onSetValue, onlySelect, defaultValue, not_required}:
+function SearchInput<Type>({id, array,stringify, onSetValue, onSetItem, onlySelect, defaultValue, not_required}:
                                                               {id:string, array:Type[]|undefined, stringify:{(arg0: Type):string},not_required?:boolean
-                                                                  onSetValue:{(arg0:string):void}, onlySelect?:boolean, defaultValue?:string}) {
+                                                                  onSetItem?:{(arg0:Type|undefined):void}, onSetValue:{(arg0:string):void}, onlySelect?:boolean, defaultValue?:string}) {
     const [query, setQuery] = useState<string>("");
     const [isFocus, setIsFocus] = useState<boolean>(false);
     const [timer, setTimer] = useState<NodeJS.Timeout | undefined>();
@@ -23,6 +23,7 @@ function SearchInput<Type>({id, array,stringify, onSetValue, onlySelect, default
             setQuery(stringify(item))
             setIsFocus(false);
             onSetValue(stringify(item))
+            if(onSetItem) onSetItem(item)
         }}  >
             <p>{stringify(item)}</p>
         </div> ):[]
@@ -33,11 +34,13 @@ function SearchInput<Type>({id, array,stringify, onSetValue, onlySelect, default
         if(timer) {clearTimeout(timer); setTimer(undefined)}
         setIsFocus(true)
         if(!str) str=""
-        let empty=(array&&array.find(item=>(stringify(item)==str)))?str:""
+        const item =array?array.find(item=>(stringify(item)==str)):undefined
+        let empty=(array&&item)?str:""
         onSetValue(onlySelect?empty:query);
+        if(onSetItem) onSetItem(item)
         if(empty=="") t*=0.7
         setTimer(setTimeout(()=>{
-            if(onlySelect && empty=="") setQuery("")
+            //if(onlySelect && empty=="") setQuery("")
             setIsFocus(false)
             clearTimeout(timer)
         }, t*1000));

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 
 import Loading from "../Loading";
 import {post} from "../../../Server/Requests";
@@ -27,7 +27,7 @@ function TripPage({data, trip}:{data:MyData, trip:Trip}) {
     const [refetchParts, flipRefetchParts] = useSwitch();
     const [participants, loadParts] = useFetch<Person[]>('trips/' + trip.trip_id + '/participants/', refetchParts)
     const [refetchTrippoints, flipRefetchPoints] = useSwitch();
-    const [trippoints, loadingTrippoints] = useFetch<TripPoint[]>('trips/' + trip.trip_id + '/trippoints/', refetchTrippoints)
+    const [trippoints, loadingTrippoints] = useFetch<TripPoint[]>('trippoints/for_trip/' + trip.trip_id, refetchTrippoints)
     const [addingPeople, settingPeople] = useState<boolean>(false);
 
     
@@ -42,7 +42,7 @@ function TripPage({data, trip}:{data:MyData, trip:Trip}) {
         }
     }
     if (!participants) return <LoadingError loadingObject="путешествие" loading={loadParts} wholePage={true}/>
-    if(!trippoints || !data.trippoints) return <LoadingError loadingObject={"trip points"} loading={loadingTrippoints || data.loading}/>
+
     const allParticipants = participants!.map(person =>
         <Participant key={person.person_id} person={person} trip={trip} func={flipRefetchParts}/>);
     let options = data.people?data.people.map(person =>
@@ -99,7 +99,7 @@ function TripPage({data, trip}:{data:MyData, trip:Trip}) {
                         <TripPointsSection trip={trip} data={data} trippoints={trippoints} refetchTrippoints={refetchTrippoints} setRefetch={flipRefetchParts}/>
                     </div>
                     <div className="flow-down">
-                        <SightsSection trip={trip} points={trippoints} data={data}/>
+                        {trippoints&&<SightsSection trip={trip} points={trippoints} data={data}/>}
                         <SouvenirsSection trip={trip} points={trippoints}/>
                     </div>
                 </div>

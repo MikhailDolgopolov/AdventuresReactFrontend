@@ -19,7 +19,7 @@ function ButtonSelectWithInput<Type>({array, id, stringify, onSelect, defaultVal
         <ButtonSelect<Type> array={array} id={id} defaultValue={defaultValue} onSelect={(res)=>
         {inputChanged("");onSelect(res)}}
                             stringify={stringify} clearSwitch={inputValue} resetSwitch={inputCleared}>
-            <input value={inputValue} onChange={(event)=>inputChanged(event.target.value)}/>
+            <input value={inputValue} onChange={(event)=>inputChanged(event.target.value)} placeholder="Новое значение"/>
         </ButtonSelect>
     );
 }
