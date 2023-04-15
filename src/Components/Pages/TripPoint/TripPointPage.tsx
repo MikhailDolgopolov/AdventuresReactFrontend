@@ -11,6 +11,8 @@ import LoadingError from "../LoadingError";
 import useLogger from "../../../Hooks/useLogger";
 import useSwitch from "../../../Hooks/useSwitch";
 import {MyData} from "../../../Helpers/HelperTypes";
+import SightList from "../TripPage/Sights/SightList";
+import TrippointSights from "./TrippointSights";
 
 function TripPointPage({point, data}:{point:TripPoint, data:MyData}) {
     const [trip, loadingTrip] = useFetch<Trip>("trips/get/"+point.trip_id)
@@ -34,7 +36,12 @@ function TripPointPage({point, data}:{point:TripPoint, data:MyData}) {
                 }} editRef={editRef} cities={data.cities}/>
 
                 <div className="two-columns">
-                    <TrippointSouvenirs trip={trip} point={point}/>
+                    <div className="flow-down">
+                        <TrippointSouvenirs point={point}/>
+                    </div>
+                    <div className="flow-down">
+                        <TrippointSights point={point}/>
+                    </div>
                 </div>
             </div>
         </>
