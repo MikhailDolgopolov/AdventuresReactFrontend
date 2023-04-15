@@ -26,7 +26,6 @@ function SightBlock({s, onChange, trippoints}:{s:SightVisitCombined, onChange:()
     const onSubmit=handleSubmit((newVisit:SightVisitCombined, e?)=>{
         e!.preventDefault()
         newVisit.city=selectedCity;
-        console.log(selectedDate)
         newVisit.visited_date=selectedDate
         newVisit.type=selectedType;
         post("sights/update_visit/", JSON.stringify(newVisit)).then(()=>{flip();onChange();})
@@ -86,7 +85,6 @@ function SightBlock({s, onChange, trippoints}:{s:SightVisitCombined, onChange:()
                     <div className="form-row">
                         <label>Дата посещения: </label>
                         <input type="date" autoComplete="off" onChange={(event)=>{
-                            console.log(event.target.value)
                             setDate(event.target.value)
                         }}
                                defaultValue={s.visited_date} />

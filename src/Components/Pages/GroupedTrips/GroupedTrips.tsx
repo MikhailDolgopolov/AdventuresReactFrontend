@@ -27,7 +27,7 @@ export default function GroupedTrips({data}:{data:MyData}) {
                 <div className="top-row">
                     <div className="empty right">
                         <button ref={addTripButton} className="big center-child square">
-                            <FontAwesomeIcon icon={faPlus} size="lg"/>
+                            <FontAwesomeIcon icon={faPlus} size="2x"/>
                         </button>
                     </div>
 

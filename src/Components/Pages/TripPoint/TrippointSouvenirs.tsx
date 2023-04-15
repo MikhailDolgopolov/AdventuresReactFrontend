@@ -13,7 +13,7 @@ import SouvenirList from "../TripPage/Souvenirs/SouvenirList";
 import AddSouvenirModal from "../TripPage/Souvenirs/AddSouvenirModal";
 import Loading from "../Loading";
 
-function TrippointSouvenirs({trip, point}:{trip:Trip, point:TripPoint}) {
+function TrippointSouvenirs({point}:{ point:TripPoint}) {
 
     const [refetch, setRefetch] = useSwitch()
     const [souvenirs, loadingSouvenirs] = useFetch<Souvenir[]>("souvenirs/for_trippoint/"+point.trippoint_id, refetch)
@@ -21,21 +21,22 @@ function TrippointSouvenirs({trip, point}:{trip:Trip, point:TripPoint}) {
 
     const addSouvenirRef = useRef(null)
 
-    let souvenirType:string;
     if(!souvenirs) return <LoadingError loadingObject={"сувениры"} loading={loadingSouvenirs}/>
 
     return (
-        <div>
+        <>
             {points&&<AddSouvenirModal points={points} openRef={addSouvenirRef} onCommit={setRefetch}/>}
 
             <section>
                 <h2>Сувениры</h2>
                 {points?<SouvenirList souvenirs={souvenirs} onChange={setRefetch} trippoints={points}/>:<Loading object={"сувениры"}/>}
-                <button className="big" ref={addSouvenirRef}>
-                    <FontAwesomeIcon icon={faPlus} size="2x"/>
-                </button>
+                <div className="row edges">
+                    <button className="big" ref={addSouvenirRef}>
+                        <FontAwesomeIcon icon={faPlus} size="2x"/>
+                    </button>
+                </div>
             </section>
-        </div>
+        </>
     );
 }
 
