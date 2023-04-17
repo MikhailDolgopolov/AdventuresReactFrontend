@@ -12,8 +12,10 @@ import Statistics from "./Statistics";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import AddPersonModal from "./AddPersonModal";
+import useMyData from "../../../Hooks/useMyData";
 
 function StaticData({data}:{data:MyData}) {
+
     if(data.loading) return <LoadingError loadingObject={"данные"} loading={true} wholePage={true}/>
 
     const countryTable = data.countries!.map(

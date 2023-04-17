@@ -1,14 +1,19 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Country} from "../../../Helpers/DataTypes";
 import {Route, Routes} from "react-router-dom";
 import CountryPage from "./CountryPage";
 import EmptyRoute from "../EmptyRoute";
 import LoadingError from "../LoadingError";
+import {MyData} from "../../../Helpers/HelperTypes";
+import useFetch from "../../../Hooks/useFetch";
+import useSwitch from "../../../Hooks/useSwitch";
 
-function Countries({array}:{array?:Country[]}) {
-    if(!array) return <LoadingError loadingObject ="countries" loading={true}/>
-    const pages = array.map(country=>
-    <Route key = {country.country} path={country.country} element={<CountryPage country={country}/>}/>)
+function Countries() {
+    const [refetch, flip] = useSwitch()
+    const [countries, loadingCountries, error] = useFetch<Country[]>("countries/", refetch)
+    if(!countries) return <LoadingError loadingObject ="страны" loading={true}/>
+    const pages = countries.map(country=>
+    <Route key = {country.country} path={country.country} element={<CountryPage country={country} onChange={flip} />}/>)
     return (
         <Routes>
             {pages}

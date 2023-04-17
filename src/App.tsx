@@ -28,8 +28,8 @@ function App() {
                     <Route path='trips/*' element={<GroupedTrips data={myData}/>}/>
                     <Route path='trip/*' element={<Trips data={myData}/>}/>
                     <Route path='people/*' element={<People array={myData.people}/>}/>
-                    <Route path='countries/*' element={<Countries array={myData.countries}/>}/>
-                    <Route path='cities/*' element={<Cities array={myData.cities}/>}/>
+                    <Route path='countries/*' element={<Countries/>}/>
+                    <Route path='cities/*' element={<Cities/>}/>
                     <Route path='trippoints/*' element={<Points data={myData}/>}/>
                     <Route path='data/*' element={<StaticData data={myData}/>}/>
                     <Route path="*" element={<EmptyRoute/>}/>

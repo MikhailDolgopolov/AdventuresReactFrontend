@@ -55,14 +55,12 @@ function SouvenirBlock({s, onChange, trippoints}:{s:Souvenir, onChange:()=>void,
                     {materials&&
                         <ButtonSelectWithInput<string> array={materials} id={"editMaterials"} defaultValue={s.material}
                                                                stringify={(s)=>s} onSelect={(s)=>{
-                                                                   console.log(s)
                                                                     setMaterial(s)
                         }}/>}
                     Тип:
                     {types&&
                         <ButtonSelectWithInput<string> array={types} id={"editTypes"} defaultValue={s.type}
                                                                stringify={(s)=>s} onSelect={(s)=>{
-                                                                   console.log(s)
                                                                     setType(s)
                         }}/>}
                     <div className="form-row">

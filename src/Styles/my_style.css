@@ -328,10 +328,10 @@ button.order{
   gap: 1rem;
 }
 .form-row:not(.even) *:nth-child(1){
-  flex-basis: 40%;
+  flex-basis: 45%;
 }
 .form-row:not(.even) *:nth-child(2){
-  flex-basis: 60%;
+  flex-basis: 55%;
 }
 
 .form-row input:is(:focus, :focus-visible){
