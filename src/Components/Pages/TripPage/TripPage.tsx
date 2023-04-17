@@ -1,10 +1,8 @@
 import React, {useRef, useState} from "react";
 
-import Loading from "../Loading";
 import {post} from "../../../Server/Requests";
 import {useNavigate} from "react-router-dom";
 import {Person, Trip, getName, getTripDate, TripPoint} from "../../../Helpers/DataTypes";
-import {MyData} from "../../../Helpers/HelperTypes"
 import Participant from "./Participant";
 import TitleSubtitle from "../../Fragments/TitleSubtitle";
 import EditEntry from "../../Fragments/EditEntry"
@@ -22,12 +20,14 @@ import useSwitch from "../../../Hooks/useSwitch";
 
 
 
-function TripPage({data, trip}:{data:MyData, trip:Trip}) {
+function TripPage({trip}:{trip:Trip}) {
     const navigate = useNavigate();
+    const [refetch, flip] = useSwitch()
+    const [people, loadPeople] = useFetch<Person[]>("people/", refetch)
     const [refetchParts, flipRefetchParts] = useSwitch();
-    const [participants, loadParts] = useFetch<Person[]>('trips/' + trip.trip_id + '/participants/', refetchParts)
+    const [participants, loadParts] = useFetch<Person[]>('trips/' + trip.trip_id + '/participants/', refetchParts!=refetch)
     const [refetchTrippoints, flipRefetchPoints] = useSwitch();
-    const [trippoints, loadingTrippoints] = useFetch<TripPoint[]>('trippoints/for_trip/' + trip.trip_id, refetchTrippoints)
+    const [trippoints, loadingTrippoints] = useFetch<TripPoint[]>('trippoints/for_trip/' + trip.trip_id, refetchTrippoints!=refetch)
     const [addingPeople, settingPeople] = useState<boolean>(false);
 
     
@@ -45,7 +45,7 @@ function TripPage({data, trip}:{data:MyData, trip:Trip}) {
 
     const allParticipants = participants!.map(person =>
         <Participant key={person.person_id} person={person} trip={trip} func={flipRefetchParts}/>);
-    let options = data.people?data.people.map(person =>
+    let options = people?people.map(person =>
         <option key={person.person_id} value={person.person_id}>
             {getName(person)}</option>):[]
 
@@ -78,7 +78,7 @@ function TripPage({data, trip}:{data:MyData, trip:Trip}) {
             <TitleSubtitle title={trip.title+" "+trip.year} subtitle={getTripDate(trip)}/>
             <EditTripModal trip={trip} setTrip={res=>{
                 trip=res;
-                data.refetchFunction();
+                flip()
             }} editRef={editRef}/>
             <div className="side-margins">
                 <EditEntry onDelete={() => confirmDeletion()} onEdit={()=>{}} editRef={editRef}/>
@@ -96,10 +96,10 @@ function TripPage({data, trip}:{data:MyData, trip:Trip}) {
                                 {(addingPeople)&& selectTag
                             }</div>
                         </section>
-                        <TripPointsSection trip={trip} data={data} trippoints={trippoints} refetchTrippoints={refetchTrippoints} setRefetch={flipRefetchParts}/>
+                        <TripPointsSection trip={trip} pointsChanged={flipRefetchParts}/>
                     </div>
                     <div className="flow-down">
-                        {trippoints&&<SightsSection trip={trip} points={trippoints} data={data}/>}
+                        {trippoints&&<SightsSection trip={trip} points={trippoints}/>}
                         <SouvenirsSection trip={trip} points={trippoints}/>
                     </div>
                 </div>

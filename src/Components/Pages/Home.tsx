@@ -1,15 +1,14 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
 import TitleSubtitle from "../Fragments/TitleSubtitle";
-import {MyData} from "../../Helpers/HelperTypes";
 import LoadingError from "./LoadingError";
-import ConnectionProblems from "./ConnectionProblems";
+import useFetch from "../../Hooks/useFetch";
 
-const Home=({data}:{data:MyData})=> {
+function Home() {
     let navigate=useNavigate();
-    if (data.loading) return <LoadingError loading={true} loadingObject={"приложение"} wholePage={true}/>
-    if(data.error)
-        return <ConnectionProblems loading={data.loading} error={data.error} hideHomeButton={true}/>
+    const [result,load]=useFetch("")
+    if (!result) return <LoadingError loading={load} loadingObject={"приложение"} wholePage={true}/>
+
     return (
         <>
             <TitleSubtitle title={"Главная страница"} hideHomeButton={true}/>

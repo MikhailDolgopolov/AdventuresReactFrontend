@@ -4,7 +4,6 @@ import {Route, Routes} from "react-router-dom";
 import CountryPage from "./CountryPage";
 import EmptyRoute from "../EmptyRoute";
 import LoadingError from "../LoadingError";
-import {MyData} from "../../../Helpers/HelperTypes";
 import useFetch from "../../../Hooks/useFetch";
 import useSwitch from "../../../Hooks/useSwitch";
 

@@ -12,26 +12,24 @@ import StaticData from "./Components/./Pages/./Database/StaticData";
 import People from "./Components/./Pages/People/People";
 import Countries from "./Components/./Pages/Countries/Countries";
 import Points from "./Components/./Pages/TripPoint/Points";
-import useMyData from "./Hooks/useMyData";
 import Cities from "./Components/Pages/Cities/Cities";
 
 
 
 function App() {
-    const myData=useMyData()
 
     return (
         <div>
             <Router>
                 <Routes>
-                    <Route path='/' element={<Home data={myData}/>}/>
-                    <Route path='trips/*' element={<GroupedTrips data={myData}/>}/>
-                    <Route path='trip/*' element={<Trips data={myData}/>}/>
-                    <Route path='people/*' element={<People array={myData.people}/>}/>
+                    <Route path='/' element={<Home/>}/>
+                    <Route path='trips/*' element={<GroupedTrips/>}/>
+                    <Route path='trip/*' element={<Trips />}/>
+                    <Route path='people/*' element={<People />}/>
                     <Route path='countries/*' element={<Countries/>}/>
                     <Route path='cities/*' element={<Cities/>}/>
-                    <Route path='trippoints/*' element={<Points data={myData}/>}/>
-                    <Route path='data/*' element={<StaticData data={myData}/>}/>
+                    <Route path='trippoints/*' element={<Points/>}/>
+                    <Route path='data/*' element={<StaticData/>}/>
                     <Route path="*" element={<EmptyRoute/>}/>
                 </Routes>
             </Router>

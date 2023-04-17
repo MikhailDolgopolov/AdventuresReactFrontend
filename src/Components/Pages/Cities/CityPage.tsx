@@ -8,7 +8,7 @@ import {useNavigate} from "react-router-dom";
 function CityPage({city, onChange}:{city:City, onChange:()=>void}) {
     const navigate=useNavigate()
     let editRef = useRef<HTMLButtonElement>(null)
-    function deleteCountry(){
+    function deleteCity(){
         if(confirm("Вы собираетесь удалить все данные, связанные с "+city.city+". Продолжить?")){
             post("cities/delete/", city.city).then(()=>{
                 onChange()
@@ -20,7 +20,7 @@ function CityPage({city, onChange}:{city:City, onChange:()=>void}) {
         <>
             <TitleSubtitle title={city.city}/>
             <div className="side-margins">
-                <EditEntry onEdit={onChange} onDelete={() => {onChange();}} editRef={editRef}/>
+                <EditEntry onEdit={onChange} onDelete={deleteCity} editRef={editRef}/>
             </div>
         </>
     );

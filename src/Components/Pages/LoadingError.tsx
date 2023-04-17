@@ -9,7 +9,7 @@ function LoadingError({loadingObject, loading, wholePage}:{loadingObject:string,
         <Loading object={loadingObject} wholePage={wholePage}/>
         <>
             {wholePage?<h1>Ошибка загрузки</h1>:<h2>Ошибка загрузки</h2>}
-            <p>Не получилось загрузить {loadingObject}</p>
+            <div className="side-margins"><p>Не получилось загрузить {loadingObject}</p></div>
         </>
     </SmartWaiter>;
 }

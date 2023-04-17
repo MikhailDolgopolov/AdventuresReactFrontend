@@ -3,14 +3,14 @@ import {AdventuresStatistics} from "../../../Helpers/HelperTypes";
 import useFetch from "../../../Hooks/useFetch";
 import LoadingError from "../LoadingError";
 
-function Statistics() {
-    const [stats, loadingStats, errorStats] = useFetch<AdventuresStatistics>("statistics/")
-    if(!stats) return <LoadingError loadingObject="статистику" loading={loadingStats}/>
+function Statistics({data, loading}:{data?:AdventuresStatistics, loading:boolean}) {
+
+    if(!data) return <LoadingError loadingObject="статистику" loading={loading}/>
     return (
         <>
             <h2>Статистика</h2>
             {/*<h4>Из учтённого</h4>*/}
-            <p>Всего путешествий: <span>   </span>{stats.trips}</p>
+            <p>Всего путешествий: <span>   </span>{data.numberOfTrips}</p>
         </>
     );
 }

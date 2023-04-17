@@ -2,21 +2,23 @@ import React from 'react';
 import TripPage from "./TripPage";
 import {Route, Routes} from "react-router-dom";
 import EmptyRoute from "../EmptyRoute";
-import {MyData} from "../../../Helpers/HelperTypes";
 import LoadingError from "../LoadingError";
+import useFetch from "../../../Hooks/useFetch";
+import {Trip} from "../../../Helpers/DataTypes";
 
-function Trips({data}:{data:MyData}) {
-    if(!data.trips) return <LoadingError loadingObject={"путешествия"} loading={data.loading} wholePage={true}/>
+function Trips() {
+    const [trips, loading] = useFetch<Trip[]>("trips/")
+    if(!trips) return <LoadingError loadingObject={"путешествия"} loading={loading} wholePage={true}/>
     let routes=
-        data.trips.map(trip=>
+        trips.map(trip=>
             <Route path={trip.trip_id.toString()} key={trip.trip_id}
-                   element={<TripPage trip={trip} data={data}/>}>
+                   element={<TripPage trip={trip}/>}>
             </Route>
         )
     return (
         <Routes>
             {routes}
-            <Route path="*" element={<EmptyRoute waiting="trips"/>}/>
+            <Route path="*" element={<EmptyRoute waiting="путешествия"/>}/>
         </Routes>
     );
 }
