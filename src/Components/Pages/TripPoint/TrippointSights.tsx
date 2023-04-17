@@ -5,13 +5,11 @@ import SightList from "../TripPage/Sights/SightList";
 import LoadingError from "../LoadingError";
 import AddSightModal from "../TripPage/Sights/AddSightModal";
 import useSwitch from "../../../Hooks/useSwitch";
-import useMyData from "../../../Hooks/useMyData";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 
 function TrippointSights({point}:{point:TripPoint}) {
     const [modalSwitch, flip] = useSwitch()
-    const data = useMyData()
     const [sights, loadingSights] = useFetch<SightVisitCombined[]>("sights/for_trippoint/"+point.trippoint_id)
     const [points, loadingPoints] = useFetch<TripPoint[]>("trippoints/for_trip/"+point.trip_id)
     const addSightRef = useRef(null)
@@ -19,7 +17,7 @@ function TrippointSights({point}:{point:TripPoint}) {
     return (
         <section>
             <h2>Достопримечательности</h2>
-            <AddSightModal addSightRef={addSightRef} closeSwitch={modalSwitch} data={data} points={points} trip_id={point.trip_id}/>
+            <AddSightModal addSightRef={addSightRef} closeSwitch={modalSwitch} points={points} trip_id={point.trip_id} onChange={flip}/>
             <SightList sights={sights} trippoints={points} onChange={() => sights}/>
             <div className="row">
                 <button className="center-child big" ref={addSightRef}>

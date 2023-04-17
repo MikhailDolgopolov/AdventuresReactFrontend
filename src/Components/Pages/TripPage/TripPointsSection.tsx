@@ -9,11 +9,15 @@ import {useNavigate} from "react-router-dom";
 import Loading from "../Loading";
 import Modal from "../../Fragments/Modal";
 
-import {MyData} from "../../../Helpers/HelperTypes";
+import useFetch from "../../../Hooks/useFetch";
+import useSwitch from "../../../Hooks/useSwitch";
 
 
-function TripPointsSection({trip, data,trippoints, setRefetch, refetchTrippoints}:{trip:Trip, data:MyData, trippoints?:TripPoint[], setRefetch:Function, refetchTrippoints:boolean}) {
-
+function TripPointsSection({trip,pointsChanged}:{trip:Trip, pointsChanged:()=>void}) {
+    const [refetch, flip] = useSwitch()
+    const [trippoints] = useFetch<TripPoint[]>("trippoints/for_trip/"+trip.trip_id, refetch);
+    const [cities] = useFetch<City[]>("cities/")
+    const [countries] = useFetch<Country[]>("countries/")
     const [addingCity, settingCityField] = useState<boolean>(false);
     const [addingPoints, settingPoints] = useState<boolean>(false);
     const [editingOrder, setEditOrder] = useState<boolean>(false);
@@ -25,9 +29,8 @@ function TripPointsSection({trip, data,trippoints, setRefetch, refetchTrippoints
     let navigate = useNavigate()
 
 
-
     function handleSubmit() {
-        if(!titleField.current) return;
+        if(!titleField.current || !cities || !trippoints) return;
 
         let seekDupNames = trippoints!.find(point => (titleField.current!.value == point.title));
         if (seekDupNames) {
@@ -35,7 +38,7 @@ function TripPointsSection({trip, data,trippoints, setRefetch, refetchTrippoints
             settingPoints(true)
             return;
         }
-        let citySeek = data.cities!.find(city => (city.city == selectedCity));
+        let citySeek = cities.find(city => (city.city == selectedCity));
         if (!citySeek) {
             if(!addingCity){
                 settingCityField(true)
@@ -47,20 +50,20 @@ function TripPointsSection({trip, data,trippoints, setRefetch, refetchTrippoints
             }
             post("cities/create/", JSON.stringify({city:selectedCity, country:selectedCountry}), true).then(() => {
                 post('trips/'+trip.trip_id+"/trippoints/create/",
-                    JSON.stringify({title:titleField.current!.value, city:selectedCity, trip_order:data.trippoints!.length}))
+                    JSON.stringify({title:titleField.current!.value, city:selectedCity, trip_order:trippoints.length}))
                     .then(()=>{
-                        setRefetch()
-                        data.functions.points()
+                        flip()
+                        pointsChanged()
                         settingPoints(false)
                     })
             })
             settingCityField(false);
         }else {
             post('trips/'+trip.trip_id+"/trippoints/create/",
-                JSON.stringify({title:titleField.current!.value, city:selectedCity, trip_order:data.trippoints!.length}))
+                JSON.stringify({title:titleField.current!.value, city:selectedCity, trip_order:trippoints.length}))
                 .then(()=>{
-                    data.functions.points()
-                    setRefetch()
+                    flip()
+                    pointsChanged()
                     settingPoints(false)
                 })
         }
@@ -84,7 +87,7 @@ function TripPointsSection({trip, data,trippoints, setRefetch, refetchTrippoints
                             setWait(true)
                             post("trippoints/reorder/" + point.trippoint_id.toString(), "-1", true)
                                 .then(()=>{
-                                    setRefetch()
+                                    flip()
                                     setWait(false)
                                 })
                         }
@@ -98,7 +101,7 @@ function TripPointsSection({trip, data,trippoints, setRefetch, refetchTrippoints
                             setWait(true)
                             post("trippoints/reorder/"+point.trippoint_id.toString(), "1", true)
                                 .then(()=>{
-                                    setRefetch()
+                                    flip()
                                     setWait(false)
                                 })
                         }
@@ -117,7 +120,7 @@ function TripPointsSection({trip, data,trippoints, setRefetch, refetchTrippoints
                 {allPoints}
             </div>}
             <div className="row edges">
-                {trippoints&& <Modal header={"Новая остановка"} openRef={addPointRef} offToggle={refetchTrippoints}>
+                {trippoints&& <Modal header={"Новая остановка"} openRef={addPointRef} offToggle={refetch}>
                     <div className="vert-window">
                         <div className="form-row">
                             <label>Название: </label>
@@ -125,7 +128,7 @@ function TripPointsSection({trip, data,trippoints, setRefetch, refetchTrippoints
                         </div>
                         <div className="form-row">
                             <label>Город: </label>
-                            <SearchInput<City> id="city" array={data.cities!}
+                            <SearchInput<City> id="city" array={cities}
                                                stringify={(item) => item.city}
                                                onSetValue={(city) => {
                                                    setSelectedCity(city)
@@ -141,7 +144,7 @@ function TripPointsSection({trip, data,trippoints, setRefetch, refetchTrippoints
                         {addingCity &&
                             <div className="form-row">
                                 <label>Страна: </label>
-                                <SearchInput<Country> id={"country"} array={data.countries!} onlySelect={true}
+                                <SearchInput<Country> id={"country"} array={countries} onlySelect={true}
                                                       stringify={(country) => country.country}
                                                       onSetValue={(value) => {
                                                           console.log("clicked " + value)

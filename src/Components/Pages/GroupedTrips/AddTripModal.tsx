@@ -11,7 +11,7 @@ function AddTripModal({allTrips, addTripButton, onAdd}:{allTrips?:Trip[], onAdd:
     addTripButton:React.MutableRefObject<HTMLElement|null>}) {
     const [toggleModal, setToggle] = useState<boolean>(true);
     const {register, handleSubmit} = useForm<Trip>();
-    if(!allTrips) return <LoadingError loadingObject={"trips"} loading={true}/>
+    if(!allTrips) return <></>
 
     const onSubmit = handleSubmit((data)=>{
         let seek = allTrips.find(trip=>(data.title==trip.title));

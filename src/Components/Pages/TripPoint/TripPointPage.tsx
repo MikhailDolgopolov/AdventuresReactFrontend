@@ -8,17 +8,13 @@ import EditTripPointModal from "./EditTripPointModal";
 import TrippointSouvenirs from "./TrippointSouvenirs";
 import useFetch from "../../../Hooks/useFetch";
 import LoadingError from "../LoadingError";
-import useLogger from "../../../Hooks/useLogger";
-import useSwitch from "../../../Hooks/useSwitch";
-import {MyData} from "../../../Helpers/HelperTypes";
-import SightList from "../TripPage/Sights/SightList";
 import TrippointSights from "./TrippointSights";
 
-function TripPointPage({point, data}:{point:TripPoint, data:MyData}) {
+function TripPointPage({point, cities, onChange}:{point:TripPoint, cities:City[], onChange:()=>void}) {
     const [trip, loadingTrip] = useFetch<Trip>("trips/get/"+point.trip_id)
     const editRef = useRef<HTMLButtonElement>(null);
     let navigate=useNavigate()
-    if(!trip || !data.cities) return <LoadingError loadingObject={point.title} loading={loadingTrip} wholePage={true}/>
+    if(!trip || !cities) return <LoadingError loadingObject={point.title} loading={loadingTrip} wholePage={true}/>
     function confirmDeletion() {
         if (confirm("Вы собираетесь удалить все данные, связанные с " + point.title + ". Продолжить?")) {
             post("trippoints/delete/", point.trippoint_id.toString(),true)
@@ -32,8 +28,8 @@ function TripPointPage({point, data}:{point:TripPoint, data:MyData}) {
                 <EditEntry onEdit={() => {}} onDelete={confirmDeletion} editRef={editRef}/>
                 <EditTripPointModal point={point} setPoint={res=>{
                     point=res
-                    data.functions.points();
-                }} editRef={editRef} cities={data.cities}/>
+                    onChange();
+                }} editRef={editRef} cities={cities}/>
 
                 <div className="two-columns">
                     <div className="flow-down">

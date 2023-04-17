@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
 import "../../.././Styles/DataStyles.css"
-import {MyData} from "../../../Helpers/HelperTypes";
+import {AdventuresStatistics} from "../../../Helpers/HelperTypes";
 import TitleSubtitle from "../../Fragments/TitleSubtitle";
 import LoadingError from "../LoadingError";
 import CityRow from "./Rows/CityRow";
@@ -12,22 +12,23 @@ import Statistics from "./Statistics";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import AddPersonModal from "./AddPersonModal";
-import useMyData from "../../../Hooks/useMyData";
+import useFetch from "../../../Hooks/useFetch";
 
-function StaticData({data}:{data:MyData}) {
+function StaticData() {
+    const [stats, loadingStats] = useFetch<AdventuresStatistics>("statistics/")
 
-    if(data.loading) return <LoadingError loadingObject={"данные"} loading={true} wholePage={true}/>
-
-    const countryTable = data.countries!.map(
-        country=><CountryRow key={country.country} prop={country}/>)
-    const cityTable=data.cities!.map(city=>
-        <CityRow key={city.city} prop={city}/>)
-    const personTable=data.people!.map(
-        person=><PersonRow key={person.person_id} prop={person}/>
-    )
     const addCountryRef = useRef(null)
     const addCityRef = useRef(null)
     const addPersonRef = useRef(null)
+    if(!stats) return <LoadingError loadingObject={"данные"} loading={loadingStats} wholePage={true}/>
+    const countryTable = stats.countries.map(
+        country=><CountryRow key={country.country} prop={country}/>)
+    const cityTable=stats.cities.map(city=>
+        <CityRow key={city.city} prop={city}/>)
+    const personTable=stats.people.map(
+        person=><PersonRow key={person.person_id} prop={person}/>
+    )
+
     return (<>
         <TitleSubtitle title={"База данных"}/>
         <AddCountryModal onAdd={()=>{}} addCountryButton={addCountryRef}/>
@@ -95,7 +96,7 @@ function StaticData({data}:{data:MyData}) {
                     </table>
                 </section>
                 <section>
-                   <Statistics/>
+                   <Statistics data={stats} loading={loadingStats}/>
                 </section>
             </div>
         </div>

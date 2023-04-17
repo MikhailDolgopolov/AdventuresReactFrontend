@@ -6,7 +6,7 @@ function Loading({object, wholePage}:{object?:string, wholePage?:boolean}) {
         <>
             {wholePage?<h1>{"Загрузка "+object}</h1> : <h2> Загрузка {object}</h2>}
 
-            {object&&<span>Пытаемся загрузить {object}</span>}
+            <div className="side-margins">{object && <span>Пытаемся загрузить {object}</span>}</div>
 
         </>
     );
