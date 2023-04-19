@@ -2,12 +2,11 @@ import React, {useRef} from 'react';
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
-import {Souvenir, Trip, TripPoint} from "../../../Helpers/DataTypes";
+import {Souvenir, TripPoint} from "../../../Helpers/DataTypes";
 import LoadingError from "../LoadingError";
 import useFetch from "../../../Hooks/useFetch";
 
 
-import {post} from "../../../Server/Requests";
 import useSwitch from "../../../Hooks/useSwitch";
 import SouvenirList from "../TripPage/Souvenirs/SouvenirList";
 import AddSouvenirModal from "../TripPage/Souvenirs/AddSouvenirModal";

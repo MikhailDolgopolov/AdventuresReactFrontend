@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {serverProperties} from "../././Server/ServerProperties";
+import {serverProperties} from "../Server/ServerProperties";
 import {FetchResult} from "../Helpers/HelperTypes";
 
 function useFetch<Type>(url:string, refetchSwitch?:boolean):FetchResult<Type> {

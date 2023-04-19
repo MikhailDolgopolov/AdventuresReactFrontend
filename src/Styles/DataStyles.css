@@ -13,9 +13,6 @@ th{
 tr.button{
     text-align: center;
 }
-.hoverable.table:hover{
-    outline: var(--ui-high-contrast) solid 1px;
-}
 
 @media (orientation: portrait) {
 

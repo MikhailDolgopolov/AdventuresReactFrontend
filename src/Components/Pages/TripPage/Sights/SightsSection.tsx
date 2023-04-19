@@ -1,5 +1,5 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {City, Sight, SightVisit, SightVisitCombined, Trip, TripPoint} from "../../../../Helpers/DataTypes";
+import React, {useRef} from 'react';
+import {SightVisitCombined, Trip, TripPoint} from "../../../../Helpers/DataTypes";
 import useFetch from "../../../../Hooks/useFetch";
 import LoadingError from "../../LoadingError";
 import SightList from "./SightList";

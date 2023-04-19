@@ -1,10 +1,6 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import {Souvenir, Trip, TripPoint} from "../../../../Helpers/DataTypes";
 import useFetch from "../../../../Hooks/useFetch";
-import LoadingError from "../../LoadingError";
-import Modal from "../../../Fragments/Modal";
-import {useForm} from "react-hook-form";
-import MyInput from "../../../../Helpers/MyInput";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import SouvenirList from "./SouvenirList";

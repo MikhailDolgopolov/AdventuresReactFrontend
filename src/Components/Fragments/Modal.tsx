@@ -2,9 +2,6 @@ import React, {useEffect, useState} from 'react';
 import ReactDom from "react-dom";
 import {faXmark} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useScrollLock} from "../../Hooks/useScrollLock";
-import useFetch from "../../Hooks/useFetch";
-import {City} from "../../Helpers/DataTypes";
 
 function Modal({children, header, openRef, offToggle, freeClose}:{children: JSX.Element[]|JSX.Element, header:string,
     openRef:React.MutableRefObject<HTMLElement|null>, offToggle?:boolean, freeClose?:boolean}) {

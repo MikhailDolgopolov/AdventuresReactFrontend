@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {AdventuresStatistics} from "../../../Helpers/HelperTypes";
-import useFetch from "../../../Hooks/useFetch";
 import LoadingError from "../LoadingError";
 
 function Statistics({data, loading}:{data?:AdventuresStatistics, loading:boolean}) {

@@ -1,7 +1,7 @@
 import {City, TripPoint} from "../../../Helpers/DataTypes";
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import {post} from "../../../././Server/Requests";
+import {post} from "../../../Server/Requests";
 import Modal from "../../Fragments/Modal";
 import SearchInput from "../../Fragments/SearchInput";
 
@@ -13,10 +13,6 @@ function EditTripPointModal({point, editRef, setPoint, cities}:
     const [selectedCity, setCity] = useState<string>(point.city)
     const onSubmit = handleSubmit((data)=>{
         data.city=selectedCity
-        if(selectedCity==data.city && point.title==data.title) {
-            alert("Значения либо не были изменены, либо были изменены на некорректные. Данные не будут изменены.")
-            return
-        }
 
         post("trippoints/update/", JSON.stringify(data)).then((res)=> {
             setToggle(!toggle)
@@ -34,7 +30,7 @@ function EditTripPointModal({point, editRef, setPoint, cities}:
                 <div className="form-row">
                     <label>Город: </label>
                     <SearchInput<City> id="city" array={cities} defaultValue={point.city}
-                                       stringify={(item) => item.city}
+                                       stringify={(item) => item.city} not_required={true}
                                        onSetValue={(city) => {setCity(city)}}
                     />
                 </div>

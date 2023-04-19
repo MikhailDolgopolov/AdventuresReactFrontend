@@ -3,7 +3,6 @@ import React from 'react';
 import useFetch from "../../../Hooks/useFetch";
 import YearEntry from "./YearEntry";
 import LoadingError from "../LoadingError";
-import useLogger from "../../../Hooks/useLogger";
 
 function YearSplitTrips({tripsChanged}:{tripsChanged:boolean}) {
     const [years, loadYears, errorYears]=useFetch<number[]>("trips/years/", tripsChanged)

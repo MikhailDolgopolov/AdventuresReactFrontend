@@ -1,13 +1,7 @@
 import {serverProperties}  from "./ServerProperties";
 import * as React from "react";
 
-export async function getRequest(uri: string):Promise<Response> {
-    const requestOptions = {
-        method: 'GET',
-    };
-    return fetch(serverProperties.root+uri, requestOptions);
 
-}
 
 export async function postRequest(uri:string, json:string):Promise<Response>{
     const requestOptions = {

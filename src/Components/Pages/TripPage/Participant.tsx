@@ -1,5 +1,5 @@
 import React from 'react';
-import {post} from "../../../././Server/Requests";
+import {post} from "../../../Server/Requests";
 import {getName, Person, Trip} from "../../../Helpers/DataTypes";
 import { FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faXmark} from "@fortawesome/free-solid-svg-icons";

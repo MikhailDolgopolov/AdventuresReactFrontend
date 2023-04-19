@@ -2,7 +2,7 @@ import React, {useRef} from 'react';
 import {City, Trip, TripPoint} from "../../../Helpers/DataTypes";
 import TitleSubtitle from "../../Fragments/TitleSubtitle";
 import EditEntry from "../../Fragments/EditEntry";
-import {post} from "../../../././Server/Requests";
+import {post} from "../../../Server/Requests";
 import {useNavigate} from "react-router-dom";
 import EditTripPointModal from "./EditTripPointModal";
 import TrippointSouvenirs from "./TrippointSouvenirs";
@@ -11,7 +11,7 @@ import LoadingError from "../LoadingError";
 import TrippointSights from "./TrippointSights";
 
 function TripPointPage({point, cities, onChange}:{point:TripPoint, cities:City[], onChange:()=>void}) {
-    const [trip, loadingTrip] = useFetch<Trip>("trips/get/"+point.trip_id)
+    const [trip, loadingTrip] = useFetch<Trip>("trips/"+point.trip_id)
     const editRef = useRef<HTMLButtonElement>(null);
     let navigate=useNavigate()
     if(!trip || !cities) return <LoadingError loadingObject={point.title} loading={loadingTrip} wholePage={true}/>

@@ -1,5 +1,4 @@
-import {City, Country, Person, Sight, Trip, TripPoint} from "./DataTypes";
-import points from "../Components/Pages/TripPoint/Points";
+import {City, Country, Person} from "./DataTypes";
 
 export type AdventuresStatistics={
     countries:Country[]

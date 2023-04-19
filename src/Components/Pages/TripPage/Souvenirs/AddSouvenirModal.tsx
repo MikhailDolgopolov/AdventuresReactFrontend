@@ -1,7 +1,6 @@
-import React, {useRef, useState} from 'react';
-import TrippointsList from "../TrippointsList";
+import React, {useState} from 'react';
 import Modal from "../../../Fragments/Modal";
-import {City, Sight, Souvenir, Trip, TripPoint} from "../../../../Helpers/DataTypes";
+import {City, Souvenir, TripPoint} from "../../../../Helpers/DataTypes";
 import ButtonSelect from "../../../Fragments/ButtonSelect";
 import {useForm} from "react-hook-form";
 import useFetch from "../../../../Hooks/useFetch";
@@ -19,7 +18,7 @@ function AddSouvenirModal({points, openRef, onCommit}:{points:TripPoint[], openR
     const [selectedCity, setCity]=useState<string>("");
     const [materials, loadMaterials] = useFetch<string[]>("souvenirs/materials/")
     const [types, loadTypes] = useFetch<string[]>("souvenirs/types/")
-    const [cities, loadCities]=useFetch<City[]>("cities/")
+    const [cities]=useFetch<City[]>("cities/")
     const [close, closeModal] = useSwitch();
     if(!materials || !types) return <LoadingError loadingObject={"параметры"} loading={loadMaterials||loadTypes} wholePage={true}/>
 

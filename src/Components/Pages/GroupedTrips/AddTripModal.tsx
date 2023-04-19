@@ -4,8 +4,6 @@ import {Trip} from "../../../Helpers/DataTypes";
 import {post} from "../../../Server/Requests";
 import Modal from "../../Fragments/Modal";
 
-import LoadingError from "../LoadingError";
-
 
 function AddTripModal({allTrips, addTripButton, onAdd}:{allTrips?:Trip[], onAdd:{():void}
     addTripButton:React.MutableRefObject<HTMLElement|null>}) {

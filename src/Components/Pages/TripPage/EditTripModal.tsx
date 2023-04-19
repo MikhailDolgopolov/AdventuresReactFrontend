@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Modal from "../../Fragments/Modal";
 import {useForm} from "react-hook-form";
 import {Trip} from "../../../Helpers/DataTypes";
-import {post} from "../../../././Server/Requests";
+import {post} from "../../../Server/Requests";
 import {redirect} from "react-router-dom";
 
 function EditTripModal({trip, editRef, onChange}:{trip:Trip, onChange:()=>void,

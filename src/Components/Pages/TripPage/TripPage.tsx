@@ -96,7 +96,7 @@ function TripPage({trip, onChange}:{trip:Trip, onChange:()=>void}) {
                                 {(addingPeople)&& selectTag
                             }</div>
                         </section>
-                        <TripPointsSection trip={trip} pointsChanged={flipRefetchParts}/>
+                        <TripPointsSection trip={trip} onChange={flipRefetchPoints}/>
                     </div>
                     <div className="flow-down">
                         {trippoints&&<SightsSection trip={trip} points={trippoints}/>}

@@ -1,11 +1,11 @@
 import YearSplitTrips from "../GroupedTrips/YearSplitTrips";
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import TitleSubtitle from "../../Fragments/TitleSubtitle";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import AddTripModal from "./AddTripModal";
 import useSwitch from "../../../Hooks/useSwitch";
-import {Country, Trip} from "../../../Helpers/DataTypes";
+import {Trip} from "../../../Helpers/DataTypes";
 import useFetch from "../../../Hooks/useFetch";
 
 

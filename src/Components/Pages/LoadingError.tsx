@@ -1,6 +1,4 @@
 import React from 'react';
-import Waiter from "../../Helpers/Waiter";
-import TitleSubtitle from "../Fragments/TitleSubtitle";
 import Loading from "./Loading";
 import SmartWaiter from "../../Helpers/SmartWaiter";
 

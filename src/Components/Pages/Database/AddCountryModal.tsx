@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-import {Country, Trip} from "../../../Helpers/DataTypes";
+import React from 'react';
+import {Country} from "../../../Helpers/DataTypes";
 import Modal from "../../Fragments/Modal";
-import {post} from "../../../././Server/Requests";
+import {post} from "../../../Server/Requests";
 import {useForm} from "react-hook-form";
 import useSwitch from "../../../Hooks/useSwitch";
 

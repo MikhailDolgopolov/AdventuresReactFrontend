@@ -11,9 +11,10 @@ import Modal from "../../Fragments/Modal";
 
 import useFetch from "../../../Hooks/useFetch";
 import useSwitch from "../../../Hooks/useSwitch";
+import {useForm} from "react-hook-form";
 
 
-function TripPointsSection({trip,pointsChanged}:{trip:Trip, pointsChanged:()=>void}) {
+function TripPointsSection({trip,onChange}:{trip:Trip, onChange:()=>void}) {
     const [refetch, flip] = useSwitch()
     const [trippoints] = useFetch<TripPoint[]>("trippoints/for_trip/"+trip.trip_id, refetch);
     const [cities] = useFetch<City[]>("cities/")
@@ -25,21 +26,24 @@ function TripPointsSection({trip,pointsChanged}:{trip:Trip, pointsChanged:()=>vo
     const titleField = useRef<HTMLInputElement>(null);
     const [selectedCountry, setCountry]=useState<string>("");
     const [selectedCity, setSelectedCity] = useState<string>("");
+    const {register, handleSubmit} = useForm<TripPoint>()
     const addPointRef = useRef(null)
     let navigate = useNavigate()
 
 
-    function handleSubmit() {
-        if(!titleField.current || !cities || !trippoints) return;
-
-        let seekDupNames = trippoints!.find(point => (titleField.current!.value == point.title));
+    const onSubmit=handleSubmit((data:TripPoint, e?:React.BaseSyntheticEvent)=> {
+        if(!cities || !trippoints) return;
+        
+        let seekDupNames = trippoints!.find(point => (data.title == point.title));
         if (seekDupNames) {
             alert("Taкая остановка уже добавлена.");
             settingPoints(true)
             return;
         }
         let citySeek = cities.find(city => (city.city == selectedCity));
-        if (!citySeek) {
+        data.trip_order=trippoints.length+1
+        console.log(data.trip_order)
+        if (!citySeek && selectedCity.length>0) {
             if(!addingCity){
                 settingCityField(true)
                 return;
@@ -48,26 +52,26 @@ function TripPointsSection({trip,pointsChanged}:{trip:Trip, pointsChanged:()=>vo
                 alert("Страна не введена")
                 return;
             }
+            data.city=selectedCity;
             post("cities/create/", JSON.stringify({city:selectedCity, country:selectedCountry}), true).then(() => {
-                post('trips/'+trip.trip_id+"/trippoints/create/",
-                    JSON.stringify({title:titleField.current!.value, city:selectedCity, trip_order:trippoints.length}))
+                post("trippoints/create/", JSON.stringify(data))
                     .then(()=>{
                         flip()
-                        pointsChanged()
+                        onChange()
                         settingPoints(false)
                     })
             })
             settingCityField(false);
-        }else {
-            post('trips/'+trip.trip_id+"/trippoints/create/",
-                JSON.stringify({title:titleField.current!.value, city:selectedCity, trip_order:trippoints.length}))
+        }
+        else {
+            post("trippoints/create/", JSON.stringify(data))
                 .then(()=>{
                     flip()
-                    pointsChanged()
+                    onChange()
                     settingPoints(false)
                 })
         }
-    }
+    })
     let singlePoint=trippoints&&trippoints.length<=1;
     const allPoints = trippoints?trippoints.map(point =>
         <div className="flex-block full" key={point.trippoint_id}>
@@ -76,12 +80,12 @@ function TripPointsSection({trip,pointsChanged}:{trip:Trip, pointsChanged:()=>vo
                     navigate('/trippoints/'+point.trippoint_id)
             }}>
                 <h3>{point.title}</h3>
-                {(!singlePoint) && <h5>{point.city}</h5>}
+                {(!singlePoint && point.city) && <h5>{point.city}</h5>}
                 {/*{point.trip_order}*/}
             </button>
             {(editingOrder)&&
-            <div className="cover form-row">
-                {(point.trip_order>0)?
+            <div className="cover form-row even">
+                {(point.trip_order>1)?
                     <button className="order big center-child in-list" onClick={()=>{
                         if(!waitToOrder) {
                             setWait(true)
@@ -94,9 +98,8 @@ function TripPointsSection({trip,pointsChanged}:{trip:Trip, pointsChanged:()=>vo
                     }
                     }><FontAwesomeIcon icon={faAngleLeft} size="2xl"/></button>:
                     <div></div>}
-                {(point.trip_order+1!=trippoints!.length)?
-
-                    <button className="order big center-child" onClick={()=>{
+                {(point.trip_order!=trippoints.length)?
+                    <button className="order big center-child in-list" onClick={()=>{
                         if(!waitToOrder){
                             setWait(true)
                             post("trippoints/reorder/"+point.trippoint_id.toString(), "1", true)
@@ -121,26 +124,21 @@ function TripPointsSection({trip,pointsChanged}:{trip:Trip, pointsChanged:()=>vo
             </div>}
             <div className="row edges">
                 {trippoints&& <Modal header={"Новая остановка"} openRef={addPointRef} offToggle={refetch}>
-                    <div className="vert-window">
+                    <form className="vert-window" onSubmit={onSubmit}>
                         <div className="form-row">
                             <label>Название: </label>
-                            <input ref={titleField} required={true}/>
+                            <input required={true} {...register("title")} defaultValue={""}/>
                         </div>
                         <div className="form-row">
                             <label>Город: </label>
-                            <SearchInput<City> id="city" array={cities}
+                            <SearchInput<City> id="city" array={cities} not_required={true}
                                                stringify={(item) => item.city}
                                                onSetValue={(city) => {
                                                    setSelectedCity(city)
                                                }}
                             />
                         </div>
-                        <div className="form-row">
-                            <input value={trip.trip_id} hidden={true} readOnly={true}/>
-                            <input name="trippoint_id" value={0} hidden={true} readOnly={true}/>
-                            <input name="trip_order" value={trippoints.length + 1} readOnly={true}
-                                   hidden={true}/>
-                        </div>
+                        <input defaultValue={trip.trip_id} hidden={true} {...register("trip_id")}/>
                         {addingCity &&
                             <div className="form-row">
                                 <label>Страна: </label>
@@ -152,8 +150,8 @@ function TripPointsSection({trip,pointsChanged}:{trip:Trip, pointsChanged:()=>vo
                                                       }}/>
                             </div>
                         }
-                        <button onClick={handleSubmit}>Добавить</button>
-                    </div>
+                        <button>Добавить</button>
+                    </form>
                 </Modal>
                 }
 

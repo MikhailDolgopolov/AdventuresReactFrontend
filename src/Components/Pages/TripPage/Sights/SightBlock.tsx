@@ -1,13 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {City, Sight, SightVisitCombined, TripPoint} from "../../../../Helpers/DataTypes";
+import {City, SightVisitCombined, TripPoint} from "../../../../Helpers/DataTypes";
 import Modal from "../../../Fragments/Modal";
 import {post} from "../../../../Server/Requests";
 import useSwitch from "../../../../Hooks/useSwitch";
 import useFetch from "../../../../Hooks/useFetch";
 import {useForm} from "react-hook-form";
 import SearchInput from "../../../Fragments/SearchInput";
-import moment from 'moment'
-import ButtonSelect from "../../../Fragments/ButtonSelect";
 import ButtonSelectWithInput from "../../../Fragments/ButtonSelectWithInput";
 import Line from "../../../Fragments/Line";
 

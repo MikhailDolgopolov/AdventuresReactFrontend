@@ -10,7 +10,7 @@ import useFetch from "../../../../Hooks/useFetch";
 
 function AddSightModal({addSightRef, closeSwitch, points, trip_id, onChange}:
       {addSightRef:React.MutableRefObject<any>, closeSwitch:boolean, points:TripPoint[], trip_id:number,  onChange:()=>void}) {
-    const [trip] = useFetch<Trip>("trips/get/"+trip_id);
+    const [trip] = useFetch<Trip>("trips/"+trip_id);
     const [sights] = useFetch<Sight[]>("sights/", closeSwitch)
     const [cities] = useFetch<City[]>("cities/")
     const [selectedPoint, setPoint] = useState<TripPoint>()
