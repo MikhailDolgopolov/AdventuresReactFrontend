@@ -20,7 +20,7 @@ import useSwitch from "../../../Hooks/useSwitch";
 
 
 
-function TripPage({trip}:{trip:Trip}) {
+function TripPage({trip, onChange}:{trip:Trip, onChange:()=>void}) {
     const navigate = useNavigate();
     const [refetch, flip] = useSwitch()
     const [people, loadPeople] = useFetch<Person[]>("people/", refetch)
@@ -76,8 +76,8 @@ function TripPage({trip}:{trip:Trip}) {
     return (
         <>
             <TitleSubtitle title={trip.title+" "+trip.year} subtitle={getTripDate(trip)}/>
-            <EditTripModal trip={trip} setTrip={res=>{
-                trip=res;
+            <EditTripModal trip={trip} onChange={()=>{
+                onChange()
                 flip()
             }} editRef={editRef}/>
             <div className="side-margins">

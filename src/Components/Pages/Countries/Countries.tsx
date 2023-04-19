@@ -16,7 +16,7 @@ function Countries() {
     return (
         <Routes>
             {pages}
-            <Route path="*" element={<EmptyRoute waiting={"countries"}/>}/>
+            <Route path="*" element={<EmptyRoute waiting={"страны"}/>}/>
         </Routes>
     );
 }

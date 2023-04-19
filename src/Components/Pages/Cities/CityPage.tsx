@@ -4,6 +4,7 @@ import {City} from "../../../Helpers/DataTypes";
 import EditEntry from "../../Fragments/EditEntry";
 import {post} from "../../../Server/Requests";
 import {useNavigate} from "react-router-dom";
+import EditCityModal from "./EditCityModal";
 
 function CityPage({city, onChange}:{city:City, onChange:()=>void}) {
     const navigate=useNavigate()
@@ -19,8 +20,9 @@ function CityPage({city, onChange}:{city:City, onChange:()=>void}) {
     return (
         <>
             <TitleSubtitle title={city.city}/>
+            <EditCityModal city={city} openRef={editRef} onChange={onChange}/>
             <div className="side-margins">
-                <EditEntry onEdit={onChange} onDelete={deleteCity} editRef={editRef}/>
+                <EditEntry onEdit={()=>{}} onDelete={deleteCity} editRef={editRef}/>
             </div>
         </>
     );

@@ -5,14 +5,14 @@ import {Trip} from "../../../Helpers/DataTypes";
 import {post} from "../../../././Server/Requests";
 import {redirect} from "react-router-dom";
 
-function EditTripModal({trip, editRef, setTrip}:{trip:Trip, setTrip:{(arg0:Trip):void}
+function EditTripModal({trip, editRef, onChange}:{trip:Trip, onChange:()=>void,
     editRef:React.MutableRefObject<HTMLElement|null>}) {
     const {register, handleSubmit} = useForm<Trip>();
     const [toggle, setToggle] = useState<boolean>(true)
     const onSubmit = handleSubmit((data)=>{
         post("trips/update/", JSON.stringify(data)).then((res)=>{
             setToggle(!toggle)
-            setTrip(res)})
+            onChange()})
         redirect('/trips/'+trip.trip_id)
     },()=>{
         setToggle(true)

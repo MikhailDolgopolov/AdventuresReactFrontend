@@ -13,9 +13,11 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import AddPersonModal from "./AddPersonModal";
 import useFetch from "../../../Hooks/useFetch";
+import useSwitch from "../../../Hooks/useSwitch";
 
 function StaticData() {
-    const [stats, loadingStats] = useFetch<AdventuresStatistics>("statistics/")
+    const [refetch, flip] = useSwitch()
+    const [stats, loadingStats] = useFetch<AdventuresStatistics>("statistics/", refetch)
 
     const addCountryRef = useRef(null)
     const addCityRef = useRef(null)
@@ -31,9 +33,9 @@ function StaticData() {
 
     return (<>
         <TitleSubtitle title={"База данных"}/>
-        <AddCountryModal onAdd={()=>{}} addCountryButton={addCountryRef}/>
-        <AddCityModal onAdd={()=>{}} addCityButton={addCityRef}/>
-        <AddPersonModal onAdd={()=>{}} addPersonButton={addPersonRef}/>
+        <AddCountryModal onAdd={()=>{flip()}} addCountryButton={addCountryRef}/>
+        <AddCityModal onAdd={()=>{flip()}} addCityButton={addCityRef}/>
+        <AddPersonModal onAdd={()=>{flip()}} addPersonButton={addPersonRef}/>
         <div className="two-columns side-margins contains-tables">
             <div className="flow-down">
                 <section>

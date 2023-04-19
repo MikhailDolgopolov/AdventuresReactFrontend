@@ -19,7 +19,7 @@ function AddSightModal({addSightRef, closeSwitch, points, trip_id, onChange}:
     const [sightName, setSightName] = useState<string>("")
     const [selectedDate, setDate] = useState<string>("")
     const {register, handleSubmit} = useForm<SightVisitCombined>()
-    if(!sights || !cities) return <></>
+
     useEffect(()=>{
         if(points.length>0) {
             setPoint(points[0])
@@ -29,7 +29,7 @@ function AddSightModal({addSightRef, closeSwitch, points, trip_id, onChange}:
     useEffect(()=>{
         if(trip) setDate(trip.start_date)
     }, [trip])
-
+    if(!sights || !cities) return <></>
     const submit = handleSubmit((newVisit)=>{
         if(!selectedPoint) return
         newVisit.name=sightName;

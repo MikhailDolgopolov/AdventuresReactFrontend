@@ -4,6 +4,7 @@ import TitleSubtitle from "../../Fragments/TitleSubtitle";
 import EditEntry from "../../Fragments/EditEntry";
 import {post} from "../../../Server/Requests";
 import {useNavigate} from "react-router-dom";
+import EditCountryModal from "./EditCountryModal";
 
 function CountryPage({country, onChange} : {country:Country, onChange:()=>void}) {
     const navigate = useNavigate();
@@ -19,6 +20,7 @@ function CountryPage({country, onChange} : {country:Country, onChange:()=>void})
     return (
         <>
             <TitleSubtitle title={country.country}/>
+            <EditCountryModal country={country} openRef={editRef} onChange={onChange}/>
             <div className="side-margins">
                 <EditEntry onEdit={() => {}} onDelete={deleteCountry} editRef={editRef}/>
             </div>
