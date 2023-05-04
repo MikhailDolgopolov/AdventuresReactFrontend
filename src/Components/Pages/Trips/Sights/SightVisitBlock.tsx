@@ -9,15 +9,13 @@ import SearchInput from "../../../Fragments/SearchInput";
 import ButtonSelectWithInput from "../../../Fragments/ButtonSelectWithInput";
 import Line from "../../../Fragments/Line";
 
-function SightBlock({s, onChange, trippoints}:{s:SightVisitCombined, onChange:()=>any, trippoints:TripPoint[]}) {
+function SightVisitBlock({s, onChange, cities, types}:{s:SightVisitCombined, onChange:()=>any, cities?:City[], types?:string[]}) {
     const editSightRef = useRef(null)
     const [closeModal, flip] = useSwitch()
-    const [cities] = useFetch<City[]>("cities/")
-    const [types] = useFetch<string[]>("sights/types/", closeModal);
+
     const [selectedCity, setCity] = useState<string>(s.city)
     const [selectedDate, setDate] = useState<string>("")
     const [selectedType, setType] = useState<string>(s.type)
-    const [selectedPoint, setPoint] = useState<TripPoint>()
     const {register, handleSubmit} = useForm<SightVisitCombined>()
 
 
@@ -99,4 +97,4 @@ function SightBlock({s, onChange, trippoints}:{s:SightVisitCombined, onChange:()
     );
 }
 
-export default SightBlock;
+export default SightVisitBlock;

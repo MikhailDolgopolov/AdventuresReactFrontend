@@ -25,7 +25,9 @@ function TripPointPage({point, cities, onChange}:{point:TripPoint, cities:City[]
         <>
             <TitleSubtitle title={point.title} subtitle={point.city}/>
             <div className="side-margins">
-                <EditEntry onEdit={() => {}} onDelete={confirmDeletion} editRef={editRef}/>
+                <EditEntry onEdit={() => {}} onDelete={confirmDeletion} editRef={editRef}>
+                    <button className="self_left" onClick={()=>navigate("/trip/"+trip.trip_id)}>{trip.title+" "+trip.year}</button>
+                </EditEntry>
                 <EditTripPointModal point={point} setPoint={res=>{
                     point=res
                     onChange();

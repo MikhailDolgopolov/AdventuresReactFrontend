@@ -11,9 +11,9 @@ function EditTripPointModal({point, editRef, setPoint, cities}:
     const {register, handleSubmit} = useForm<TripPoint>();
     const [toggle, setToggle] = useState<boolean>(true)
     const [selectedCity, setCity] = useState<string>(point.city)
+
     const onSubmit = handleSubmit((data)=>{
         data.city=selectedCity
-
         post("trippoints/update/", JSON.stringify(data)).then((res)=> {
             setToggle(!toggle)
             setPoint(res)

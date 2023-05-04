@@ -9,14 +9,14 @@ import useFetch from "../../../Hooks/useFetch";
 
 function People() {
     const [refetch, flip] = useSwitch()
-    const [people, loading]=useFetch<Person[]>("people/")
+    const [people, loading]=useFetch<Person[]>("people/", refetch)
     if(!people) return <LoadingError loadingObject={"people"} loading={loading}/>
     const pages = people.map(person=>
-    <Route key={person.person_id} path={person.person_id.toString()} element={<PersonPage person={person}/>}/> )
+    <Route key={person.person_id} path={person.person_id.toString()} element={<PersonPage person={person} onChange={flip}/>}/> )
     return (
         <Routes>
             {pages}
-            <Route path="*" element={<EmptyRoute waiting={"people"}/>}/>
+            <Route path="*" element={<EmptyRoute waiting={"людей"}/>}/>
         </Routes>
     );
 }

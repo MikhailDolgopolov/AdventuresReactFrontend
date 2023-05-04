@@ -70,7 +70,8 @@ p{
   margin: 0.2rem;
 }
 select,
-input
+input,
+textarea
 {
   color: var(--text-color);
   background-color: var(--background-color);
@@ -333,7 +334,7 @@ button.order{
   flex-basis: 55%;
 }
 
-.form-row input:is(:focus, :focus-visible){
+.form-row :is(input, textarea):is(:focus, :focus-visible){
   outline: var(--ui-high-contrast) solid 1px;
 }
 
@@ -393,6 +394,9 @@ button.order{
 }
 .row.right{
   justify-content: flex-end;
+}
+.row .self_left{
+  margin-right: auto;
 }
 .row.stretch{
   justify-content: stretch;

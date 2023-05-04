@@ -23,17 +23,17 @@ function AddPersonModal({addPersonButton, onAdd}:{onAdd:{():void}
                 </div>
                 <div className="form-row">
                     <label>Отчество: </label>
-                    <input required={true} {...register("patronym")}/>
+                    <input {...register("patronym")}/>
                 </div>
                 <div className="form-row">
                     <label>Фамилия: </label>
-                    <input required={true} {...register("last_name")}/>
+                    <input {...register("last_name")}/>
                 </div>
                 <div className="form-row">
                     <label>Кратко: </label>
-                    <input required={true} {...register("alias")}/>
+                    <input {...register("alias")}/>
                 </div>
-
+                <button type={"submit"}>Добавить</button>
             </form>
         </Modal>
     );

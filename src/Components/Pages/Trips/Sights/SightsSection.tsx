@@ -2,11 +2,11 @@ import React, {useRef} from 'react';
 import {SightVisitCombined, Trip, TripPoint} from "../../../../Helpers/DataTypes";
 import useFetch from "../../../../Hooks/useFetch";
 import LoadingError from "../../LoadingError";
-import SightList from "./SightList";
+import SightVisitList from "./SightVisitList";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import useSwitch from "../../../../Hooks/useSwitch";
-import AddSightModal from "./AddSightModal";
+import AddSightVisitModal from "./AddSightVisitModal";
 
 
 function SightsSection({trip, points}:{trip:Trip, points:TripPoint[]}) {
@@ -24,8 +24,8 @@ function SightsSection({trip, points}:{trip:Trip, points:TripPoint[]}) {
     return (
         <section>
             <h2>Достопримечательности</h2>
-            <AddSightModal addSightRef={addSightRef} closeSwitch={closeAdder} onChange={flip} points={points} trip_id={trip.trip_id}/>
-            <SightList sights={sights} onChange={close} trippoints={points}/>
+            <AddSightVisitModal addSightRef={addSightRef} closeSwitch={closeAdder} onChange={flip} points={points} trip_id={trip.trip_id}/>
+            <SightVisitList sights={sights} onChange={close} trippoints={points}/>
             <div className="row edges">
                 <button className="big" ref={addSightRef}>
                     <FontAwesomeIcon icon={faPlus} size="2x"/>

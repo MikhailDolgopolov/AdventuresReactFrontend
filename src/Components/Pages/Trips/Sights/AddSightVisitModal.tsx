@@ -8,7 +8,7 @@ import {post} from "../../../../Server/Requests";
 import {useForm} from "react-hook-form";
 import useFetch from "../../../../Hooks/useFetch";
 
-function AddSightModal({addSightRef, closeSwitch, points, trip_id, onChange}:
+function AddSightVisitModal({addSightRef, closeSwitch, points, trip_id, onChange}:
       {addSightRef:React.MutableRefObject<any>, closeSwitch:boolean, points:TripPoint[], trip_id:number,  onChange:()=>void}) {
     const [trip] = useFetch<Trip>("trips/"+trip_id);
     const [sights] = useFetch<Sight[]>("sights/", closeSwitch)
@@ -76,4 +76,4 @@ function AddSightModal({addSightRef, closeSwitch, points, trip_id, onChange}:
     );
 }
 
-export default AddSightModal;
+export default AddSightVisitModal;

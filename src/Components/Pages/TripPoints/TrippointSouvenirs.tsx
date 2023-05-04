@@ -8,8 +8,8 @@ import useFetch from "../../../Hooks/useFetch";
 
 
 import useSwitch from "../../../Hooks/useSwitch";
-import SouvenirList from "../TripPage/Souvenirs/SouvenirList";
-import AddSouvenirModal from "../TripPage/Souvenirs/AddSouvenirModal";
+import SouvenirList from ".././Trips/Souvenirs/SouvenirList";
+import AddSouvenirModal from ".././Trips/Souvenirs/AddSouvenirModal";
 import Loading from "../Loading";
 
 function TrippointSouvenirs({point}:{ point:TripPoint}) {

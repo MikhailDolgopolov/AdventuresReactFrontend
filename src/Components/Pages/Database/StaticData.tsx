@@ -36,7 +36,7 @@ function StaticData() {
         <AddCountryModal onAdd={()=>{flip()}} addCountryButton={addCountryRef}/>
         <AddCityModal onAdd={()=>{flip()}} addCityButton={addCityRef}/>
         <AddPersonModal onAdd={()=>{flip()}} addPersonButton={addPersonRef}/>
-        <div className="two-columns side-margins contains-tables">
+        <div className="two-columns side-margins">
             <div className="flow-down">
                 <section>
                     <h2>Страны</h2>
