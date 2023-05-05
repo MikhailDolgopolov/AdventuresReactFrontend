@@ -14,6 +14,7 @@ import Countries from "./Components/./Pages/Countries/Countries";
 import Points from "./Components/./Pages/./TripPoints/Points";
 import Cities from "./Components/Pages/Cities/Cities";
 import Souvenirs from "./Components/Pages/Souvenirs/Souvenirs";
+import Sights from "./Components/Pages/Sights/Sights";
 
 
 
@@ -32,6 +33,7 @@ function App() {
                     <Route path='trippoints/*' element={<Points/>}/>
                     <Route path='data/*' element={<StaticData/>}/>
                     <Route path='souvenirs/*' element={<Souvenirs/>}/>
+                    <Route path='sights/*' element={<Sights/>}/>
                     <Route path="*" element={<EmptyRoute/>}/>
                 </Routes>
             </Router>

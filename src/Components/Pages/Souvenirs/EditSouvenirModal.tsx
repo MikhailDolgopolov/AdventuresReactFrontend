@@ -59,6 +59,7 @@ function EditSouvenirModal({s, editSouvenirRef, onChange, trippoints, types, mat
                     <label>Описание: </label>
                     <textarea defaultValue={s.description} {...register("description")}/>
                 </div>
+                Относится к остановке:
                 {currPoint&&<ButtonSelect array={trippoints} id={"tp"} stringify={(tp)=>tp.title}
                                           onSelect={(tp)=>setPoint(tp.trippoint_id)} defaultValue={currPoint.title}/>}
                 <button type="submit">Сохранить</button>

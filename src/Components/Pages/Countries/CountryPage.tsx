@@ -28,7 +28,7 @@ function CountryPage({country, onChange} : {country:Country, onChange:()=>void})
         <SightRow s={s} key={s.sight_id}/>
     ):[]
     function deleteCountry(){
-        if(confirm("Вы собираетесь удалить все данные, связанные с "+country.country+". Продолжить?")){
+        if(window.confirm("Вы собираетесь удалить все данные, связанные с "+country.country+". Продолжить?")){
             post("countries/delete/", country.country).then(()=>{
                 onChange()
                 navigate(-1)

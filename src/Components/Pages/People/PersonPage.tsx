@@ -12,7 +12,7 @@ function PersonPage({person, onChange}:{person:Person, onChange:()=>void}) {
     const navigate=useNavigate()
     let editRef = useRef<HTMLButtonElement>(null)
     function deletePerson() {
-        if(confirm("Вы собираетесь полностью удалить "+person.first_name + " "+person.last_name+". Продолжить?")){
+        if(window.confirm("Вы собираетесь полностью удалить "+person.first_name + " "+person.last_name+". Продолжить?")){
             post("people/delete/", JSON.stringify(person.person_id)).then(()=>{
                 onChange()
                 navigate(-1)

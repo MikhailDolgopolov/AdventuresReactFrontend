@@ -8,7 +8,7 @@ import {useNavigate} from "react-router-dom";
 function Participant({person, trip, func}:{person:Person, trip:Trip, func:Function}) {
     let navigate=useNavigate()
     function confirmPersonRemoval(person:number){
-        if(confirm("Вы собираетесь удалить человека из списка. Продолжить?")){
+        if(window.confirm("Вы собираетесь удалить человека из списка. Продолжить?")){
             post('trips/'+trip.trip_id.toString()+'/participants/delete/', person.toString()).
             then(result=>func(result));
         }

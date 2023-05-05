@@ -295,8 +295,11 @@ button.order{
   display: grid;
   grid-template-columns: 1fr;
   justify-content: stretch;
-  padding: 0 0.5rem 0.5rem;
+  padding: 0 0.5rem 0 0.5rem;
   gap:0.3rem;
+}
+.vert-window>button{
+  margin-bottom: 0.7rem;
 }
 
 .window-header {

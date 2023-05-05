@@ -8,36 +8,29 @@ import {useForm} from "react-hook-form";
 import SearchInput from "../../../Fragments/SearchInput";
 import ButtonSelectWithInput from "../../../Fragments/ButtonSelectWithInput";
 import Line from "../../../Fragments/Line";
+import {useNavigate} from "react-router-dom";
+import OptionalFormRow from "../../Sights/OptionalFormRow";
 
 function SightVisitBlock({s, onChange, cities, types}:{s:SightVisitCombined, onChange:()=>any, cities?:City[], types?:string[]}) {
     const editSightRef = useRef(null)
+    const navigate=useNavigate()
     const [closeModal, flip] = useSwitch()
 
-    const [selectedCity, setCity] = useState<string>(s.city)
     const [selectedDate, setDate] = useState<string>("")
-    const [selectedType, setType] = useState<string>(s.type)
     const {register, handleSubmit} = useForm<SightVisitCombined>()
 
 
     const onSubmit=handleSubmit((newVisit:SightVisitCombined, e?)=>{
         e!.preventDefault()
-        newVisit.city=selectedCity;
         newVisit.visited_date=selectedDate
-        newVisit.type=selectedType;
-        post("sights/update_visit/", JSON.stringify(newVisit)).then(()=>{flip();onChange();})
+        post("sights/update_visit_date/", JSON.stringify(newVisit)).then(()=>{flip();onChange();})
         })
     useEffect(()=>{
         setDate(s.visited_date);
     },[])
-    function deleteSight() {
-        if(confirm("Вы собираетесь удалить все данные, связанные с "+s.name+". Продолжить?"))
-            post("sights/delete/", JSON.stringify(s)).then(()=>{
-                flip()
-                onChange()
-            })
-    }
+
     function deleteVisit() {
-        if(confirm(s.name+" исчезнет из списка посещенных мест. Продолжить?"))
+        if(window.confirm(s.name+" исчезнет из списка посещенных мест. Продолжить?"))
             post("sights/delete_visit/"+s.sight_id, JSON.stringify(s.trippoint_id)).then(()=>{
                 flip()
                 onChange()
@@ -50,32 +43,18 @@ function SightVisitBlock({s, onChange, cities, types}:{s:SightVisitCombined, onC
                 {(s.visited_date) && <p>{s.visited_date}</p>}
                 <p>{s.type}</p>
             </button>
-            <Modal header="Изменить данные" openRef={editSightRef} offToggle={closeModal}>
+            <Modal header={s.name} openRef={editSightRef} offToggle={closeModal}>
                 <form className="vert-window" onSubmit={onSubmit}>
+                    <input hidden={true} defaultValue={s.sight_id} {...register("sight_id")}/>
+                    <input hidden={true} defaultValue={s.trippoint_id} {...register("trippoint_id")}/>
+                    <OptionalFormRow label="Город:  " value={s.city}/>
                     <div className="form-row">
-                        <label>Название: </label>
-                        <input defaultValue={s.name} {...register("name")}/>
+                        <label>Тип:</label>
+                        <p>{s.type}</p>
                     </div>
-                    <div className="form-row">
-                        <label>Город: </label>
-                        <SearchInput id={"sightCities"} array={cities} stringify={(c)=>c.city} defaultValue={s.city}
-                                     onSetValue={(s)=>setCity(s)} onlySelect={true} not_required={true}/>
-                    </div>
-                    <Line/>
-                    Тип:
-                    <ButtonSelectWithInput<string> array={types} id={"sightTypes"} stringify={(t)=>t}
-                                           onSelect={(s)=>setType(s)} defaultValue={s.type}/>
-                    <div className="form-row">
-                        <label>Год (постройки): </label>
-                        <input type={"number"} {...register("created_year")} defaultValue={s.created_year}/>
-                    </div>
-                    <div className="form-row">
-                        <label>Описание: </label>
-                        <textarea {...register("description")} defaultValue={s.description}/>
-                    </div>
-                    <div>
-                        <button type="button" onClick={deleteSight}>Удалить</button>
-                    </div>
+                    <OptionalFormRow label={"Год:  "} number={s.created_year}/>
+                    <OptionalFormRow label={"Описание:  "} value={s.description}/>
+                    <button type="button" onClick={()=>navigate("/sights/"+s.sight_id)}>Перейти на страницу</button>
                     <Line/>
                     <h3>Посещение</h3>
                     <div className="form-row">

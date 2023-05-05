@@ -35,7 +35,7 @@ function TripPage({trip, onChange}:{trip:Trip, onChange:()=>void}) {
 
 
     function confirmDeletion() {
-        if (confirm("Вы собираетесь удалить все данные, связанные с " + trip.title + ". Продолжить?")) {
+        if (window.confirm("Вы собираетесь удалить все данные, связанные с " + trip.title + ". Продолжить?")) {
             post("trips/delete/", trip.trip_id.toString(), true)
                 .then(() => navigate("/trips/"));
 

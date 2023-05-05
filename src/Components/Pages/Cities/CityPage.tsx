@@ -10,7 +10,7 @@ function CityPage({city, onChange}:{city:City, onChange:()=>void}) {
     const navigate=useNavigate()
     let editRef = useRef<HTMLButtonElement>(null)
     function deleteCity(){
-        if(confirm("Вы собираетесь удалить все данные, связанные с "+city.city+". Продолжить?")){
+        if(window.confirm("Вы собираетесь удалить все данные, связанные с "+city.city+". Продолжить?")){
             post("cities/delete/", city.city).then(()=>{
                 onChange()
                 navigate(-1)

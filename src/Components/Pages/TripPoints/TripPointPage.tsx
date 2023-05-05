@@ -16,7 +16,7 @@ function TripPointPage({point, cities, onChange}:{point:TripPoint, cities:City[]
     let navigate=useNavigate()
     if(!trip || !cities) return <LoadingError loadingObject={point.title} loading={loadingTrip} wholePage={true}/>
     function confirmDeletion() {
-        if (confirm("Вы собираетесь удалить все данные, связанные с " + point.title + ". Продолжить?")) {
+        if (window.confirm("Вы собираетесь удалить все данные, связанные с " + point.title + ". Продолжить?")) {
             post("trippoints/delete/", point.trippoint_id.toString(),true)
                 .then(() => navigate("/trip/"+point.trip_id));
         }
