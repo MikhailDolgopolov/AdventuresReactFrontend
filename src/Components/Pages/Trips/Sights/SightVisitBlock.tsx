@@ -11,7 +11,7 @@ import Line from "../../../Fragments/Line";
 import {useNavigate} from "react-router-dom";
 import OptionalFormRow from "../../Sights/OptionalFormRow";
 
-function SightVisitBlock({s, onChange, cities, types}:{s:SightVisitCombined, onChange:()=>any, cities?:City[], types?:string[]}) {
+function SightVisitBlock({s, onChange}:{s:SightVisitCombined, onChange:()=>any}) {
     const editSightRef = useRef(null)
     const navigate=useNavigate()
     const [closeModal, flip] = useSwitch()

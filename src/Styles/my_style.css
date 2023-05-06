@@ -69,6 +69,9 @@ body {
 p{
   margin: 0.2rem;
 }
+.date{
+  white-space: nowrap;
+}
 select,
 input,
 textarea
@@ -87,11 +90,11 @@ select.no-border{
 select.hoverable *{
   background-color: var(--background-color);
 }
-button[selected]{
+button[data-selected]{
   padding-block: 0.35rem;
   border-radius: 3px;
 }
-button[selected="1"]{
+button[data-selected="1"]{
 
   outline: var(--special-accent-color) solid 4px;
 }
@@ -398,7 +401,7 @@ button.order{
 .row.right{
   justify-content: flex-end;
 }
-.row .self_left{
+.row .self-left{
   margin-right: auto;
 }
 .row.stretch{

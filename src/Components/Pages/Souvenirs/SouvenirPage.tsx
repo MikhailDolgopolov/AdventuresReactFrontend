@@ -18,6 +18,7 @@ function SouvenirPage({s, onChange, types, materials, cities}:
     const [points] = useFetch<TripPoint[]>("trippoints/")
     const [relatedCity] = useFetch<City>("cities/"+s.city);
     const [similarSouvenirs] = useFetch<Souvenir[]>("souvenirs/similar_to/"+s.souvenir_id)
+    const [relatedTrippoint] = useFetch<TripPoint>("trippoints/for_souvenir/"+s.souvenir_id)
     const navigate = useNavigate()
     const editRef = useRef<HTMLButtonElement>(null)
 
@@ -29,6 +30,7 @@ function SouvenirPage({s, onChange, types, materials, cities}:
             })
         }
     }
+
     return (
         <>
             <TitleSubtitle title={SouvenirTitle(s)} subtitle={s.city}/>
@@ -36,14 +38,20 @@ function SouvenirPage({s, onChange, types, materials, cities}:
                                         onChange={onChange} trippoints={points} editSouvenirRef={editRef}
                 cities={cities} types={types} materials={materials}/>}
             <div className="side-margins">
-                <EditEntry onEdit={() => {}} onDelete={deleteSouvenir} editRef={editRef}/>
+                <EditEntry onEdit={() => {}} onDelete={deleteSouvenir} editRef={editRef}>
+                    <>{relatedCity&&<button data-selected="0" onClick={()=>navigate("/cities/"+relatedCity.city)}>
+                        {relatedCity.city}</button>}</>
+                    <>{relatedTrippoint&&<button data-selected="0" className="self-left" onClick={()=>navigate("/trippoints/"+s.trippoint_id)}>
+                        {relatedTrippoint.title}</button> }</>
+                    <div></div>
+                </EditEntry>
                 <div className="two-columns">
                     <div className="flow-down">
-                        {similarSouvenirs && similarSouvenirs.length>1&&<section>
+                        {similarSouvenirs && similarSouvenirs.length>0&&<section>
                             <h2>Похожие</h2>
                             <h4><span>{s.type}</span>, <span>{relatedCity&&relatedCity.country}</span></h4>
-                            <div className="flex-grid">
-                                {similarSouvenirs.filter(other=>s.souvenir_id!=other.souvenir_id)
+                            <div className="flex-grid outline">
+                                {similarSouvenirs
                                     .map(s=>
                                     <SouvenirBlock s={s} key={s.souvenir_id}/>)}
                             </div>

@@ -23,7 +23,6 @@ function TripPointsSection({trip,onChange}:{trip:Trip, onChange:()=>void}) {
     const [addingPoints, settingPoints] = useState<boolean>(false);
     const [editingOrder, setEditOrder] = useState<boolean>(false);
     const [waitToOrder, setWait] = useState<boolean>(false)
-    const titleField = useRef<HTMLInputElement>(null);
     const [selectedCountry, setCountry]=useState<string>("");
     const [selectedCity, setSelectedCity] = useState<string>("");
     const {register, handleSubmit} = useForm<TripPoint>()
@@ -81,11 +80,11 @@ function TripPointsSection({trip,onChange}:{trip:Trip, onChange:()=>void}) {
             }}>
                 <h3>{point.title}</h3>
                 {(!singlePoint && point.city) && <h5>{point.city}</h5>}
-                {/*{point.trip_order}*/}
+                {point.trip_order}
             </button>
             {(editingOrder)&&
             <div className="cover form-row even">
-                {(point.trip_order>1)?
+                {(point.trip_order>0)?
                     <button className="order big center-child in-list" onClick={()=>{
                         if(!waitToOrder) {
                             setWait(true)
@@ -93,12 +92,13 @@ function TripPointsSection({trip,onChange}:{trip:Trip, onChange:()=>void}) {
                                 .then(()=>{
                                     flip()
                                     setWait(false)
+                                    setEditOrder(false)
                                 })
                         }
                     }
                     }><FontAwesomeIcon icon={faAngleLeft} size="2xl"/></button>:
                     <div></div>}
-                {(point.trip_order!=trippoints.length)?
+                {(point.trip_order<trippoints.length-1)?
                     <button className="order big center-child in-list" onClick={()=>{
                         if(!waitToOrder){
                             setWait(true)
@@ -106,6 +106,7 @@ function TripPointsSection({trip,onChange}:{trip:Trip, onChange:()=>void}) {
                                 .then(()=>{
                                     flip()
                                     setWait(false)
+                                    setEditOrder(false)
                                 })
                         }
                     }

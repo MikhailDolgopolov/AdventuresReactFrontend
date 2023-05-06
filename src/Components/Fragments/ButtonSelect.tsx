@@ -9,13 +9,13 @@ function ButtonSelect<Type>({array, id, stringify, onSelect, children, clearSwit
         let buttons=document.getElementsByClassName("my-select-button-"+id);
         let iter = Array.from(buttons)
         iter.forEach(function (e){
-            e.setAttribute("selected", "0")
+            e.setAttribute("data-selected", "0")
         })
     }
     function styleSelection(l_id:string){
         if(!l_id) return
         deselectAll()
-        document.getElementById(l_id)!.setAttribute("selected", "1")
+        document.getElementById(l_id)!.setAttribute("data-selected", "1")
     }
     useEffect(()=>{
         deselectAll()

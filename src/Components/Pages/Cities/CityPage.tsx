@@ -1,14 +1,19 @@
 import React, {useRef} from 'react';
 import TitleSubtitle from "../../Fragments/TitleSubtitle";
-import {City} from "../../../Helpers/DataTypes";
+import {City, Sight, Souvenir} from "../../../Helpers/DataTypes";
 import EditEntry from "../../Fragments/EditEntry";
 import {post} from "../../../Server/Requests";
 import {useNavigate} from "react-router-dom";
 import EditCityModal from "./EditCityModal";
+import useFetch from "../../../Hooks/useFetch";
+import SouvenirBlock from "../Trips/Souvenirs/SouvenirBlock";
+import SightBlock from "../Sights/SightBlock";
 
 function CityPage({city, onChange}:{city:City, onChange:()=>void}) {
     const navigate=useNavigate()
     let editRef = useRef<HTMLButtonElement>(null)
+    const [souvenirs] = useFetch<Souvenir[]>("souvenirs/for_city/"+city.city)
+    const [sights] = useFetch<Sight[]>("sights/for_city/"+city.city)
     function deleteCity(){
         if(window.confirm("Вы собираетесь удалить все данные, связанные с "+city.city+". Продолжить?")){
             post("cities/delete/", city.city).then(()=>{
@@ -22,7 +27,29 @@ function CityPage({city, onChange}:{city:City, onChange:()=>void}) {
             <TitleSubtitle title={city.city}/>
             <EditCityModal city={city} openRef={editRef} onChange={onChange}/>
             <div className="side-margins">
-                <EditEntry onEdit={()=>{}} onDelete={deleteCity} editRef={editRef}/>
+                <EditEntry onEdit={()=>{}} onDelete={deleteCity} editRef={editRef}>
+                    <button data-selected="0" className="self-left" onClick={()=>navigate("/countries/"+city.country)}>{city.country}</button>
+                </EditEntry>
+                <div className="two-columns">
+                    <div className="flow-down">
+                        {souvenirs&&souvenirs.length>0&&<section>
+                            <h2>Сувениры</h2>
+                            <div className="flex-grid outline">
+                                {souvenirs.map(s=>
+                                <SouvenirBlock s={s} key={s.souvenir_id}/>)}
+                            </div>
+                        </section>}
+                    </div>
+                    <div className="flow-down">
+                        {sights&&sights.length>0&&<section>
+                            <h2>Достопримечательности</h2>
+                            <div className="flex-grid outline">
+                                {sights.map(s=>
+                                    <SightBlock s={s} key={s.sight_id}/>)}
+                            </div>
+                        </section>}
+                    </div>
+                </div>
             </div>
         </>
     );

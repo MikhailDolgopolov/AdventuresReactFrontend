@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios, {AxiosHeaders} from "axios";
 import {serverProperties} from "../Server/ServerProperties";
 import {FetchResult} from "../Helpers/HelperTypes";
 
