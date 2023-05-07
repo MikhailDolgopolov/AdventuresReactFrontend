@@ -13,9 +13,8 @@ function SightsSection({trip, points}:{trip:Trip, points:TripPoint[]}) {
 
 
 
-    const [closeAdder, close] = useSwitch()
     const [refetch, flip] = useSwitch()
-    const [sights, loadingSights] = useFetch<SightVisitCombined[]>("sights/for_trip/"+trip.trip_id, closeAdder!=refetch)
+    const [sights, loadingSights] = useFetch<SightVisitCombined[]>("sights/for_trip/"+trip.trip_id, refetch)
 
     const addSightRef = useRef(null)
 
@@ -24,7 +23,7 @@ function SightsSection({trip, points}:{trip:Trip, points:TripPoint[]}) {
     return (
         <section>
             <h2>Достопримечательности</h2>
-            <AddSightVisitModal addSightRef={addSightRef} closeSwitch={closeAdder} onChange={flip} points={points} trip_id={trip.trip_id}/>
+            <AddSightVisitModal addSightRef={addSightRef} onChange={flip} closeSwitch={refetch} points={points} trip_id={trip.trip_id}/>
             <SightVisitList sights={sights} onChange={close} trippoints={points}/>
             <div className="row edges">
                 <button className="big" ref={addSightRef}>

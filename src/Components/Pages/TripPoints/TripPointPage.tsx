@@ -12,6 +12,7 @@ import TrippointSights from "./TrippointSights";
 
 function TripPointPage({point, cities, onChange}:{point:TripPoint, cities:City[], onChange:()=>void}) {
     const [trip, loadingTrip] = useFetch<Trip>("trips/"+point.trip_id)
+
     const editRef = useRef<HTMLButtonElement>(null);
     let navigate=useNavigate()
     if(!trip || !cities) return <LoadingError loadingObject={point.title} loading={loadingTrip} wholePage={true}/>
@@ -26,7 +27,8 @@ function TripPointPage({point, cities, onChange}:{point:TripPoint, cities:City[]
             <TitleSubtitle title={point.title} subtitle={point.city}/>
             <div className="side-margins">
                 <EditEntry onEdit={() => {}} onDelete={confirmDeletion} editRef={editRef}>
-                    <button className="self-left" onClick={()=>navigate("/trip/"+trip.trip_id)}>{trip.title+" "+trip.year}</button>
+                    <button data-selected="0" onClick={()=>navigate("/trip/"+trip.trip_id)}>{trip.title+" "+trip.year}</button>
+                    <button className="self-left" data-selected="0" onClick={()=>navigate("/cities/"+point.city)}>{point.city}</button>
                 </EditEntry>
                 <EditTripPointModal point={point} setPoint={res=>{
                     point=res

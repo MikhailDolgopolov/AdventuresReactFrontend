@@ -11,23 +11,24 @@ import Loading from "../Loading";
 import SouvenirRow from "./SouvenirRow";
 import SightRow from "./SightRow";
 import TripBlock from "../GroupedTrips/TripBlock";
+import useSwitch from "../../../Hooks/useSwitch";
+import {useForm} from "react-hook-form";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faPlus} from "@fortawesome/free-solid-svg-icons";
+import AddCityModal from "../Database/AddCityModal";
 
 
 function CountryPage({country, onChange} : {country:Country, onChange:()=>void}) {
     const navigate = useNavigate();
+    const [refetch, flip] = useSwitch()
     let editRef = useRef<HTMLButtonElement>(null)
+    const addCityRef = useRef<HTMLButtonElement>(null)
+    const [capital] = useFetch<City>('countries/capital/'+country.country, refetch)
     const [sights, loadSights] = useFetch<Sight[]>("sights/for_country/"+country.country);
     const [souvenirs, loadSouvenirs] = useFetch<Souvenir[]>("souvenirs/for_country/"+country.country);
-    const [cities, loadingCities] = useFetch<City[]>("cities/for_country/"+country.country)
+    const [cities, loadingCities] = useFetch<City[]>("cities/for_country/"+country.country, refetch)
     const [trips, loadingTrips] = useFetch<Trip[]>("trips/for_country/"+country.country)
 
-    const souvenirList=souvenirs?souvenirs.map(s=>
-        <SouvenirRow s={s} key={s.souvenir_id}/>
-    ):[]
-
-    const sightList=sights?sights.map(s=>
-        <SightRow s={s} key={s.sight_id}/>
-    ):[]
     function deleteCountry(){
         if(window.confirm("Вы собираетесь удалить все данные, связанные с "+country.country+". Продолжить?")){
             post("countries/delete/", country.country).then(()=>{
@@ -39,9 +40,11 @@ function CountryPage({country, onChange} : {country:Country, onChange:()=>void})
     return (
         <>
             <TitleSubtitle title={country.country}/>
-            <EditCountryModal country={country} openRef={editRef} onChange={onChange}/>
+            {cities&&<EditCountryModal country={country} openRef={editRef} onChange={()=>{flip();onChange()}} cities={cities}/>}
             <div className="side-margins">
-                <EditEntry onEdit={() => {}} onDelete={deleteCountry} editRef={editRef}/>
+                <EditEntry onEdit={flip} onDelete={deleteCountry} editRef={editRef}>
+                    {capital&&<button className="self-left" data-selected="0" onClick={()=>navigate("/cities/"+capital.city)}>{capital.city}</button>}
+                </EditEntry>
             </div>
             <div className="two-columns even">
                 <div className="flow-down">
@@ -58,9 +61,12 @@ function CountryPage({country, onChange} : {country:Country, onChange:()=>void})
                                         <th>Тип</th>
                                         <th>Материал</th>
                                     </tr>
-                                    {souvenirList}
+                                    {souvenirs.map(s=>
+                                        <SouvenirRow s={s} key={s.souvenir_id}/>
+                                    )}
+                                    {souvenirs.length==0&&<tr><td colSpan={4}><p className="note">Пусто...</p></td></tr>}
                                     </tbody>
-                                </table>:<p>Пусто</p>}
+                                </table>:<p className="note">Пусто...</p>}
                             <Loading/>
                         </SmartWaiter>
                     </section>
@@ -71,9 +77,9 @@ function CountryPage({country, onChange} : {country:Country, onChange:()=>void})
                             <div className="flex-grid outline">
                                 {trips&&(trips.length>0)?
                                     trips.map(t=>
-                                    <TripBlock trip={t} key={t.trip_id}/>):<p>Пусто...</p>}
+                                    <TripBlock trip={t} key={t.trip_id}/>):<p className="note">Пусто...</p>}
                             </div>
-                            <p>У других не добавлены остановки.</p>
+                            {trips&&trips.length>0&&<p className="note">У других не добавлены остановки.</p>}
                             </>
                             <Loading object={"путешествия"}/>
                         </SmartWaiter>
@@ -84,7 +90,7 @@ function CountryPage({country, onChange} : {country:Country, onChange:()=>void})
                         <h2>Достопримечательности</h2>
                         <SmartWaiter
                             timesUp={!loadSights}>
-                            {(souvenirs) ?
+                            {(sights) ?
                                 <table>
                                     <tbody>
                                     <tr>
@@ -93,21 +99,31 @@ function CountryPage({country, onChange} : {country:Country, onChange:()=>void})
                                         <th>Тип</th>
                                         <th>Год</th>
                                     </tr>
-                                    {sightList}
+                                    {sights.map(s=>
+                                        <SightRow s={s} key={s.sight_id}/>
+                                    )}
+                                    {sights.length==0&&<tr><td colSpan={4}><p className="note">Пусто...</p></td></tr>}
                                     </tbody>
-                                </table>:<p>Пусто</p>}
-                            <Loading/>
+                                </table>:<p className="note">Пусто...</p>}
+                            <Loading object={"достопримечательности"}/>
                         </SmartWaiter>
                     </section>
                     <section>
                         <h2>Города</h2>
+                        <AddCityModal onAdd={flip} addCityButton={addCityRef} defaultCountry={country.country}/>
                         <SmartWaiter timesUp={!loadingCities}>
-                            {cities&&(cities.length>0)?<div className="flex-grid outline">
+                            <>{cities&&(cities.length>0)?<div className="flex-grid outline">
                                 {cities.map(c=>
                                 <button data-selected="0" onClick={()=>navigate("/cities/"+c.city)} key={c.city}>
                                     {c.city}
                                 </button> )}
-                            </div>:<p>Пусто...</p>}
+                            </div>:<p className="note">Пусто...</p>}
+                                <div className="row">
+                                    <button ref={addCityRef} className="big center-child square">
+                                        <FontAwesomeIcon icon={faPlus} size="2x"/>
+                                    </button>
+                                </div>
+                            </>
                             <Loading object={"города"}/>
                         </SmartWaiter>
                     </section>

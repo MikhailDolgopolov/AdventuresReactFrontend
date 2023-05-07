@@ -38,7 +38,7 @@ function AddSouvenirModal({points, openRef, onCommit}:{points:TripPoint[], openR
                 <form className="vert-window" onSubmit={submit}>
                     <p>Относится к остановке:</p>
                     <ButtonSelect<TripPoint> array={points} id="points" stringify=
-                        {(p) => p.title} onSelect={(p) => setPoint(p)}/>
+                        {(p) => p.title} onSelect={(p) => {setPoint(p);setCity(p.city)}}/>
                     <div className="form-row">
                         <label>Название: </label>
                         <input required={true} {...register("name")}/>

@@ -10,6 +10,8 @@ import SearchInput from "../../../Fragments/SearchInput";
 import ButtonSelect from "../../../Fragments/ButtonSelect";
 import EditSouvenirModal from "../../Souvenirs/EditSouvenirModal";
 import SouvenirModal from "../../Souvenirs/SouvenirModal";
+import {SouvenirTitle} from "../../Souvenirs/SouvenirPage";
+
 
 function SouvenirBlock({s}:{s:Souvenir}) {
     const editSouvenirRef = useRef(null)
@@ -17,9 +19,7 @@ function SouvenirBlock({s}:{s:Souvenir}) {
     return (
         <>
             <button className="flex-block highlight" key={s.souvenir_id} ref={editSouvenirRef}>
-                <h3>{s.type&&<span>{s.type}</span>}{s.material&&<span> {s.material}</span>}</h3>
-                <p></p>
-                {s.name}
+                <h3>{SouvenirTitle(s)}</h3>
                 {s.city&&<h5>{s.city}</h5>}
             </button>
             <SouvenirModal s={s} openRef={editSouvenirRef}/>

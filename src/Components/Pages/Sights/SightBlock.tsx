@@ -12,6 +12,12 @@ function SightBlock({s}:{s:Sight}) {
     const [closeModal, flip] = useSwitch()
     return (
         <>
+            <button className="flex-block" onClick={()=>navigate("/sights/"+s.sight_id)}>
+                <h3>{s.name}</h3>
+                <p>{s.type}</p>
+                {(s.city) && <p>{s.city}</p>}
+
+            </button>
             <Modal header={s.name} openRef={editSightRef} offToggle={closeModal}>
                 <div className="vert-window">
                     <OptionalFormRow label="Город:  " value={s.city}/>

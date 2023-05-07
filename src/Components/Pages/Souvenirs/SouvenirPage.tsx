@@ -9,18 +9,19 @@ import {useNavigate} from "react-router-dom";
 import SouvenirBlock from "../Trips/Souvenirs/SouvenirBlock";
 
 export function SouvenirTitle(s:Souvenir){
-    return s.name?s.name:(s.material?s.material+" "+s.type:s.type)
+    return s.name?(s.type?s.type+" "+s.name:s.name):(s.material?s.material+" "+s.type:s.type)
 }
 
 function SouvenirPage({s, onChange, types, materials, cities}:
                           {s:Souvenir, onChange:()=>void,
                               types?:string[], materials?:string[], cities?:City[]}) {
-    const [points] = useFetch<TripPoint[]>("trippoints/")
+    const [points] = useFetch<TripPoint[]>("trippoints/related_to_souvenir/"+s.souvenir_id)
     const [relatedCity] = useFetch<City>("cities/"+s.city);
     const [similarSouvenirs] = useFetch<Souvenir[]>("souvenirs/similar_to/"+s.souvenir_id)
     const [relatedTrippoint] = useFetch<TripPoint>("trippoints/for_souvenir/"+s.souvenir_id)
     const navigate = useNavigate()
     const editRef = useRef<HTMLButtonElement>(null)
+    console.log(points)
 
     function deleteSouvenir(){
         if(window.confirm("Вы собираетесь удалить "+SouvenirTitle(s)+". Продолжить?")){
@@ -40,9 +41,9 @@ function SouvenirPage({s, onChange, types, materials, cities}:
             <div className="side-margins">
                 <EditEntry onEdit={() => {}} onDelete={deleteSouvenir} editRef={editRef}>
                     <>{relatedCity&&<button data-selected="0" onClick={()=>navigate("/cities/"+relatedCity.city)}>
-                        {relatedCity.city}</button>}</>
+                        {relatedCity.city} (город)</button>}</>
                     <>{relatedTrippoint&&<button data-selected="0" className="self-left" onClick={()=>navigate("/trippoints/"+s.trippoint_id)}>
-                        {relatedTrippoint.title}</button> }</>
+                        {relatedTrippoint.title} (остановка)</button> }</>
                     <div></div>
                 </EditEntry>
                 <div className="two-columns">

@@ -10,6 +10,7 @@ function Statistics({data, loading}:{data?:AdventuresStatistics, loading:boolean
             <h2>Статистика</h2>
             {/*<h4>Из учтённого</h4>*/}
             <p>Всего путешествий: <span>   </span>{data.numberOfTrips}</p>
+            <p>Всего сувениров: <span>   </span>{data.numberOfSouvenirs}</p>
         </>
     );
 }

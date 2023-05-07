@@ -7,11 +7,11 @@ import useFetch from "../../../Hooks/useFetch";
 import {post} from "../../../Server/Requests";
 import useSwitch from "../../../Hooks/useSwitch";
 
-function AddCityModal({addCityButton, onAdd}:{onAdd:{():void}
+function AddCityModal({addCityButton, onAdd, defaultCountry}:{onAdd:()=>void, defaultCountry?:string,
     addCityButton:React.MutableRefObject<HTMLElement|null>}) {
     const [toggleModal, flip] = useSwitch();
     const [countries] = useFetch<Country[]>("countries/")
-    const [selectedCountry, setCountry] = useState<string>("");
+    const [selectedCountry, setCountry] = useState<string>(defaultCountry?defaultCountry:"");
     const {register, handleSubmit} = useForm<City>();
     if(!countries) return <></>
     const onSubmit = handleSubmit((data, e?: React.BaseSyntheticEvent)=>{
@@ -21,7 +21,6 @@ function AddCityModal({addCityButton, onAdd}:{onAdd:{():void}
             return
         }
         data.country=selectedCountry;
-        console.log(data)
         post("cities/create/", JSON.stringify(data)).then(()=>{flip();onAdd();})
     })
     return (
@@ -31,11 +30,11 @@ function AddCityModal({addCityButton, onAdd}:{onAdd:{():void}
                     <label>Название: </label>
                     <input required={true} {...register("city")}/>
                 </div>
-                <div className="form-row">
+                {!defaultCountry&&<div className="form-row">
                     <label>Страна: </label>
                     <SearchInput<Country> id={"allCountries"} array={countries} stringify={(c)=>c.country}
                                           onSetValue={c=>setCountry(c)} onlySelect={true}/>
-                </div>
+                </div>}
                 <div className="form-row">
                     <label>Население: </label>
                     <input type="number" {...register("population")}/>

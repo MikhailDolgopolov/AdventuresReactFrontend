@@ -8,12 +8,16 @@ import EditCityModal from "./EditCityModal";
 import useFetch from "../../../Hooks/useFetch";
 import SouvenirBlock from "../Trips/Souvenirs/SouvenirBlock";
 import SightBlock from "../Sights/SightBlock";
+import SmartWaiter from "../../../Helpers/SmartWaiter";
+import Loading from "../Loading";
+import SouvenirRow from "../Countries/SouvenirRow";
+import SightRow from "../Countries/SightRow";
 
 function CityPage({city, onChange}:{city:City, onChange:()=>void}) {
     const navigate=useNavigate()
     let editRef = useRef<HTMLButtonElement>(null)
-    const [souvenirs] = useFetch<Souvenir[]>("souvenirs/for_city/"+city.city)
-    const [sights] = useFetch<Sight[]>("sights/for_city/"+city.city)
+    const [souvenirs, loadSouvenirs] = useFetch<Souvenir[]>("souvenirs/for_city/"+city.city)
+    const [sights, loadSights] = useFetch<Sight[]>("sights/for_city/"+city.city)
     function deleteCity(){
         if(window.confirm("Вы собираетесь удалить все данные, связанные с "+city.city+". Продолжить?")){
             post("cities/delete/", city.city).then(()=>{
@@ -34,20 +38,50 @@ function CityPage({city, onChange}:{city:City, onChange:()=>void}) {
                     <div className="flow-down">
                         {souvenirs&&souvenirs.length>0&&<section>
                             <h2>Сувениры</h2>
-                            <div className="flex-grid outline">
-                                {souvenirs.map(s=>
-                                <SouvenirBlock s={s} key={s.souvenir_id}/>)}
-                            </div>
+                            <SmartWaiter
+                                timesUp={!loadSouvenirs}>
+                                {(souvenirs) ?
+                                    <table>
+                                        <tbody>
+                                        <tr>
+                                            <th>Название</th>
+                                            <th>Город</th>
+                                            <th>Тип</th>
+                                            <th>Материал</th>
+                                        </tr>
+                                        {souvenirs.map(s=>
+                                            <SouvenirRow s={s} key={s.souvenir_id}/>
+                                        )}
+                                        {souvenirs.length==0&&<tr><td colSpan={4}><p className="note">Пусто...</p></td></tr>}
+                                        </tbody>
+                                    </table>:<p className="note">Пусто...</p>}
+                                <Loading/>
+                            </SmartWaiter>
                         </section>}
                     </div>
                     <div className="flow-down">
-                        {sights&&sights.length>0&&<section>
+                        <section>
                             <h2>Достопримечательности</h2>
-                            <div className="flex-grid outline">
-                                {sights.map(s=>
-                                    <SightBlock s={s} key={s.sight_id}/>)}
-                            </div>
-                        </section>}
+                            <SmartWaiter
+                                timesUp={!loadSights}>
+                                {(sights) ?
+                                    <table>
+                                        <tbody>
+                                        <tr>
+                                            <th>Название</th>
+                                            <th>Город</th>
+                                            <th>Тип</th>
+                                            <th>Год</th>
+                                        </tr>
+                                        {sights.map(s=>
+                                            <SightRow s={s} key={s.sight_id}/>
+                                        )}
+                                        {sights.length==0&&<tr><td colSpan={4}><p className="note">Пусто...</p></td></tr>}
+                                        </tbody>
+                                    </table>:<p className="note">Пусто...</p>}
+                                <Loading/>
+                            </SmartWaiter>
+                        </section>
                     </div>
                 </div>
             </div>

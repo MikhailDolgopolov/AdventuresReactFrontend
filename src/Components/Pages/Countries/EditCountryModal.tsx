@@ -8,18 +8,18 @@ import useSwitch from "../../../Hooks/useSwitch";
 import {useNavigate} from "react-router-dom";
 import SearchInput from "../../Fragments/SearchInput";
 
-function EditCountryModal({country, openRef, onChange}:{country:Country, onChange:()=>void, openRef:React.MutableRefObject<any>}) {
-    const [cities] = useFetch<City[]>("cities/")
+function EditCountryModal({country, cities, openRef, onChange}:{country:Country, cities:City[], onChange:()=>void, openRef:React.MutableRefObject<any>}) {
+
     const [selectedCapital, setCapital] = useState<string>(country.capital_city)
     const [closeModal, flip] = useSwitch()
     const {register, handleSubmit} = useForm<Country>()
     const navigate = useNavigate()
-    if(!cities) return <></>
     const onSubmit=handleSubmit((data:Country, e?:React.BaseSyntheticEvent)=>{
         e!.preventDefault()
         data.capital_city=selectedCapital;
         console.log(data)
-        post("countries/update/"+country.country, JSON.stringify(data)).then((c:Country)=>{flip();onChange();navigate("../"+c.country)})
+        post("countries/update/"+country.country, JSON.stringify(data)).then((c:Country)=>{flip();onChange();
+            if(country.country!=c.country) navigate("../"+c.country)})
     })
     return (
         <Modal header={"Изменить данные"} openRef={openRef} offToggle={closeModal}>
@@ -30,11 +30,11 @@ function EditCountryModal({country, openRef, onChange}:{country:Country, onChang
                 </div>
                 <div className="form-row">
                     <label>Население</label>
-                    <input type="number" {...register("population")}/>
+                    <input type="number" {...register("population")} defaultValue={country.population}/>
                 </div>
                 <div className="form-row">
                     <label>Площадь</label>
-                    <input type="number" {...register("area")}/>
+                    <input type="number" {...register("area")} defaultValue={country.area}/>
                 </div>
                 <div className="form-row">
                     <label>Столица: </label>

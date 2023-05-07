@@ -12,22 +12,20 @@ import useFetch from "../../../Hooks/useFetch";
 
 export default function GroupedTrips() {
     const [flag, changeFlag] = useSwitch()
-    const [trips, loading] = useFetch<Trip[]>("trips/", flag)
-
     let addTripButton = useRef<HTMLButtonElement>(null)
 
     return (
         <>
             <TitleSubtitle title={'Путешествия'}/>
-            <AddTripModal allTrips={trips} addTripButton={addTripButton} onAdd={()=>changeFlag()}/>
+            <AddTripModal openRef={addTripButton} onAdd={()=>changeFlag()}/>
             <div className="side-margins">
-                {loading&&<div className="top-row">
-                    <div className="empty right">
+               <div className="top-row">
+                    <div className="right">
                         <button ref={addTripButton} className="big center-child square">
                             <FontAwesomeIcon icon={faPlus} size="2x"/>
                         </button>
                     </div>
-                </div>}
+                </div>
                 <YearSplitTrips tripsChanged={flag}/>
             </div>
         </>

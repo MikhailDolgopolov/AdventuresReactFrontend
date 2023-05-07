@@ -3,12 +3,14 @@ import {useForm} from "react-hook-form";
 import {Trip} from "../../../Helpers/DataTypes";
 import {post} from "../../../Server/Requests";
 import Modal from "../../Fragments/Modal";
+import useFetch from "../../../Hooks/useFetch";
 
 
-function AddTripModal({allTrips, addTripButton, onAdd}:{allTrips?:Trip[], onAdd:{():void}
-    addTripButton:React.MutableRefObject<HTMLElement|null>}) {
+function AddTripModal({openRef, onAdd}:{onAdd:{(arg0:Trip):void}
+    openRef:React.MutableRefObject<any>}) {
     const [toggleModal, setToggle] = useState<boolean>(true);
     const {register, handleSubmit} = useForm<Trip>();
+    const [allTrips] = useFetch<Trip[]>("trips/")
     if(!allTrips) return <></>
 
     const onSubmit = handleSubmit((data)=>{
@@ -16,17 +18,16 @@ function AddTripModal({allTrips, addTripButton, onAdd}:{allTrips?:Trip[], onAdd:
         if(seek){
             alert("Taкое путешествие уже добавлено.");
         }else{
-            console.log(JSON.stringify(data))
-            post('trips/create/', JSON.stringify(data)).then(()=>{
+            post('trips/create/', JSON.stringify(data)).then((data:Trip)=>{
                 setToggle(!toggleModal)
-                onAdd()
+                onAdd(data)
             });
         }
     })
 
 
     return (
-        <Modal header="Новое путешествие" openRef={addTripButton} offToggle={toggleModal}>
+        <Modal header="Новое путешествие" openRef={openRef} offToggle={toggleModal}>
             <form className="vert-window" onSubmit={onSubmit}>
                 <div className="form-row">
                     <label >Название: </label>

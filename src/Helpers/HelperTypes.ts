@@ -5,6 +5,7 @@ export type AdventuresStatistics={
     cities:City[]
     people:Person[]
     numberOfTrips:number
+    numberOfSouvenirs:number
 }
 
 export type FetchResult<Type>=[

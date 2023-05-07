@@ -8,7 +8,7 @@ function TripBlock({trip}:{trip:Trip}) {
     const navigate = useNavigate();
     return (
             <button className="grid-block highlight" onClick={()=>navigate('/trip/'+trip.trip_id)}>
-                <h3>{trip.title + " "}</h3>
+                <h3>{trip.title + " "+trip.year}</h3>
                 <Date d1={trip.start_date} d2={trip.end_date}/>
                 {trip.description !== null &&
                 <p>{trip.description}</p>}

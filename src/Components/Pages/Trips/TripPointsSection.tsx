@@ -40,14 +40,15 @@ function TripPointsSection({trip,onChange}:{trip:Trip, onChange:()=>void}) {
             return;
         }
         let citySeek = cities.find(city => (city.city == selectedCity));
-        data.trip_order=trippoints.length+1
-        console.log(data.trip_order)
-        if (!citySeek && selectedCity.length>0) {
+        data.trip_order=trippoints.length
+        data.city=selectedCity;
+        if (!citySeek) {
             if(!addingCity){
                 settingCityField(true)
                 return;
             }
-            if(selectedCountry.length==0){
+
+            if(selectedCountry.trim().length==0){
                 alert("Страна не введена")
                 return;
             }
@@ -80,7 +81,7 @@ function TripPointsSection({trip,onChange}:{trip:Trip, onChange:()=>void}) {
             }}>
                 <h3>{point.title}</h3>
                 {(!singlePoint && point.city) && <h5>{point.city}</h5>}
-                {point.trip_order}
+                {/*{point.trip_order}*/}
             </button>
             {(editingOrder)&&
             <div className="cover form-row even">

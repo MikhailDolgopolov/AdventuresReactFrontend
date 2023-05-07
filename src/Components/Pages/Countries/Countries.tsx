@@ -10,7 +10,7 @@ import useSwitch from "../../../Hooks/useSwitch";
 function Countries() {
     const [refetch, flip] = useSwitch()
     const [countries, ] = useFetch<Country[]>("countries/", refetch)
-    if(!countries) return <LoadingError loadingObject ="страны" loading={true}/>
+    if(!countries) return <LoadingError loadingObject ="страны" loading={true} wholePage={true}/>
     const pages = countries.map(country=>
     <Route key = {country.country} path={country.country} element={<CountryPage country={country} onChange={flip} />}/>)
     return (

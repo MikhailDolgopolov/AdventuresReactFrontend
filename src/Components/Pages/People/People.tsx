@@ -10,7 +10,7 @@ import useFetch from "../../../Hooks/useFetch";
 function People() {
     const [refetch, flip] = useSwitch()
     const [people, loading]=useFetch<Person[]>("people/", refetch)
-    if(!people) return <LoadingError loadingObject={"people"} loading={loading}/>
+    if(!people) return <LoadingError loadingObject={"people"} loading={loading} wholePage={true}/>
     const pages = people.map(person=>
     <Route key={person.person_id} path={person.person_id.toString()} element={<PersonPage person={person} onChange={flip}/>}/> )
     return (

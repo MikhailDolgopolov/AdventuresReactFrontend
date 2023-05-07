@@ -5,15 +5,17 @@ import {Route, Routes} from "react-router-dom";
 import useSwitch from "../../../Hooks/useSwitch";
 import EmptyRoute from "../EmptyRoute";
 import SightPage from "./SightPage";
+import LoadingError from "../LoadingError";
 
 function Sights() {
     const [refetch, flip] = useSwitch()
-    const [sights] = useFetch<Sight[]>("sights/", refetch)
+    const [sights, loadingSights] = useFetch<Sight[]>("sights/", refetch)
     const [cities] = useFetch<City[]>("cities/", refetch)
     const [sightTypes] = useFetch<string[]>("sights/types/", refetch)
-    const routes = sights?sights.map(s=>
+    if(!sights) return <LoadingError loadingObject={"достопримечательности"} loading={loadingSights} wholePage={true}/>
+    const routes = sights.map(s=>
     <Route path={s.sight_id.toString()} key={s.sight_id} element={
-        <SightPage s={s} onChange={flip} cities={cities} types={sightTypes}/>}/> ):[]
+        <SightPage s={s} onChange={flip} cities={cities} types={sightTypes}/>}/> )
     return (
         <Routes>
             {routes}

@@ -7,8 +7,8 @@ function CountryRow({prop}:{prop:Country}) {
     return (
         <tr className="hoverable" onClick={()=>navigate("/countries/"+prop.country)}>
             <td>{prop.country}</td>
-            <td>{prop.population}</td>
-            <td>{prop.area}</td>
+            <td>{prop.population!=0&&prop.population}</td>
+            <td>{prop.area!=0&&prop.area}</td>
             <td>{prop.capital_city}</td>
         </tr>
     );

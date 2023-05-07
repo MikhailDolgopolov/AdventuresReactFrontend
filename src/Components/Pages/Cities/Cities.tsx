@@ -10,7 +10,7 @@ import useSwitch from "../../../Hooks/useSwitch";
 function Cities() {
     const [refetch, flip] = useSwitch()
     const [array, loading] = useFetch<City[]>("cities/", refetch)
-    if(!array) return <LoadingError loadingObject ="города" loading={loading}/>
+    if(!array) return <LoadingError loadingObject ="города" loading={loading} wholePage={true}/>
     const pages = array.map(city=>
         <Route key = {city.city} path={city.city} element={<CityPage city={city} onChange={flip}/>}/>)
     return (

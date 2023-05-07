@@ -35,7 +35,8 @@ function SightPage({s, onChange, cities, types}:{s:Sight, onChange:()=>void, cit
                     <div className="flow-down">
                         {similarSights && similarSights.length>0&&<section>
                             <h2>Похожие</h2>
-                            <h4><span>{s.type}</span> или <span>{s.city}</span></h4>
+                            {similarSights.length}
+                            <h4><span>{s.type?s.type:"без указанного типа"}</span> или <span>{s.city}</span></h4>
                             <div className="flex-grid outline">
                                 {similarSights
                                     .map(s=>

@@ -37,7 +37,7 @@ function TripPage({trip, onChange}:{trip:Trip, onChange:()=>void}) {
     function confirmDeletion() {
         if (window.confirm("Вы собираетесь удалить все данные, связанные с " + trip.title + ". Продолжить?")) {
             post("trips/delete/", trip.trip_id.toString(), true)
-                .then(() => navigate("/trips/"));
+                .then(() => navigate(-1));
 
         }
     }
@@ -99,8 +99,8 @@ function TripPage({trip, onChange}:{trip:Trip, onChange:()=>void}) {
                         <TripPointsSection trip={trip} onChange={flipRefetchPoints}/>
                     </div>
                     <div className="flow-down">
-                        {trippoints&&<SightsSection trip={trip} points={trippoints}/>}
-                        <SouvenirsSection trip={trip} points={trippoints}/>
+                        {trippoints&&trippoints.length>0&&<SightsSection trip={trip} points={trippoints}/>}
+                        {trippoints&&trippoints.length>0&&<SouvenirsSection trip={trip} points={trippoints}/>}
                     </div>
                 </div>
             </div>

@@ -26,11 +26,11 @@ function EditTripModal({trip, editRef, onChange}:{trip:Trip, onChange:()=>void,
                 </div>
                 <div className="form-row">
                     <label >Начало: </label>
-                    <input required={true} {...register("start_date")} defaultValue={trip.start_date}/>
+                    <input required={true} type="date" {...register("start_date")} defaultValue={trip.start_date}/>
                 </div>
                 <div className="form-row">
                     <label >Окончание: </label>
-                    <input {...register("end_date")} defaultValue={trip.end_date}/>
+                    <input type="date" {...register("end_date")} defaultValue={trip.end_date}/>
                 </div>
                 <div className="form-row">
                     <label >Описание: </label>

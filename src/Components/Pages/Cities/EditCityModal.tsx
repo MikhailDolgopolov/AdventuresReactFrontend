@@ -18,7 +18,8 @@ function EditCityModal({city, openRef, onChange}:{city:City, onChange:()=>void, 
     const onSubmit=handleSubmit((data:City, e?:React.BaseSyntheticEvent)=>{
         e!.preventDefault()
         data.country=selectedCountry;
-        post("cities/update/"+city.city, JSON.stringify(data)).then((c:City)=>{onChange();flip();navigate("../"+c.city)})
+        post("cities/update/"+city.city, JSON.stringify(data)).then((c:City)=>{onChange();flip();
+            if(city.city!=data.city) navigate("../"+c.city)})
     })
     return (
         <Modal header={"Изменить данные"} openRef={openRef} offToggle={closeModal}>
