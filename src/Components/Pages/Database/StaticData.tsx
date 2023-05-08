@@ -14,6 +14,7 @@ import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import AddPersonModal from "./AddPersonModal";
 import useFetch from "../../../Hooks/useFetch";
 import useSwitch from "../../../Hooks/useSwitch";
+import SouvenirRow from "./Rows/SouvenirRow";
 
 function StaticData() {
     const [refetch, flip] = useSwitch()
@@ -96,6 +97,18 @@ function StaticData() {
                         {personTable}
                         </tbody>
                     </table>
+                </section>
+                <section>
+                    <h2>Сувениры</h2>
+                    <table><tbody>
+                    <tr>
+                        <th>Название</th>
+                        <th>Город</th>
+                        <th>Тип</th>
+                        <th>Материал</th>
+                    </tr>
+                    {stats.souvenirs.map(s=><SouvenirRow s={s} key={s.souvenir_id}/>)}
+                    </tbody></table>
                 </section>
                 <section>
                    <Statistics data={stats} loading={loadingStats}/>

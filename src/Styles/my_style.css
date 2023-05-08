@@ -3,7 +3,7 @@ body {
   font-family: sans-serif;
   box-sizing: border-box;
   margin: 0;
-  
+
   --outer-margin: 1ch;
 
   --text-color: black;
@@ -20,6 +20,9 @@ body {
 
   background-color: var(--background-color);
   color: var(--text-color);
+}
+html, body, #app, #app>div {
+  height: 100%;
 }
 #root{
   min-height: 100vh;
@@ -55,6 +58,7 @@ body {
 .modal-overlay{
   position: fixed;
   z-index: 5;
+  overflow-y: auto;
   background-color: rgba(0,0,0,0.8);
 }
 
@@ -70,7 +74,7 @@ p{
   margin: 4px;
 }
 p.note{
-  color: var(--ui-high-contrast);
+  color: var(--ui-dark);
 }
 .date{
   white-space: nowrap;
@@ -444,6 +448,7 @@ button.order{
 .two-columns section{
   margin-inline: 0.5rem;
   padding-inline: 0.5rem;
+  padding-bottom: 2rem;
 }
 .two-columns section>h2{
   display: flex;

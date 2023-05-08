@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {City, Sight, Souvenir} from "../../../Helpers/DataTypes";
+import {City, Sight, Souvenir, Trip} from "../../../Helpers/DataTypes";
 import TitleSubtitle from "../../Fragments/TitleSubtitle";
 import {post} from "../../../Server/Requests";
 import {useNavigate} from "react-router-dom";
@@ -9,11 +9,15 @@ import cities from "../Cities/Cities";
 import useFetch from "../../../Hooks/useFetch";
 import SouvenirBlock from "../Trips/Souvenirs/SouvenirBlock";
 import SightBlock from "./SightBlock";
+import TripBlock from "../GroupedTrips/TripBlock";
+import useSwitch from "../../../Hooks/useSwitch";
 
 function SightPage({s, onChange, cities, types}:{s:Sight, onChange:()=>void, cities?:City[], types?:string[]}) {
     const navigate=useNavigate()
     const editRef = useRef<HTMLButtonElement>(null)
-    const [similarSights] = useFetch<Sight[]>("sights/similar_to/"+s.sight_id)
+    const [refetch, flip] = useSwitch()
+    const [similarSights] = useFetch<Sight[]>("sights/similar_to/"+s.sight_id, refetch)
+    const [trips] = useFetch<Trip[]>("trips/for_sight/"+s.sight_id)
     function deleteSight(){
         if(window.confirm("Вы собираетесь удалить "+s.name+". Продолжить?")){
             post("sights/delete/", JSON.stringify(s)).then(()=>{
@@ -26,16 +30,20 @@ function SightPage({s, onChange, cities, types}:{s:Sight, onChange:()=>void, cit
     return (
         <>
             <TitleSubtitle title={s.name} subtitle={s.city}/>
-            <EditSightModal s={s} openRef={editRef} onChange={onChange} cities={cities} types={types}/>
+            <EditSightModal s={s} openRef={editRef} onChange={()=>{onChange();flip();}} cities={cities} types={types}/>
             <div className="side-margins">
                 <EditEntry onEdit={() => {}} onDelete={deleteSight} editRef={editRef}>
-                    <button className="self-left" data-selected="0" onClick={()=>navigate("/cities/"+s.city)}>{s.city}</button>
+                    <>{s.city&&<button data-selected="0" onClick={()=>navigate("/cities/"+s.city)}>{s.city}</button>}</>
+                    <div className="outline self-left row">
+                        {trips&&(trips.length>0?trips.map(t=>
+                                <button key={t.trip_id} data-selected="0" onClick={()=>navigate("/trip/"+t.trip_id)}>{t.title+" "+t.year}</button>):
+                            <p className="note">{s.name} не добавлена ни в одну поездку</p> )}
+                    </div>
                 </EditEntry>
                 <div className="two-columns">
                     <div className="flow-down">
                         {similarSights && similarSights.length>0&&<section>
                             <h2>Похожие</h2>
-                            {similarSights.length}
                             <h4><span>{s.type?s.type:"без указанного типа"}</span> или <span>{s.city}</span></h4>
                             <div className="flex-grid outline">
                                 {similarSights

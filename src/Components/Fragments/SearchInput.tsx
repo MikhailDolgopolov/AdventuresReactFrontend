@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {waitFor} from "@testing-library/react";
 
 function SearchInput<Type>({id, array,stringify, onSetValue, onSetItem, onlySelect, defaultValue, not_required}:
                                                               {id:string, array:Type[]|undefined, stringify:{(arg0: Type):string},not_required?:boolean
@@ -6,10 +7,13 @@ function SearchInput<Type>({id, array,stringify, onSetValue, onSetItem, onlySele
     const [query, setQuery] = useState<string>("");
     const [isFocus, setIsFocus] = useState<boolean>(false);
     const [timer, setTimer] = useState<NodeJS.Timeout | undefined>();
-    if(!defaultValue) defaultValue="";
+
+
     useEffect(()=>{
-        setQuery(defaultValue!)
-    }, [])
+        if(!defaultValue) defaultValue="";
+        setQuery(defaultValue)
+
+    }, [defaultValue,])
 
     const list=(array)?array.filter(item => {
         let itemString = stringify(item).toLowerCase();
@@ -40,7 +44,6 @@ function SearchInput<Type>({id, array,stringify, onSetValue, onSetItem, onlySele
         if(onSetItem) onSetItem(item)
         if(empty=="") t*=0.7
         setTimer(setTimeout(()=>{
-            //if(onlySelect && empty=="") setQuery("")
             setIsFocus(false)
             clearTimeout(timer)
         }, t*1000));

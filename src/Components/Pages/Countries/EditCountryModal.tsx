@@ -17,7 +17,7 @@ function EditCountryModal({country, cities, openRef, onChange}:{country:Country,
     const onSubmit=handleSubmit((data:Country, e?:React.BaseSyntheticEvent)=>{
         e!.preventDefault()
         data.capital_city=selectedCapital;
-        console.log(data)
+
         post("countries/update/"+country.country, JSON.stringify(data)).then((c:Country)=>{flip();onChange();
             if(country.country!=c.country) navigate("../"+c.country)})
     })

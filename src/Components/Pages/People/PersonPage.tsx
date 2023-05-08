@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import {Person, Trip} from "../../../Helpers/DataTypes";
+import {Country, Person, Trip} from "../../../Helpers/DataTypes";
 import TitleSubtitle from "../../Fragments/TitleSubtitle";
 import EditEntry from "../../Fragments/EditEntry";
 import Modal from "../../Fragments/Modal";
@@ -22,6 +22,8 @@ function PersonPage({person, onChange}:{person:Person, onChange:()=>void}) {
     const [existingTrips, hideTrips] = useSwitch()
     let [otherTrips] = useFetch<Trip[]>("trips/not_mine/"+person.person_id, refetch)
     const [trips] = useFetch<Trip[]>("trips/for_person/"+person.person_id, refetch);
+
+    const [countries, loadCountries] = useFetch<Country[]>("countries/for_person/"+person.person_id, refetch)
 
     function deletePerson() {
         if(window.confirm("Вы собираетесь полностью удалить "+person.first_name + " "+person.last_name+". Продолжить?")){
@@ -54,7 +56,7 @@ function PersonPage({person, onChange}:{person:Person, onChange:()=>void}) {
                                 <button ref={addTripButton} className="big center-child square">
                                     <FontAwesomeIcon icon={faPlus} size="2x"/>
                                 </button>
-                                <button onClick={hideTrips}>Добавить уществующие путешествия</button>
+                                <button onClick={hideTrips}>Добавить существующие путешествия</button>
                             </div>
                             {otherTrips&&otherTrips.length>0&&existingTrips&&<div className="flex-grid">
                                 {otherTrips.map(t=>
@@ -64,6 +66,20 @@ function PersonPage({person, onChange}:{person:Person, onChange:()=>void}) {
                                     }
                                     }>{t.title} {t.year}</button>)}
                             </div>}
+                        </section>
+                    </div>
+                    <div className="flow-down">
+                        <section>
+                            <h2>Страны</h2>
+                            {countries&&<>
+                                <p>Всего посещено стран: {countries.length}. Добавляйте остановки, сувениры и достопримечательности чтобы их страны появились здесь.</p>
+                                <div className="flex-grid outline">
+                                    {countries.length>0?countries.map(c=>
+                                            <button data-selected="0" className="flex-block" key={c.country}
+                                                    onClick={()=>navigate("/countries/"+c.country)}>{c.country}</button>)
+                                        :<p className="note">Пусто...</p>}
+                                </div>
+                            </>}
                         </section>
                     </div>
                 </div>

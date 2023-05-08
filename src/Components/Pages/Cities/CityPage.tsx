@@ -10,8 +10,8 @@ import SouvenirBlock from "../Trips/Souvenirs/SouvenirBlock";
 import SightBlock from "../Sights/SightBlock";
 import SmartWaiter from "../../../Helpers/SmartWaiter";
 import Loading from "../Loading";
-import SouvenirRow from "../Countries/SouvenirRow";
-import SightRow from "../Countries/SightRow";
+import SouvenirRow from "../Database/Rows/SouvenirRow";
+import SightRow from "../Database/Rows/SightRow";
 
 function CityPage({city, onChange}:{city:City, onChange:()=>void}) {
     const navigate=useNavigate()
@@ -36,25 +36,24 @@ function CityPage({city, onChange}:{city:City, onChange:()=>void}) {
                 </EditEntry>
                 <div className="two-columns">
                     <div className="flow-down">
-                        {souvenirs&&souvenirs.length>0&&<section>
+                        {souvenirs&&<section>
                             <h2>Сувениры</h2>
-                            <SmartWaiter
-                                timesUp={!loadSouvenirs}>
-                                {(souvenirs) ?
-                                    <table>
-                                        <tbody>
-                                        <tr>
-                                            <th>Название</th>
-                                            <th>Город</th>
-                                            <th>Тип</th>
-                                            <th>Материал</th>
-                                        </tr>
-                                        {souvenirs.map(s=>
+                            <SmartWaiter timesUp={!loadSouvenirs}>
+                                <table>
+                                    <tbody>
+                                    <tr>
+                                        <th>Название</th>
+                                        <th>Город</th>
+                                        <th>Тип</th>
+                                        <th>Материал</th>
+                                    </tr>
+                                    {(souvenirs.length>0) ?
+                                        souvenirs.map(s=>
                                             <SouvenirRow s={s} key={s.souvenir_id}/>
-                                        )}
-                                        {souvenirs.length==0&&<tr><td colSpan={4}><p className="note">Пусто...</p></td></tr>}
-                                        </tbody>
-                                    </table>:<p className="note">Пусто...</p>}
+                                        ):
+                                        <tr><td colSpan={4}><p className="note">Пусто...</p></td></tr>}
+                                    </tbody>
+                                </table>
                                 <Loading/>
                             </SmartWaiter>
                         </section>}

@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
-import {Sight} from "../../../Helpers/DataTypes";
-import SightModal from "../Sights/SightModal";
+import {Sight} from "../../../../Helpers/DataTypes";
+import SightModal from "../../Sights/SightModal";
 import {useNavigate} from "react-router-dom";
 
 function SightRow({s}:{s:Sight}) {

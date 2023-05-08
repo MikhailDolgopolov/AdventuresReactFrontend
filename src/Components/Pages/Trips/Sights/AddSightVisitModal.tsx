@@ -11,6 +11,7 @@ import axios from "axios";
 import {serverProperties} from "../../../../Server/ServerProperties";
 import useSwitch from "../../../../Hooks/useSwitch";
 import useLogger from "../../../../Hooks/useLogger";
+import ButtonSelectWithInput from "../../../Fragments/ButtonSelectWithInput";
 
 function AddSightVisitModal({addSightRef, closeSwitch, points, trip_id, onChange}:
       {addSightRef:React.MutableRefObject<any>, closeSwitch?:boolean, points:TripPoint[], trip_id:number,  onChange:()=>void}) {
@@ -19,6 +20,8 @@ function AddSightVisitModal({addSightRef, closeSwitch, points, trip_id, onChange
     const [cities] = useFetch<City[]>("cities/")
     const [selectedPoint, setPoint] = useState<TripPoint>(points[0])
     const [selectedCity, setCity] = useState<string>(points[0].city)
+    const [sightTypes] = useFetch<string[]>("sights/types/", closeSwitch)
+    const [selectedType, setType] = useState<string>("")
     const [selectedSight, setSight] = useState<Sight>()
     const [sightName, setSightName] = useState<string>("")
     const [selectedDate, setDate] = useState<string>("")
@@ -26,19 +29,15 @@ function AddSightVisitModal({addSightRef, closeSwitch, points, trip_id, onChange
     const [currentCountry] = useFetch<Country>("countries/for_city/"+selectedPoint.city, refetchCountry)
     const {register, handleSubmit} = useForm<SightVisitCombined>()
 
-    async function findCountry(p:TripPoint){
-        const found = await axios.get<Country>(serverProperties.root+'countries/for_city/'+'Moscow')
-
-        console.log(found.data)
-        return found.data;
-    }
     useEffect(()=>{
         if(trip) setDate(trip.start_date)
     }, [trip])
+
     if(!sights || !cities) return <></>
     const submit = handleSubmit((newVisit)=>{
         newVisit.name=sightName;
         newVisit.trippoint_id=selectedPoint.trippoint_id;
+        newVisit.type=selectedType;
         if(selectedCity) newVisit.city=selectedCity;
         if(selectedSight){
             newVisit.sight_id=selectedSight.sight_id;
@@ -48,7 +47,7 @@ function AddSightVisitModal({addSightRef, closeSwitch, points, trip_id, onChange
         }
         newVisit.visited_date=selectedDate
         const citySeek = cities.find(c=>c.city==selectedCity)
-        if(!citySeek){
+        if(!citySeek && selectedCity){
             if(!currentCountry) {alert("Подождите немного... Нужно немного времени."); return;}
             const newCity:City = {city:selectedCity, country:currentCountry.country, founded_year:0, population:0}
             if(confirm(currentCountry.country+": будет добавлен город "+selectedCity.toString()+"."))
@@ -72,6 +71,11 @@ function AddSightVisitModal({addSightRef, closeSwitch, points, trip_id, onChange
                                         stringify={(s)=>s.name} onSetItem={(s)=>{setSight(s);
                         if(s) setCity(s.city)}}/>
                 </div>
+                <div>
+                    <label>Тип: </label>
+                    <ButtonSelectWithInput<string> array={sightTypes} id={"sightTypes"} stringify={(t)=>t}
+                                                   onSelect={(s)=>setType(s)}/>
+                </div>
                 <div className="form-row">
                     <label>Дата: </label>
                     {trip&&<input type="date"  autoComplete="off" {...register("visited_date")} onChange={(event)=>{
@@ -81,7 +85,7 @@ function AddSightVisitModal({addSightRef, closeSwitch, points, trip_id, onChange
                 </div>
                 {!selectedSight&&<div className="form-row">
                     <label>Город</label>
-                    <SearchInput id={"sightCity"} array={cities} stringify={(c)=>c.city}
+                    <SearchInput id={"sightCity"} array={cities} stringify={(c)=>c.city} not_required={true}
                                  onSetValue={(s)=>setCity(s)} defaultValue={selectedPoint&&selectedPoint.city}/>
                 </div>}
                 <button type="submit">Добавить</button>

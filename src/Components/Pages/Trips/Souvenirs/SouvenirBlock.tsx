@@ -18,7 +18,7 @@ function SouvenirBlock({s}:{s:Souvenir}) {
 
     return (
         <>
-            <button className="flex-block highlight" key={s.souvenir_id} ref={editSouvenirRef}>
+            <button className="highlight" key={s.souvenir_id} ref={editSouvenirRef}>
                 <h3>{SouvenirTitle(s)}</h3>
                 {s.city&&<h5>{s.city}</h5>}
             </button>

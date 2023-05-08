@@ -24,7 +24,7 @@ function SightsSection({trip, points}:{trip:Trip, points:TripPoint[]}) {
         <section>
             <h2>Достопримечательности</h2>
             <AddSightVisitModal addSightRef={addSightRef} onChange={flip} closeSwitch={refetch} points={points} trip_id={trip.trip_id}/>
-            <SightVisitList sights={sights} onChange={close} trippoints={points}/>
+            <SightVisitList sights={sights} onChange={()=>{flip();close()}} trippoints={points}/>
             <div className="row edges">
                 <button className="big" ref={addSightRef}>
                     <FontAwesomeIcon icon={faPlus} size="2x"/>

@@ -4,7 +4,7 @@ import SearchInput from "../../Fragments/SearchInput";
 import ButtonSelect from "../../Fragments/ButtonSelect";
 import Modal from "../../Fragments/Modal";
 import useFetch from "../../../Hooks/useFetch";
-import {City, Souvenir, TripPoint} from "../../../Helpers/DataTypes";
+import {City, Country, Souvenir, TripPoint} from "../../../Helpers/DataTypes";
 import useSwitch from "../../../Hooks/useSwitch";
 import {useForm} from "react-hook-form";
 import {post} from "../../../Server/Requests";
@@ -16,19 +16,32 @@ function EditSouvenirModal({s, editSouvenirRef, onChange, trippoints, types, mat
 
     const [newMaterial, setMaterial] = useState<string>(s.material)
     const [newType, setType] = useState<string>(s.type)
-    const [newCity, setCity] = useState<string>(s.city)
-    const [newPoint, setPoint] = useState<number>(s.trippoint_id)
+    const [selectedCity, setCity] = useState<string>(s.city)
+    const [refetchCountry, flipRefetchCountry] = useSwitch()
+    const [newPoint, setPoint] = useState<TripPoint>(trippoints[0])
+    const [currentCountry] = useFetch<Country>("countries/for_city/"+newPoint.city, refetchCountry)
+
     const {register, handleSubmit} = useForm<Souvenir>()
 
 
     const saveSouvenir = handleSubmit((newS:Souvenir, e?)=>{
+        if (!cities) return;
         e!.preventDefault()
         newS.material=newMaterial;
         newS.type=newType;
-        newS.city = newCity;
-        newS.trippoint_id=newPoint;
-        post("souvenirs/update/", JSON.stringify(newS)).then(()=>{
-            flip();onChange()})
+        newS.city = selectedCity;
+        newS.trippoint_id=newPoint.trippoint_id;
+        const citySeek = cities.find(c=>c.city==selectedCity)
+        if(!citySeek && selectedCity){
+            if(!currentCountry) return;
+            const newCity:City = {city:selectedCity, country:currentCountry.country, founded_year:0, population:0}
+            if(confirm(currentCountry.country+": будет добавлен город "+selectedCity.toString()+"."))
+                post("cities/create/", JSON.stringify(newCity)).then(()=>
+                    post("souvenirs/update/", JSON.stringify(newS)).then(()=>{
+                        flip();onChange()}))
+        }else
+            post("souvenirs/update/", JSON.stringify(newS)).then(()=>{
+                flip();onChange()})
     })
     return (
         <Modal header="Изменить данные" openRef={editSouvenirRef} offToggle={closeModal}>
@@ -45,7 +58,8 @@ function EditSouvenirModal({s, editSouvenirRef, onChange, trippoints, types, mat
                             setMaterial(s)
                         }}/>}</div>
                 <div>Тип:
-                    {types &&
+                    {
+                        types &&
                         <ButtonSelectWithInput<string> array={types} id={"editTypes"} defaultValue={s.type}
                                                        stringify={(s) => s} onSelect={(s) => {
                             setType(s)
@@ -53,7 +67,7 @@ function EditSouvenirModal({s, editSouvenirRef, onChange, trippoints, types, mat
                 <div className="form-row">
                     <label>Город: </label>
                     <SearchInput id={"citiesForS"} array={cities} stringify={(c)=>c.city} not_required={true}
-                                 onSetValue={(s)=>setCity(s)} defaultValue={s.city} onlySelect={true}/>
+                                 onSetValue={(s)=>{setCity(s);flipRefetchCountry()}} defaultValue={s.city}/>
                 </div>
                 <div className="form-row">
                     <label>Описание: </label>
@@ -61,7 +75,7 @@ function EditSouvenirModal({s, editSouvenirRef, onChange, trippoints, types, mat
                 </div>
                 Относится к остановке:
                 {currPoint&&<ButtonSelect array={trippoints} id={"tp"} stringify={(tp)=>tp.title}
-                                          onSelect={(tp)=>setPoint(tp.trippoint_id)} defaultValue={currPoint.title}/>}
+                                          onSelect={(tp)=>setPoint(tp)} defaultValue={currPoint.title}/>}
                 <button type="submit">Сохранить</button>
             </form>
         </Modal>

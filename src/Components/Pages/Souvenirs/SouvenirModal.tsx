@@ -10,7 +10,6 @@ function SouvenirModal({s, openRef}:{s:Souvenir, openRef:React.MutableRefObject<
     return (
         <Modal header={SouvenirTitle(s)} openRef={openRef}>
             <div className="vert-window">
-                <OptionalFormRow label={"Название:  "} value={s.name}/>
                 <OptionalFormRow label={"Материал:  "} value={s.material}/>
                 <OptionalFormRow label={"Тип:  "} value={s.type}/>
                 <OptionalFormRow label={"Город:  "} value={s.city}/>

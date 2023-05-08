@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
-import SouvenirModal from "../Souvenirs/SouvenirModal";
-import {Souvenir} from "../../../Helpers/DataTypes";
+import SouvenirModal from "../../Souvenirs/SouvenirModal";
+import {Souvenir} from "../../../../Helpers/DataTypes";
 
 function SouvenirRow({s}:{s:Souvenir}) {
     const openWindowRef=useRef<HTMLTableRowElement>(null)

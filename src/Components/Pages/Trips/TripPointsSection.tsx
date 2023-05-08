@@ -32,7 +32,7 @@ function TripPointsSection({trip,onChange}:{trip:Trip, onChange:()=>void}) {
 
     const onSubmit=handleSubmit((data:TripPoint, e?:React.BaseSyntheticEvent)=> {
         if(!cities || !trippoints) return;
-        
+        if(!data.title && selectedCity) data.title=selectedCity;
         let seekDupNames = trippoints!.find(point => (data.title == point.title));
         if (seekDupNames) {
             alert("Taкая остановка уже добавлена.");
@@ -42,7 +42,7 @@ function TripPointsSection({trip,onChange}:{trip:Trip, onChange:()=>void}) {
         let citySeek = cities.find(city => (city.city == selectedCity));
         data.trip_order=trippoints.length
         data.city=selectedCity;
-        if (!citySeek) {
+        if (!citySeek && selectedCity) {
             if(!addingCity){
                 settingCityField(true)
                 return;
@@ -80,7 +80,7 @@ function TripPointsSection({trip,onChange}:{trip:Trip, onChange:()=>void}) {
                     navigate('/trippoints/'+point.trippoint_id)
             }}>
                 <h3>{point.title}</h3>
-                {(!singlePoint && point.city) && <h5>{point.city}</h5>}
+                {(!singlePoint && point.city && point.city!=point.title) && <h5>{point.city}</h5>}
                 {/*{point.trip_order}*/}
             </button>
             {(editingOrder)&&
@@ -129,7 +129,7 @@ function TripPointsSection({trip,onChange}:{trip:Trip, onChange:()=>void}) {
                     <form className="vert-window" onSubmit={onSubmit}>
                         <div className="form-row">
                             <label>Название: </label>
-                            <input required={true} {...register("title")} defaultValue={""}/>
+                            <input {...register("title")} defaultValue={""}/>
                         </div>
                         <div className="form-row">
                             <label>Город: </label>

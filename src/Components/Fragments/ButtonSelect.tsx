@@ -1,9 +1,9 @@
 import React, {useEffect} from 'react';
 import Loading from "../Pages/Loading";
 
-function ButtonSelect<Type>({array, id, stringify, onSelect, children, clearSwitch, resetSwitch, defaultValue}:
+function ButtonSelect<Type>({array, id, stringify, onSelect, children, clearSwitch, resetSwitch, defaultValue, hideContent}:
                                 {array:Type[]|undefined, id:string, stringify:{(arg0:Type):string}, clearSwitch?:any,resetSwitch?:boolean
-    defaultValue?:string, onSelect:{(arg0:Type):void}, children?:JSX.Element[]|JSX.Element}) {
+    defaultValue?:string, onSelect:{(arg0:Type):void}, children?:JSX.Element[]|JSX.Element, hideContent?:boolean}) {
     if(!array) return <Loading object={"данные"}/>
     function deselectAll(){
         let buttons=document.getElementsByClassName("my-select-button-"+id);
@@ -26,14 +26,14 @@ function ButtonSelect<Type>({array, id, stringify, onSelect, children, clearSwit
     },[resetSwitch])
     return (
         <div className="flex-grid wide">
-            {array.map(item=>
+            {!hideContent&&array.map(item=>
                 <button type="button" key={stringify(item)} id={stringify(item)}
                         className={"flex-block hoverable my-select-button-"+id}
                         onClick={()=>{
                             styleSelection(stringify(item))
                             onSelect(item)
                 }}>
-                    {stringify(item)}
+                    {stringify(item).includes("(")?<p className="note">{stringify(item)}</p> :stringify(item)}
                 </button>
             )}
             {children}
