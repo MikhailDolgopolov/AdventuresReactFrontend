@@ -2,13 +2,16 @@ import React, {useEffect, useState} from 'react';
 import ReactDom from "react-dom";
 import {faXmark} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-
-function Modal({children, header, openRef, offToggle, freeClose}:{children: JSX.Element[]|JSX.Element, header:string,
-    openRef:React.MutableRefObject<HTMLElement|null>, offToggle?:boolean, freeClose?:boolean}) {
+import styled from "styled-components";
+const Div = styled.div<{pos: string}>`position: ${props => props.pos}`;
+function Modal({children, header, openRef, positioning, offToggle, freeClose, onClose}:{children: JSX.Element[]|JSX.Element, header:string,
+    openRef:React.MutableRefObject<HTMLElement|null>,positioning?:string, offToggle?:boolean, freeClose?:boolean, onClose?:()=>void}) {
 
     const [open, setOpen] = useState<boolean>();
     const [timer] = useState<NodeJS.Timeout | undefined>();
     const [wait, setWait] = useState<boolean>(true);
+    if(!positioning) positioning="fixed";
+
     useEffect(()=>{
         const openListener = (event: any)=>{
             if(openRef.current && openRef.current.contains(event.target)) {
@@ -31,8 +34,10 @@ function Modal({children, header, openRef, offToggle, freeClose}:{children: JSX.
             clearTimeout(timer)
         };
     },[])
+
     useEffect(()=>{
         setOpen(false)
+        if (onClose instanceof Function ) onClose()
     },[offToggle])
     if(!open) return null;
     return ReactDom.createPortal(<>
@@ -40,15 +45,15 @@ function Modal({children, header, openRef, offToggle, freeClose}:{children: JSX.
             clearTimeout(timer)
             if(!wait && freeClose) setOpen(false);
         }}></div>
-        <div className="modal">
+        <Div className="modal" pos={positioning}>
             <div className="window-header side-margins">
-                <button onClick={()=>setOpen(false)} className="center-child">
+                <button onClick={()=>{setOpen(false); if (onClose instanceof Function ) onClose()}} className="center-child">
                     <FontAwesomeIcon icon={faXmark} size="lg"/>
                 </button>
                 <h2>{header}</h2>
             </div>
             {children}
-        </div>
+        </Div>
 
     </>, document.getElementById("portal")!)
 }
