@@ -17,6 +17,7 @@ function useFetch<Type>(url:string, refetchSwitch?:boolean):FetchResult<Type> {
             })
             .catch((err) => {
                 setError(err);
+                setLoading(false);
             })
             .finally(() => {
                 setLoading(false);
