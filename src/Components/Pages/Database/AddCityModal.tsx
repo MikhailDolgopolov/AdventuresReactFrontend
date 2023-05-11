@@ -12,7 +12,7 @@ function AddCityModal({addCityButton, onAdd, defaultCountry}:{onAdd:()=>void, de
     const [toggleModal, flip] = useSwitch();
     const [countries] = useFetch<Country[]>("countries/")
     const [selectedCountry, setCountry] = useState<string>(defaultCountry?defaultCountry:"");
-    const {register, handleSubmit} = useForm<City>();
+    const {register, handleSubmit, reset} = useForm<City>();
     if(!countries) return <></>
     const onSubmit = handleSubmit((data, e?: React.BaseSyntheticEvent)=>{
         e!.preventDefault();
@@ -24,7 +24,7 @@ function AddCityModal({addCityButton, onAdd, defaultCountry}:{onAdd:()=>void, de
         post("cities/create/", JSON.stringify(data)).then(()=>{flip();onAdd();})
     })
     return (
-        <Modal header="Добавить город" openRef={addCityButton} offToggle={toggleModal}>
+        <Modal header="Добавить город" openRef={addCityButton} offToggle={toggleModal} onClose={()=>reset({city:""})}>
             <form className="vert-window" onSubmit={onSubmit}>
                 <div className="form-row">
                     <label>Название: </label>

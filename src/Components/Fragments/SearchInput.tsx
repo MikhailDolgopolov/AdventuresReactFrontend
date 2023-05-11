@@ -12,7 +12,6 @@ function SearchInput<Type>({id, array,stringify, onSetValue, onSetItem, onlySele
     useEffect(()=>{
         if(!defaultValue) defaultValue="";
         setQuery(defaultValue)
-
     }, [defaultValue,])
 
     const list=(array)?array.filter(item => {

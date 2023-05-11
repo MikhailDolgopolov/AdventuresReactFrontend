@@ -13,7 +13,6 @@ function SightRow({s}:{s:Sight}) {
                 <td>{s.name}</td>
                 <td>{s.city}</td>
                 <td>{s.type}</td>
-                <td>{s.created_year}</td>
             </tr>
         </>
 

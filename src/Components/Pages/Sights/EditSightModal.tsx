@@ -23,7 +23,7 @@ cities?:City[], types?:string[]}) {
         post("sights/update/", JSON.stringify(newVisit)).then(()=>{onChange();flip();})
     })
     return (
-        <Modal header={"Изменить данные"} openRef={openRef} offToggle={close}>
+        <Modal header={"Изменить данные"} openRef={openRef} offToggle={close} positioning="absolute">
             <form className="vert-window" onSubmit={onSubmit}>
                 <div className="form-row">
                     <label>Название: </label>

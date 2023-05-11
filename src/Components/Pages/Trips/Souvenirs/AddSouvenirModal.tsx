@@ -12,10 +12,10 @@ import {post} from "../../../../Server/Requests";
 
 function AddSouvenirModal({points, openRef, onCommit}:{points:TripPoint[], openRef:React.MutableRefObject<any>, onCommit:()=>void}) {
     const [selectedPoint, setPoint] = useState<TripPoint>(points[0])
-    const {register, handleSubmit} = useForm<Souvenir>()
+    const {register, handleSubmit, reset} = useForm<Souvenir>()
     const [selectedMaterial,setMat]=useState("");
     const [selectedType, setType]=useState("");
-    const [selectedCity, setCity]=useState<string>("");
+    const [selectedCity, setCity]=useState<string>(selectedPoint.city);
     const [refetchCountry, flipRefetchCountry] = useSwitch()
     const [currentCountry] = useFetch<Country>("countries/for_city/"+selectedPoint.city, refetchCountry)
     const [materials, loadMaterials] = useFetch<string[]>("souvenirs/materials/")
@@ -26,7 +26,7 @@ function AddSouvenirModal({points, openRef, onCommit}:{points:TripPoint[], openR
     useEffect(()=>{
         if(types && types.length>0) setType(types[0])
         if(materials&&materials.length>0) setMat(materials[0])
-    },[])
+    },[types, materials])
     if(!materials || !types) return <LoadingError loadingObject={"параметры"} loading={loadMaterials||loadTypes} wholePage={true}/>
     const submit = handleSubmit((s)=>{
         if(!cities) {alert("Подождите немного и попробуйте еще раз."); return;}
@@ -55,7 +55,8 @@ function AddSouvenirModal({points, openRef, onCommit}:{points:TripPoint[], openR
     } )
     return (
         <>
-            <Modal header={"Новый сувенир"} openRef={openRef} offToggle={close}>
+            <Modal header={"Новый сувенир"} openRef={openRef} offToggle={close} positioning="absolute"
+                   onClose={()=>reset({name:"", description:""})}>
                 <form className="vert-window" onSubmit={submit}>
                     <p>Относится к остановке:</p>
                     <ButtonSelect<TripPoint> array={points} id="points" stringify=
@@ -73,7 +74,7 @@ function AddSouvenirModal({points, openRef, onCommit}:{points:TripPoint[], openR
                     <div className="form-row">
                         <label>Город: </label>
                         <SearchInput array={cities} stringify={(c)=>c.city} onSetValue={(s)=>setCity(s)}
-                                     id={"allCities"} not_required={true}/>
+                                     id={"allCities"} not_required={true} defaultValue={selectedPoint&&selectedPoint.city}/>
                     </div>
                     <div className="form-row">
                         <label>Описание: </label>

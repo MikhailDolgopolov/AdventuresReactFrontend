@@ -51,25 +51,13 @@ function TripPage({trip, onChange}:{trip:Trip, onChange:()=>void}) {
 
 
     const selectTag = <div>
-            <span onClick={() => {
-                settingPeople(!addingPeople)
-            }}>Добавить   </span>
-        <select id="person_select" onChange={(event) => {
-            let id = parseInt(event.target.value);
-
-            let seek = participants!.find(person => (person.person_id == id))
+        {people&&people.filter(c=>!participants.find(other=>c.person_id==other.person_id))
+            .map(p=><button data-selected="0" className="side-margins vert-margins" key={p.person_id} onClick={()=>{
+            let seek = participants!.find(person => (person.person_id == p.person_id))
             if (seek) return;
             post('trips/' + trip.trip_id.toString() + '/participants/add/',
-                '[' + event.target.value + ']').then(()=>flipRefetchParts());
-        }} onSubmit={() => {
-            settingPeople(false);
-        }
-        } onClick={(e) => {
-            if (e.button == -1) settingPeople(false);
-        }}>
-            <option>---</option>
-            {options}
-        </select>
+                '[' + p.person_id + ']').then(()=>flipRefetchParts());
+        }}>{getName(p)}</button>)}
     </div>
 
 
