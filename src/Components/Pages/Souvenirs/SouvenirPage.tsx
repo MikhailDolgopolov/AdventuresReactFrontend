@@ -18,7 +18,7 @@ function SouvenirPage({s, onChange, types, materials, cities}:
                               types?:string[], materials?:string[], cities?:City[]}) {
     const [refetch, flip] = useSwitch()
     const [points] = useFetch<TripPoint[]>("trippoints/related_to_souvenir/"+s.souvenir_id)
-    const [relatedCity] = useFetch<City>("cities/"+s.city, refetch);
+    const [relatedCity] = useFetch<City>("cities/for_souvenir/"+s.souvenir_id, refetch);
     const [similarSouvenirs] = useFetch<Souvenir[]>("souvenirs/similar_to/"+s.souvenir_id, refetch)
     const [relatedTrippoint] = useFetch<TripPoint>("trippoints/for_souvenir/"+s.souvenir_id, refetch)
     const navigate = useNavigate()
@@ -51,7 +51,7 @@ function SouvenirPage({s, onChange, types, materials, cities}:
                     <div className="flow-down">
                         {similarSouvenirs && similarSouvenirs.length>0&&<section>
                             <h2>Похожие</h2>
-                            <h4><span>{s.type}</span>, <span>{relatedCity&&relatedCity.country}</span></h4>
+                            <h4>{s.type} {s.material} или <span>{relatedCity&&relatedCity.country}</span></h4>
                             <div className="flex-grid outline">
                                 {similarSouvenirs
                                     .map(s=>

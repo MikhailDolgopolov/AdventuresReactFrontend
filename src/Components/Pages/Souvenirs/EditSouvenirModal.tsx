@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import ButtonSelectWithInput from "../../Fragments/ButtonSelectWithInput";
 import SearchInput from "../../Fragments/SearchInput";
 import ButtonSelect from "../../Fragments/ButtonSelect";
@@ -23,7 +23,9 @@ function EditSouvenirModal({s, editSouvenirRef, onChange, trippoints, types, mat
 
     const {register, handleSubmit} = useForm<Souvenir>()
 
-
+    useEffect(()=>{
+        if(currPoint) setPoint(currPoint)
+    },[currPoint])
     const saveSouvenir = handleSubmit((newS:Souvenir, e?)=>{
         if (!cities) return;
         e!.preventDefault()
@@ -44,7 +46,7 @@ function EditSouvenirModal({s, editSouvenirRef, onChange, trippoints, types, mat
                 flip();onChange()})
     })
     return (
-        <Modal header="Изменить данные" openRef={editSouvenirRef} offToggle={closeModal}>
+        <Modal header="Изменить данные" openRef={editSouvenirRef} offToggle={closeModal} positioning="absolute">
             <form className="vert-window" onSubmit={saveSouvenir}>
                 <input hidden={true} defaultValue={s.souvenir_id} {...register("souvenir_id")}/>
                 <div className="form-row">
@@ -58,8 +60,7 @@ function EditSouvenirModal({s, editSouvenirRef, onChange, trippoints, types, mat
                             setMaterial(s)
                         }}/>}</div>
                 <div>Тип:
-                    {
-                        types &&
+                    {types &&
                         <ButtonSelectWithInput<string> array={types} id={"editTypes"} defaultValue={s.type}
                                                        stringify={(s) => s} onSelect={(s) => {
                             setType(s)
@@ -67,7 +68,7 @@ function EditSouvenirModal({s, editSouvenirRef, onChange, trippoints, types, mat
                 <div className="form-row">
                     <label>Город: </label>
                     <SearchInput id={"citiesForS"} array={cities} stringify={(c)=>c.city} not_required={true}
-                                 onSetValue={(s)=>{setCity(s);flipRefetchCountry()}} defaultValue={s.city}/>
+                                 onSetValue={(s)=>{setCity(s);flipRefetchCountry()}} defaultValue={s.city&&newPoint.city}/>
                 </div>
                 <div className="form-row">
                     <label>Описание: </label>

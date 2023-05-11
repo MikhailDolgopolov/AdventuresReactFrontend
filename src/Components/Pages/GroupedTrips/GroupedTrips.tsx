@@ -7,17 +7,18 @@ import AddTripModal from "./AddTripModal";
 import useSwitch from "../../../Hooks/useSwitch";
 import {Trip} from "../../../Helpers/DataTypes";
 import useFetch from "../../../Hooks/useFetch";
+import {useNavigate} from "react-router-dom";
 
 
 
 export default function GroupedTrips() {
     const [flag, changeFlag] = useSwitch()
     let addTripButton = useRef<HTMLButtonElement>(null)
-
+    const navigate=useNavigate()
     return (
         <>
             <TitleSubtitle title={'Путешествия'}/>
-            <AddTripModal openRef={addTripButton} onAdd={()=>changeFlag()}/>
+            <AddTripModal openRef={addTripButton} onAdd={(t)=>{changeFlag();navigate("/trip/"+t.trip_id)}}/>
             <div className="side-margins">
                <div className="top-row">
                     <div className="right">

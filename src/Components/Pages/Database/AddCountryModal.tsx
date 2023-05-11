@@ -8,14 +8,13 @@ import useSwitch from "../../../Hooks/useSwitch";
 function AddCountryModal({addCountryButton, onAdd}:{onAdd:()=>void,
     addCountryButton:React.MutableRefObject<HTMLElement|null>}) {
     const [toggleModal, setToggle] = useSwitch()
-    const {register, handleSubmit} = useForm<Country>();
+    const {register, handleSubmit, reset} = useForm<Country>();
     const onSubmit = handleSubmit((data,e?: React.BaseSyntheticEvent)=>{
         e!.preventDefault()
-        console.log(data)
         post("countries/create/", JSON.stringify(data)).then(()=>{onAdd();setToggle();})
     })
     return (
-        <Modal header="Добавить страну" openRef={addCountryButton} offToggle={toggleModal}>
+        <Modal header="Добавить страну" openRef={addCountryButton} offToggle={toggleModal} onClose={reset}>
             <form className="vert-window" onSubmit={onSubmit}>
                 <div className="form-row">
                     <label>Название</label>
@@ -28,6 +27,10 @@ function AddCountryModal({addCountryButton, onAdd}:{onAdd:()=>void,
                 <div className="form-row">
                     <label>Площадь</label>
                     <input type="number" {...register("area")}/>
+                </div>
+                <div className="form-row">
+                    <label>Столица</label>
+                    <input {...register("capital_city")}/>
                 </div>
                 <button type="submit">Добавить</button>
             </form>

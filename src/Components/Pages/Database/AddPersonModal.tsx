@@ -8,14 +8,14 @@ import useSwitch from "../../../Hooks/useSwitch";
 function AddPersonModal({addPersonButton, onAdd}:{onAdd:{():void}
     addPersonButton:React.MutableRefObject<HTMLElement|null>}) {
     const [toggleModal, flip] = useSwitch();
-    const {register, handleSubmit} = useForm<Person>();
+    const {register, handleSubmit, reset} = useForm<Person>();
     const onSubmit = handleSubmit((data, e?: React.BaseSyntheticEvent)=>{
         e!.preventDefault()
         post("people/create/", JSON.stringify(data)).then(()=>{onAdd();flip(); });
     })
 
     return (
-        <Modal header="Добавить человека" openRef={addPersonButton} offToggle={toggleModal}>
+        <Modal header="Добавить человека" openRef={addPersonButton} offToggle={toggleModal} onClose={reset}>
             <form className="vert-window" onSubmit={onSubmit}>
                 <div className="form-row">
                     <label>Имя: </label>

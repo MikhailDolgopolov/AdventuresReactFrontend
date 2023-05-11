@@ -3,11 +3,13 @@ import {Sight} from "../../../Helpers/DataTypes";
 import {useNavigate} from "react-router-dom";
 import Modal from "../../Fragments/Modal";
 import {SouvenirTitle} from "../Souvenirs/SouvenirPage";
+import useSwitch from "../../../Hooks/useSwitch";
 
 function SightModal({s, openRef}:{s:Sight, openRef:React.MutableRefObject<any>}) {
     const navigate = useNavigate()
+    const [closeSwitch, flip] = useSwitch()
     return (
-        <Modal header={s.name} openRef={openRef}>
+        <Modal header={s.name} openRef={openRef} offToggle={closeSwitch}>
             <div className="vert-window">
                 <div className="form-row">
                     <label>Название: </label>
@@ -27,7 +29,7 @@ function SightModal({s, openRef}:{s:Sight, openRef:React.MutableRefObject<any>})
                 </div>
                 <label>Описание:  </label>
                 <p>{s.description}</p>
-                <button onClick={()=>navigate("/sights/"+s.sight_id)}>Перейти на страницу</button>
+                <button onClick={()=>{flip();navigate("/sights/"+s.sight_id)}}>Перейти на страницу</button>
             </div>
         </Modal>
     );

@@ -27,7 +27,7 @@ function AddSightVisitModal({addSightRef, closeSwitch, points, trip_id, onChange
     const [selectedDate, setDate] = useState<string>("")
     const [refetchCountry, flipRefetchCountry] = useSwitch()
     const [currentCountry] = useFetch<Country>("countries/for_city/"+selectedPoint.city, refetchCountry)
-    const {register, handleSubmit} = useForm<SightVisitCombined>()
+    const {register, handleSubmit, reset} = useForm<SightVisitCombined>()
 
     useEffect(()=>{
         if(trip) setDate(trip.start_date)
@@ -57,7 +57,8 @@ function AddSightVisitModal({addSightRef, closeSwitch, points, trip_id, onChange
             post("sights/visit/", JSON.stringify(newVisit)).then(()=> {onChange();});
     } )
     return (
-        <Modal header={"Посещённое место"} openRef={addSightRef} offToggle={closeSwitch}>
+        <Modal header={"Посещённое место"} openRef={addSightRef} offToggle={closeSwitch} positioning="absolute"
+        onClose={()=>reset({name:"", description:""})}>
             <form className="vert-window" onSubmit={submit}>
                 <p>Относится к остановке:</p>
                 <ButtonSelect<TripPoint> array={points} id={"trippoints"} stringify=

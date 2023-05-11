@@ -25,7 +25,7 @@ function TripPointsSection({trip,onChange}:{trip:Trip, onChange:()=>void}) {
     const [waitToOrder, setWait] = useState<boolean>(false)
     const [selectedCountry, setCountry]=useState<string>("");
     const [selectedCity, setSelectedCity] = useState<string>("");
-    const {register, handleSubmit} = useForm<TripPoint>()
+    const {register, handleSubmit, reset} = useForm<TripPoint>()
     const addPointRef = useRef(null)
     let navigate = useNavigate()
 
@@ -125,7 +125,8 @@ function TripPointsSection({trip,onChange}:{trip:Trip, onChange:()=>void}) {
                 {allPoints}
             </div>}
             <div className="row edges">
-                {trippoints&& <Modal header={"Новая остановка"} openRef={addPointRef} offToggle={refetch}>
+                {trippoints&& <Modal header={"Новая остановка"} openRef={addPointRef} offToggle={refetch}
+                onClose={()=>reset({title:""})}>
                     <form className="vert-window" onSubmit={onSubmit}>
                         <div className="form-row">
                             <label>Название: </label>

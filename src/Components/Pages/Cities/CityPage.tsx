@@ -70,7 +70,6 @@ function CityPage({city, onChange}:{city:City, onChange:()=>void}) {
                                             <th>Название</th>
                                             <th>Город</th>
                                             <th>Тип</th>
-                                            <th>Год</th>
                                         </tr>
                                         {sights.map(s=>
                                             <SightRow s={s} key={s.sight_id}/>
