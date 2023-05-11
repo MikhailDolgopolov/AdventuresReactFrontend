@@ -133,7 +133,7 @@ function TripPointsSection({trip,onChange}:{trip:Trip, onChange:()=>void}) {
                         </div>
                         <div className="form-row">
                             <label>Город: </label>
-                            <SearchInput<City> id="city" array={cities} not_required={true}
+                            <SearchInput<City> id="city" array={cities}
                                                stringify={(item) => item.city}
                                                onSetValue={(city) => {
                                                    setSelectedCity(city)
