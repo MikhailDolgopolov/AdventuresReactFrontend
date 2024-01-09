@@ -6,11 +6,11 @@ import {useNavigate} from "react-router-dom";
 import OptionalFormRow from "../Sights/OptionalFormRow";
 import useSwitch from "../../../Hooks/useSwitch";
 
-function SouvenirModal({s, openRef}:{s:Souvenir, openRef:React.MutableRefObject<any>}) {
+function SouvenirModal({s, openRef, openFlag}:{s:Souvenir, openRef:React.MutableRefObject<any> , openFlag?:boolean}) {
     const navigate = useNavigate()
     const [closeSwitch, flip] = useSwitch()
     return (
-        <Modal header={SouvenirTitle(s)} openRef={openRef} offToggle={closeSwitch}>
+        <Modal header={SouvenirTitle(s)} openRef={openRef} offToggle={closeSwitch} onToggle={openFlag}>
             <div className="vert-window">
                 <OptionalFormRow label={"Материал:  "} value={s.material}/>
                 <OptionalFormRow label={"Тип:  "} value={s.type}/>

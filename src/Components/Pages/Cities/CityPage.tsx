@@ -6,8 +6,7 @@ import {post} from "../../../Server/Requests";
 import {useNavigate} from "react-router-dom";
 import EditCityModal from "./EditCityModal";
 import useFetch from "../../../Hooks/useFetch";
-import SouvenirBlock from "../Trips/Souvenirs/SouvenirBlock";
-import SightBlock from "../Sights/SightBlock";
+
 import SmartWaiter from "../../../Helpers/SmartWaiter";
 import Loading from "../Loading";
 import SouvenirRow from "../Database/Rows/SouvenirRow";
@@ -31,7 +30,7 @@ function CityPage({city, onChange}:{city:City, onChange:()=>void}) {
             <TitleSubtitle title={city.city}/>
             <EditCityModal city={city} openRef={editRef} onChange={onChange}/>
             <div className="side-margins">
-                <EditEntry onEdit={()=>{}} onDelete={deleteCity} editRef={editRef}>
+                <EditEntry onEdit={()=>{}} onDelete={deleteCity} editRef={editRef} editModal={EditCityModal} properties={[city, editRef, onChange]}>
                     <button data-selected="0" className="self-left" onClick={()=>navigate("/countries/"+city.country)}>{city.country}</button>
                 </EditEntry>
                 <div className="two-columns">

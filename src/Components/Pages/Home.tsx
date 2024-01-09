@@ -20,6 +20,9 @@ function Home() {
                 <button className="big side-margins" onClick={() => navigate('/data/')}>
                     База данных
                 </button>
+                <button className="big side-margins" onClick={() => navigate('/files/')}>
+                    Файлы
+                </button>
             </div>
         </>
     );

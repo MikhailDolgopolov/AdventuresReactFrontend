@@ -15,11 +15,11 @@ import Points from "./Components/./Pages/./TripPoints/Points";
 import Cities from "./Components/Pages/Cities/Cities";
 import Souvenirs from "./Components/Pages/Souvenirs/Souvenirs";
 import Sights from "./Components/Pages/Sights/Sights";
+import Files from './Components/Pages/Files';
 
-
+const localIpAddress = require("local-ip-address")
 
 function App() {
-
     return (
         <div>
             <Router>
@@ -34,6 +34,7 @@ function App() {
                     <Route path='data/*' element={<StaticData/>}/>
                     <Route path='souvenirs/*' element={<Souvenirs/>}/>
                     <Route path='sights/*' element={<Sights/>}/>
+                    <Route path='Files/*' element={<Files/>}/>
                     <Route path="*" element={<EmptyRoute/>}/>
                 </Routes>
             </Router>

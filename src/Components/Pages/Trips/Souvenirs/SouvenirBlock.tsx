@@ -15,14 +15,14 @@ import {SouvenirTitle} from "../../Souvenirs/SouvenirPage";
 
 function SouvenirBlock({s}:{s:Souvenir}) {
     const editSouvenirRef = useRef(null)
-
+    const [openModal, flipState] = useSwitch()
     return (
         <>
-            <button className="highlight" key={s.souvenir_id} ref={editSouvenirRef}>
+            <button className="highlight" key={s.souvenir_id} onClick={flipState}>
                 <h3>{SouvenirTitle(s)}</h3>
                 {s.city&&<h5>{s.city}</h5>}
             </button>
-            <SouvenirModal s={s} openRef={editSouvenirRef}/>
+            <SouvenirModal s={s} openRef={editSouvenirRef} openFlag={openModal}/>
         </>
     );
 }

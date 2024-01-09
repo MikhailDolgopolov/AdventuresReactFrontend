@@ -3,7 +3,7 @@ import {faSlidersH, faTrash} from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 
 function EditEntry({onEdit, onDelete, editRef, deleteRef, children}:{onEdit:()=>void, onDelete:()=>void,children?:JSX.Element|JSX.Element[]
-    editRef?:React.MutableRefObject<HTMLButtonElement|null>,deleteRef?:React.MutableRefObject<HTMLButtonElement|null>}) {
+    editRef?:React.MutableRefObject<HTMLButtonElement|null>,deleteRef?:React.MutableRefObject<HTMLButtonElement|null>, editModal?:Function, properties?:any[]}) {
     return <div className="row right">
         {children}
         <button ref={editRef} className="center-child big square" onClick={onEdit}>

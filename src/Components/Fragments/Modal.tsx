@@ -4,14 +4,18 @@ import {faXmark} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 const Div = styled.div<{pos: string}>`position: ${props => props.pos}`;
-function Modal({children, header, openRef, positioning, offToggle, freeClose, onClose}:{children: JSX.Element[]|JSX.Element, header:string,
-    openRef:React.MutableRefObject<HTMLElement|null>,positioning?:string, offToggle?:boolean, freeClose?:boolean, onClose?:()=>void}) {
+function Modal({children, header, openRef, positioning, offToggle, freeClose,onToggle, onClose}:{children: JSX.Element[]|JSX.Element, header:string,
+    openRef:React.MutableRefObject<HTMLElement|null>,positioning?:string, offToggle?:boolean, onToggle?:boolean, freeClose?:boolean, onClose?:()=>void}) {
 
     const [open, setOpen] = useState<boolean>();
     const [timer] = useState<NodeJS.Timeout | undefined>();
     const [wait, setWait] = useState<boolean>(true);
     if(!positioning) positioning="fixed";
-
+    useEffect(()=>{
+        setOpen(false)
+        if (onClose instanceof Function ) onClose()
+    },[offToggle])
+    useEffect(()=>{setOpen(true)},[onToggle])
     useEffect(()=>{
         const openListener = (event: any)=>{
             if(openRef.current && openRef.current.contains(event.target)) {
@@ -19,7 +23,7 @@ function Modal({children, header, openRef, positioning, offToggle, freeClose, on
                 setWait(true)
                 setTimeout(()=>{
                     setWait(false);
-
+                    
                 }, 60);
             }
 
@@ -27,7 +31,7 @@ function Modal({children, header, openRef, positioning, offToggle, freeClose, on
         document.addEventListener("mousedown", openListener);
         document.addEventListener("touchend", openListener);
 
-
+        setOpen(false)
         return () => {
             document.removeEventListener("mousedown", openListener);
             document.removeEventListener("touchend", openListener);
@@ -35,10 +39,7 @@ function Modal({children, header, openRef, positioning, offToggle, freeClose, on
         };
     },[])
 
-    useEffect(()=>{
-        setOpen(false)
-        if (onClose instanceof Function ) onClose()
-    },[offToggle])
+
     if(!open) return null;
     return ReactDom.createPortal(<>
         <div className="modal-overlay cover" onClick={()=>{

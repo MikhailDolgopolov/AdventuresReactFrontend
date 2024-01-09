@@ -9,6 +9,7 @@ import useSwitch from "../../../Hooks/useSwitch";
 import {useNavigate} from "react-router-dom";
 
 function EditCityModal({city, openRef, onChange}:{city:City, onChange:()=>void, openRef:React.MutableRefObject<any>}) {
+    
     const {register, handleSubmit} = useForm<City>()
     const [closeModal, flip] = useSwitch()
     const [countries] = useFetch<Country[]>("countries/")

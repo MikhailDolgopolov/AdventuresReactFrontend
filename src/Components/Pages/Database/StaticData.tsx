@@ -46,7 +46,7 @@ function StaticData() {
                             <tr>
                                 <th>Название</th>
                                 <th>Население</th>
-                                <th>Площадь, млн км<sup>2</sup></th>
+                                <th>Площадь, км<sup>2</sup></th>
                                 <th>Столица</th>
                             </tr>
                             <tr className="hoverable button">
