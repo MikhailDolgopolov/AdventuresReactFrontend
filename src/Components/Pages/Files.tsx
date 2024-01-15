@@ -1,13 +1,14 @@
 import React, {ChangeEvent, useState} from "react";
 import TitleSubtitle from "../Fragments/TitleSubtitle";
-import LoadingError from "./LoadingError";
-import useFetch from "../../Hooks/useFetch";
 import { serverProperties } from "../../Server/ServerProperties";
+import MinioImage from "../Fragments/MinioImage";
+import axios from "axios";
 
 function Files() {
 
 
     const [file, setFile] = useState<File>();
+    const [image_data, setImage] = useState<string>("")
 
     const HandleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -15,6 +16,16 @@ function Files() {
         setFile(e.target.files[0]);
         
     };
+
+    function _imageEncode (arrayBuffer:ArrayBuffer) {
+        let u8 = new Uint8Array(arrayBuffer)
+        let ii = [].reduce.call(
+            new Uint8Array(arrayBuffer), function(p,c)
+            {return p+String.fromCharCode(c)},'') as string
+        let b64encoded = btoa(ii)
+        let mimetype="image/jpeg"
+        return "data:"+mimetype+";base64,"+b64encoded
+    }
 
   const handleUploadClick = () => {
     if (!file) {
@@ -32,6 +43,12 @@ function Files() {
         });
     }
 
+    const onClickHandler = async () => {
+        axios.get(serverProperties.root+"files/load/hi", {
+            responseType: 'arraybuffer'
+          }).then(result=>setImage(_imageEncode(result.data)));
+}
+
     return (
         <>
             <TitleSubtitle title={"Файл"}/>
@@ -40,8 +57,10 @@ function Files() {
                 <input type="file" onChange={HandleFileChange} />
                 <div>{file && `${file.name} - ${file.type}`}</div>
                 <button onClick={handleUploadClick}>Upload</button>
+                <button onClick={onClickHandler}>Download</button>
             </div>
             </div>
+            {image_data&&<img src={image_data} />}
         </>
     );
 }
